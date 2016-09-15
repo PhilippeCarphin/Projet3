@@ -109,4 +109,4 @@ set_property DONT_TOUCH TRUE [get_cells [split [join [get_cells -hier -filter {R
 
 # XDC: bd/system/system_ooc.xdc
 
-# XDC: c:/Temp/Tp2/tp2Code/zed_system_constr.xdc
+# XDC: C:/Temp/inf3995-02/tp2_cle/zed_system_constr.xdc
