@@ -1,8 +1,8 @@
 Copyright 1986-2015 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2015.4 (win64) Build 1412921 Wed Nov 18 09:43:45 MST 2015
-| Date         : Tue Sep 06 10:49:03 2016
-| Host         : L3712-15 running 64-bit major release  (build 9200)
+| Date         : Thu Sep 15 16:42:59 2016
+| Host         : L3712-14 running 64-bit major release  (build 9200)
 | Command      : report_timing_summary -warn_on_violation -max_paths 10 -file system_top_timing_summary_routed.rpt -rpx system_top_timing_summary_routed.rpx
 | Design       : system_top
 | Device       : 7z020-clg484
