@@ -1,0 +1,42 @@
+{
+   guistr: "# # String gsaved with Nlview 6.5.5  2015-06-26 bk=1.3371 VDI=38 GEI=35 GUI=JA:1.6
+#  -string -flagsOSRD
+preplace port DDR -pg 1 -y 20 -defaultsOSRD
+preplace port spdif -pg 1 -y 380 -defaultsOSRD
+preplace port hdmi_vsync -pg 1 -y 200 -defaultsOSRD
+preplace port hdmi_hsync -pg 1 -y 160 -defaultsOSRD
+preplace port IIC_FMC -pg 1 -y 100 -defaultsOSRD
+preplace port iic_mux_scl_T -pg 1 -y 240 -defaultsOSRD
+preplace port i2s_mclk -pg 1 -y 340 -defaultsOSRD
+preplace port otg_vbusoc -pg 1 -y 100 -defaultsOSRD
+preplace port i2s_sdata_in -pg 1 -y 80 -defaultsOSRD
+preplace port iic_mux_sda_T -pg 1 -y 280 -defaultsOSRD
+preplace port i2s_sdata_out -pg 1 -y 360 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -y 40 -defaultsOSRD
+preplace port hdmi_data_e -pg 1 -y 140 -defaultsOSRD
+preplace port hdmi_out_clk -pg 1 -y 180 -defaultsOSRD
+preplace port i2s_lrclk -pg 1 -y 320 -defaultsOSRD
+preplace port i2s_bclk -pg 1 -y 300 -defaultsOSRD
+preplace portBus iic_mux_scl_O -pg 1 -y 220 -defaultsOSRD
+preplace portBus GPIO_T -pg 1 -y 80 -defaultsOSRD
+preplace portBus iic_mux_sda_O -pg 1 -y 260 -defaultsOSRD
+preplace portBus GPIO_I -pg 1 -y 20 -defaultsOSRD
+preplace portBus hdmi_data -pg 1 -y 120 -defaultsOSRD
+preplace portBus iic_mux_scl_I -pg 1 -y 40 -defaultsOSRD
+preplace portBus iic_mux_sda_I -pg 1 -y 60 -defaultsOSRD
+preplace portBus GPIO_O -pg 1 -y 60 -defaultsOSRD
+preplace inst axi_hdmi_clkgen -pg 1 -lvl 3 -y 900 -defaultsOSRD
+preplace inst axi_hdmi_core -pg 1 -lvl 3 -y 640 -defaultsOSRD
+preplace inst sys_logic_inv -pg 1 -lvl 2 -y 1040 -defaultsOSRD
+preplace inst axi_iic_main -pg 1 -lvl 2 -y 280 -defaultsOSRD
+preplace inst sys_concat_intc -pg 1 -lvl 2 -y 530 -defaultsOSRD
+preplace inst sys_audio_clkgen -pg 1 -lvl 2 -y 770 -defaultsOSRD
+preplace inst axi_hdmi_dma -pg 1 -lvl 3 -y 1080 -defaultsOSRD
+preplace inst sys_i2c_mixer -pg 1 -lvl 2 -y 910 -defaultsOSRD
+preplace inst sys_rstgen -pg 1 -lvl 1 -y 380 -defaultsOSRD
+preplace inst axi_hdmi_interconnect -pg 1 -lvl 2 -y 110 -defaultsOSRD
+preplace inst axi_cpu_interconnect -pg 1 -lvl 3 -y 230 -defaultsOSRD
+preplace inst sys_ps7 -pg 1 -lvl 1 -y 150 -defaultsOSRD
+levelinfo -pg 1 0 220 600 960 1160 -top 0 -bot 1190
+",
+}
