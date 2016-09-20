@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;tp2/src/constant&apos; to &apos;constant.h&apos;" description="Rename resource &apos;constant&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/constant" name="constant.h" stamp="1474312636489" updateReferences="true"/>
+</session>

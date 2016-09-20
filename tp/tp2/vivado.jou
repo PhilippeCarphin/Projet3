@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Mon Sep 19 13:33:06 2016
+# Process ID: 26144
+# Current directory: C:/Temp/inf3995-02/TP2/tp2Code
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent23804 C:\Temp\inf3995-02\TP2\tp2Code\adv7511_zed.xpr
+# Log file: C:/Temp/inf3995-02/TP2/tp2Code/vivado.log
+# Journal file: C:/Temp/inf3995-02/TP2/tp2Code\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Temp/inf3995-02/TP2/tp2Code/adv7511_zed.xpr
+launch_sdk -workspace C:/Temp/inf3995-02/TP2/tp2Code/adv7511_zed.sdk -hwspec C:/Temp/inf3995-02/TP2/tp2Code/adv7511_zed.sdk/system_top.hdf

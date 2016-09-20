@@ -1,0 +1,12 @@
+/*
+ * bitmap.c
+ *
+ *  Created on: 2016-09-08
+ *      Author: frouee
+ */
+#include "bitmap.h"
+
+void ReadBitMap(char* bitMap, RGB* rgbOutArray)
+{
+
+}
