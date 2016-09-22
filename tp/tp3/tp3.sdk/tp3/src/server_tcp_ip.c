@@ -6,7 +6,7 @@
  */
 #include "server_tcp_ip.h"
 #include <stdio.h>
-#include "server_protocol.h"
+#include "server_http.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 #include "xil_printf.h"

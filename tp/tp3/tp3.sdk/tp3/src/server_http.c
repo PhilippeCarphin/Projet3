@@ -1,12 +1,17 @@
 #include <string.h>
 #include <stdio.h>
 #include "ff.h"
+#include "xil_printf.h"
 #include "splitTokens.h"
 
-static char *codes[] = {
+/* used in header building */
+static char *err_codes[] = {
 		"200 OK",
-		"403 Forbidden", "404 Not Found",
-		"500 Internal Server Error", "501 Not Implemented", "505 HTTP Version not supported"
+		"403 Forbidden",
+		"404 Not Found",
+		"500 Internal Server Error",
+		"501 Not Implemented",
+		"505 HTTP Version not supported"
 };
 
 /* global to avoid having to pass as argument in every function */
@@ -32,35 +37,43 @@ UINT read_file(char *path, char *buffer, UINT size);
 
 /******************************************************************************
  * Analyses and responds to a HTTP request.
- * NOTE: responseLength is changed to the actual response length.
+ * NOTE: response_actual_length is changed to the actual response length.
  *****************************************************************************/
-const char *decode_request(const char *request, int *responseLength)
+const char *decode_request(const char *request, int *response_actual_length)
 {
+	xil_printf("HTTP request: %s\n", request);
+
 	char **tokens = getTokens(request, " \n\r");
 	static char response[MAX_RESPONSE_SIZE];
 
 	/* Only accept GET requests and HTTP/1.1 (for now) */
 	if (strcmp(tokens[0] , "GET") != 0)
 	{
-		strcpy(response, build_response(HTTP_NOT_IMPLEMENTED, "text/plain",
-				"501 Not Implemented\nOnly GET requests are accepted for now."));
+		strcpy(response, build_response(HTTP_NOT_IMPLEMENTED, "text/html",
+						"<h1>501 Not Implemented</h1>\n \
+						<p>Only GET requests are accepted for now.</p>"));
 	}
 	else if (strcmp(tokens[2] , "HTTP/1.1") != 0)
 	{
-		strcpy(response, build_response(HTTP_VERSION_NOT_SUPPORTED, "text/plain",
-				"505 HTTP Version not supported\nOnly HTTP/1.1 requests are accepted (update!)."));
+		strcpy(response, build_response(HTTP_VERSION_NOT_SUPPORTED, "text/html",
+								"<h1>505 HTTP Version not supported</h1>\n \
+								<p>Only HTTP/1.1 requests are accepted.</p>"));
 	}
 	else
 	{
 		const char *buf = response_switch(tokens[1]);
-		*responseLength = response_length;
+		xil_printf("HTTP Response: %s\n\n", buf);
+
+		*response_actual_length = response_length;
 		return (const char *)buf;
 	}
+
+	xil_printf("HTTP Response: %s\n\n", response);
 
 	/* before returning, we set response_length
 	 * (changed from build_response and build_bmp_response)
 	 */
-	*responseLength = response_length;
+	*response_actual_length = response_length;
 	return (const char *)response;
 }
 
@@ -84,8 +97,11 @@ const char *response_switch(char *request)
 	}
 	else
 	{	/* don't accept unknown GET requests (maybe add a case for favicon.ico?) */
-		return build_response(HTTP_FORBIDDEN, "text/plain",
-				"403 Forbidden\nUse /test1, /test2 or /test3 instead.");
+		return build_response(HTTP_FORBIDDEN, "text/html",
+									"<h1>403 Forbidden</h1>\n \
+									<p>Use <a href=\"./test1\">/test1</a>, \
+									<a href=\"./test2\">/test2</a> or \
+									<a href=\"./test3\">/test3</a> instead.</p>");
 	}
 }
 
@@ -117,7 +133,10 @@ const char *build_bmp_response(char *path)
 
 	/* Picture not found */
 	if (result != FR_OK)
-		return build_response(HTTP_NOT_FOUND, "text/plain", codes[HTTP_NOT_FOUND]);
+		return build_response(HTTP_NOT_FOUND, "text/html",
+				"<h1>404 Not Found</h1>\n \
+				<p>Image BMP not found. \
+				Make sure the SD Card is in and the path exists.</p>");
 
 	const char *header = build_header(HTTP_OK, "image/bmp", fno.fsize);
 	int offset = strlen(header);
@@ -130,8 +149,10 @@ const char *build_bmp_response(char *path)
 
 	/* Read file failed */
 	if (fno.fsize != bytes_read)
-		return build_response(HTTP_INTERNAL_SERVER_ERROR, "text/plain",
-				"404 Not Found\nImage BMP not found. Make sure the SD Card is in and the path exists.");
+		return build_response(HTTP_NOT_FOUND, "text/html",
+				"<h1>404 Not Found</h1>\n \
+				<p>Failed to read image. \
+				Make sure the SD Card is in and the path exists.</p>");
 
 	return big_buffer;
 }
@@ -144,7 +165,7 @@ const char *build_header(int code, char *content_type, int content_length)
 {
 	static char header[MAX_HEADER_SIZE];
 	sprintf(header, "HTTP/1.1 %s\r\nContent-Type : %s\r\nContent-Length : %d\r\n\r\n",
-									codes[code], content_type, content_length);
+			err_codes[code], content_type, content_length);
 	return (const char *)header;
 }
 
