@@ -1,0 +1,230 @@
+/*
+
+Vivado v2015.4 (64-bit)
+SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+Process ID: 7028
+
+Current time: 	9/19/16 2:49:09 PM EDT
+Time zone: 	Eastern Standard Time (America/New_York)
+
+OS: Windows 8
+Version: 6.2
+Architecture: amd64
+Available processors (cores): 8
+
+Screen size: 1920x1080
+Screen resolution (DPI): 96
+Available screens: 2
+Default font: family=Tahoma,name=Tahoma,style=plain,size=11
+
+Java version: 	1.8.0_45 64-bit
+Java home: 	C:/Logiciels/Xilinx/Vivado/2015.4/tps/win64/jre
+
+User name: 	frouee
+User home directory: C:/Users/frouee
+User working directory: C:/Temp/inf3995-02/tp/tp3
+User country: 	CA
+User language: 	fr
+User locale: 	fr_CA
+
+Vivado preferences path: C:/Users/frouee/AppData/Roaming/Xilinx/Vivado/2015.4/vivado.ini
+Vivado layouts directory: C:/Users/frouee/AppData/Roaming/Xilinx/Vivado/2015.4/layouts
+
+GUI allocated memory:	230 MB
+GUI max memory:		3,052 MB
+Engine allocated memory: 429 MB
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// TclEventType: PROJECT_OPEN_DIALOG
+// Opening Vivado Project: C:\Temp\inf3995-02\tp\tp3\tp3.xpr. Version: Vivado v2015.4 
+// bF:g (cq:JFrame):  Open Project : addNotify
+// Tcl Message: open_project C:/Temp/inf3995-02/tp/tp3/tp3.xpr 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_CURRENT
+// [GUI Memory]: 31 MB (+29522kb) [00:00:05]
+// [Engine Memory]: 421 MB (+290335kb) [00:00:05]
+// HMemoryUtils.trashcanNow. Engine heap size: 450 MB. GUI used memory: 28 MB. Current time: 9/19/16 2:49:11 PM EDT
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 47 MB (+16158kb) [00:00:09]
+// [Engine Memory]: 483 MB (+42444kb) [00:00:09]
+// [Engine Memory]: 511 MB (+3806kb) [00:00:09]
+// [GUI Memory]: 56 MB (+6498kb) [00:00:11]
+// [Engine Memory]: 550 MB (+14403kb) [00:00:11]
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: open_project C:/Temp/inf3995-02/tp/tp3/tp3.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Logiciels/Xilinx/Vivado/2015.4/data/ip'. 
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Project name: tp3; location: C:/Temp/inf3995-02/tp/tp3; part: xc7z020clg484-1
+// Tcl Message: open_project: Time (s): cpu = 00:00:20 ; elapsed = 00:00:10 . Memory (MB): peak = 857.531 ; gain = 177.914 
+dismissDialog("Open Project"); // bF:g (cq:JFrame)
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_UPDATE_GRAPH
+// [GUI Memory]: 59 MB (+546kb) [00:00:14]
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Generate Block Design]", 8, false); // w:Y (v:I, cq:JFrame)
+// Run Command: PAResourceCommand.PACommandNames_GENERATE_RSB_DESIGN
+// aB:x (cq:JFrame): Generate Output Products: addNotify
+selectButton(PAResourceQtoS.SimpleOutputProductDialog_CLOSE_DIALOG_UNSAVED_CHANGES_WILL, "Cancel"); // a:JButton (JPanel:JComponent, aB:x)
+dismissDialog("Generate Output Products"); // aB:x (cq:JFrame)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Open Block Design]", 7, false); // w:Y (v:I, cq:JFrame)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_BLOCK_DESIGN
+// bF:g (cq:JFrame):  Open Block Design : addNotify
+// TclEventType: LOAD_FEATURE
+// TclEventType: RSB_PROPERTY_CHANGE
+// Tcl Message: open_bd_design {C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd} 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:processing_system7:5.5 - processing_system7_0 
+// TclEventType: LOAD_FEATURE
+// HMemoryUtils.trashcanNow. Engine heap size: 599 MB. GUI used memory: 39 MB. Current time: 9/19/16 2:49:26 PM EDT
+// [Engine Memory]: 605 MB (+29022kb) [00:00:26]
+// TclEventType: RSB_PROPERTY_CHANGE
+// Tcl Message: Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - axi_timer_0 
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: RSB_OPEN_DIAGRAM
+// Tcl Message: Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - rst_processing_system7_0_50M 
+// Tcl Message: INFO: [Ipptcl 7-1463] No Compatible Board Interface found. Board Tab not created in customize GUI 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:axi_protocol_converter:2.1 - auto_pc Successfully read diagram <design_1> from BD file <C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd> 
+// TclEventType: RSB_OPEN_DIAGRAM
+// [Engine Memory]: 677 MB (+43658kb) [00:00:31]
+// TclEventType: RSB_CONNECTION_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// Tcl Message: open_bd_design: Time (s): cpu = 00:00:14 ; elapsed = 00:00:12 . Memory (MB): peak = 960.676 ; gain = 90.887 
+// 'bg' command handler elapsed time: 12 seconds
+// Elapsed time: 12 seconds
+dismissDialog("Open Block Design"); // bF:g (cq:JFrame)
+// [GUI Memory]: 67 MB (+4876kb) [00:00:33]
+// [GUI Memory]: 73 MB (+2177kb) [00:00:33]
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Generate Block Design]", 8, false); // w:Y (v:I, cq:JFrame)
+// Run Command: PAResourceCommand.PACommandNames_GENERATE_RSB_DESIGN
+// aB:x (cq:JFrame): Generate Output Products: addNotify
+selectButton(PAResourceQtoS.SimpleOutputProductDialog_GENERATE_OUTPUT_PRODUCTS_IMMEDIATELY, "Generate"); // a:JButton (JPanel:JComponent, aB:x)
+// 'aT' command handler elapsed time: 6 seconds
+selectButton("PAResourceQtoS.SimpleOutputProductDialog_GENERATE_OF_OUTPUT_PRODUCTS_DID_NOT_OK", "OK"); // BasicOptionPaneUI$ButtonFactory:JButton (JPanel:JComponent, T:JDialog)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Generate Block Design]", 8, false); // w:Y (v:I, cq:JFrame)
+// Run Command: PAResourceCommand.PACommandNames_GENERATE_RSB_DESIGN
+// aB:x (cq:JFrame): Generate Output Products: addNotify
+selectRadioButton(PAResourceQtoS.SimpleOutputProductDialog_SYNTHESIZE_ALL_IP_INCLUDING_IP_CONTAINED, "Out of context per IP"); // a:JRadioButton (JPanel:JComponent, aB:x)
+selectRadioButton(PAResourceQtoS.SimpleOutputProductDialog_SYNTHESIZE_ALL_IP_INCLUDING_IP_CONTAINED, "Out of context per Block Design"); // a:JRadioButton (JPanel:JComponent, aB:x)
+selectButton(PAResourceQtoS.SimpleOutputProductDialog_GENERATE_OUTPUT_PRODUCTS_IMMEDIATELY, "Generate"); // a:JButton (JPanel:JComponent, aB:x)
+// bF:g (cq:JFrame):  Managing Output Products : addNotify
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: set_property synth_checkpoint_mode Singular [get_files  C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] 
+// TclEventType: RSB_SCRIPT_TASK
+// Tcl Message: generate_target all [get_files  C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] 
+// Tcl Message: INFO: [BD 41-1662] The design 'design_1.bd' is already validated. Therefore parameter propagation will not be re-run. 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_SCRIPT_TASK
+// Tcl Message: Verilog Output written to : C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1.v Verilog Output written to : C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v 
+// Tcl Message: INFO: [IP_Flow 19-1686] Generating 'Instantiation Template' target for IP 'design_1_processing_system7_0_0'... INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'design_1_processing_system7_0_0'... 
+// HMemoryUtils.trashcanNow. Engine heap size: 701 MB. GUI used memory: 43 MB. Current time: 9/19/16 2:50:01 PM EDT
+// [Engine Memory]: 727 MB (+16667kb) [00:01:07]
+// Tcl Message: INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'design_1_processing_system7_0_0'... 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: Exporting to file C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hw_handoff/design_1.hwh Generated Block Design Tcl file C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hw_handoff/design_1_bd.tcl Generated Hardware Definition File C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1.hwdef 
+// Tcl Message: generate_target: Time (s): cpu = 00:00:29 ; elapsed = 00:00:29 . Memory (MB): peak = 1000.488 ; gain = 39.813 
+// Tcl Message: export_ip_user_files -of_objects [get_files C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] -no_script -force -quiet 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_NEW
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: RUN_ADD
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: create_ip_run [get_files -of_objects [get_fileset sources_1] C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] 
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_LAUNCH
+// Tcl Message: launch_run -jobs 4 design_1_synth_1 
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Mon Sep 19 14:50:30 2016] Launched design_1_synth_1... Run output will be captured here: C:/Temp/inf3995-02/tp/tp3/tp3.runs/design_1_synth_1/runme.log 
+// Tcl Message: export_simulation -of_objects [get_files C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/Temp/inf3995-02/tp/tp3/tp3.ip_user_files/sim_scripts -force -quiet 
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_UPDATE_GRAPH
+// TclEventType: DG_ANALYSIS_MSG_RESET
+// TclEventType: DG_UPDATE_GRAPH
+// [GUI Memory]: 76 MB (+224kb) [00:01:48]
+// TclEventType: FILE_SET_CHANGE
+// 'aT' command handler elapsed time: 64 seconds
+// Elapsed time: 57 seconds
+selectButton("PAResourceQtoS.SimpleOutputProductDialog_OUT_OF_CONTEXT_MODULE_RUNS_WERE_LAUNCHED_OK", "OK"); // BasicOptionPaneUI$ButtonFactory:JButton (JPanel:JComponent, T:JDialog)
+// [Engine Memory]: 778 MB (+15270kb) [00:01:54]
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // U:JideMenu (CommandMenuBar:CommandBar, cq:JFrame)
+selectMenu(PAResourceItoN.MainMenuMgr_OPEN_RECENT_FILE, "Open Recent File"); // aa:JMenu (JPopupMenu:JComponent, cq:JFrame)
+selectMenu(PAResourceItoN.MainMenuMgr_EXPORT, "Export"); // aa:JMenu (JPopupMenu:JComponent, cq:JFrame)
+selectMenu(PAResourceItoN.MainMenuMgr_EXPORT, "Export"); // aa:JMenu (JPopupMenu:JComponent, cq:JFrame)
+selectMenu(PAResourceItoN.MainMenuMgr_EXPORT, "Export"); // aa:JMenu (JPopupMenu:JComponent, cq:JFrame)
+// HMemoryUtils.trashcanNow. Engine heap size: 778 MB. GUI used memory: 44 MB. Current time: 9/19/16 2:51:01 PM EDT
+selectMenuItem(PAResourceCommand.PACommandNames_EXPORT_HARDWARE, "Export Hardware..."); // ae:JMenuItem (JPopupMenu:JComponent, cq:JFrame)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // U:JideMenu (CommandMenuBar:CommandBar, cq:JFrame)
+// Run Command: PAResourceCommand.PACommandNames_EXPORT_HARDWARE
+// N:x (cq:JFrame): Export Hardware: addNotify
+selectCheckBox(PAResourceItoN.NewExportHardwareDialog_INCLUDE_BITSTREAM, "Include bitstream", true); // h:JCheckBox (JPanel:JComponent, N:x): TRUE
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a:JButton (JPanel:JComponent, N:x)
+// HOptionPane Warning: 'The hardware handoff file(.sysdef) does not exist. It may not have generated because<br><br> 1. Bitstream might nothave generated. Generate bitstream and export otherwise do<br>not include bitstream in export. <br> 2. There are no IPI design hardware handoff files. Check the log messages for more details <br> (Cannot Export Hardware)'
+selectButton("PAResourceItoN.NewExportHardwareDialog_CANNOT_EXPORT_HARDWARE_OK", "OK"); // BasicOptionPaneUI$ButtonFactory:JButton (JPanel:JComponent, U:JDialog)
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel"); // a:JButton (JPanel:JComponent, N:x)
+// 'o' command handler elapsed time: 6 seconds
+dismissDialog("Export Hardware"); // N:x (cq:JFrame)
+// [GUI Memory]: 81 MB (+1147kb) [00:02:59]
+// Elapsed time: 59 seconds
+closeMainWindow("tp3 - [C:/Temp/inf3995-02/tp/tp3/tp3.xpr] - Vivado 2015.4"); // cq:JFrame
+// G:aY (cq:JFrame): Exit Vivado: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a:JButton (JPanel:JComponent, G:aY)
+dismissDialog("Exit Vivado"); // G:aY (cq:JFrame)
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_COMPLETED

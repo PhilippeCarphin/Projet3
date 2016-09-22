@@ -1,0 +1,13 @@
+# Toplevel gitignore.  There is another one in <project>.sdk
+
+*.debug
+*.cache
+*.hw
+*.runs
+*.sim
+
+
+# vim:
+*.swp
+*.swo
+

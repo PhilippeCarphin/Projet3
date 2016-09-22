@@ -1,0 +1,23 @@
+#-----------------------------------------------------------
+# Vivado v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Mon Sep 19 14:34:58 2016
+# Process ID: 4632
+# Current directory: C:/Temp/inf3995-02/tp/tp3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent8616 C:\Temp\inf3995-02\tp\tp3\tp3.xpr
+# Log file: C:/Temp/inf3995-02/tp/tp3/vivado.log
+# Journal file: C:/Temp/inf3995-02/tp/tp3\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Temp/inf3995-02/tp/tp3/tp3.xpr
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+launch_runs impl_1 -jobs 4
+wait_on_run impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 4
+wait_on_run impl_1
+reset_run impl_1 -prev_step 
+launch_runs impl_1 -to_step write_bitstream -jobs 4
+wait_on_run impl_1

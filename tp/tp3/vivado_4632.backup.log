@@ -1,0 +1,54 @@
+#-----------------------------------------------------------
+# Vivado v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Mon Sep 19 14:34:58 2016
+# Process ID: 4632
+# Current directory: C:/Temp/inf3995-02/tp/tp3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent8616 C:\Temp\inf3995-02\tp\tp3\tp3.xpr
+# Log file: C:/Temp/inf3995-02/tp/tp3/vivado.log
+# Journal file: C:/Temp/inf3995-02/tp/tp3\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Temp/inf3995-02/tp/tp3/tp3.xpr
+INFO: [Project 1-313] Project file moved from 'C:/Temp/tp3' since last save.
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-2] IPUserFilesDir: Could not find the directory 'C:/Temp/inf3995-02/tp/tp3/tp3.ip_user_files', nor could it be found using path 'C:/Temp/tp3/tp3.ip_user_files'.
+WARNING: [filemgmt 56-2] IPStaticSourceDir: Could not find the directory 'C:/Temp/inf3995-02/tp/tp3/tp3.ip_user_files/ipstatic', nor could it be found using path 'C:/Temp/tp3/tp3.ip_user_files/ipstatic'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Logiciels/Xilinx/Vivado/2015.4/data/ip'.
+WARNING: [IP_Flow 19-3664] IP 'design_1_processing_system7_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.vho'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_processing_system7_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/design_1_processing_system7_0_0.veo'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_processing_system7_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/hdl/verilog/design_1_processing_system7_0_0.hwdef'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_processing_system7_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_processing_system7_0_0/ps7_init.html'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_axi_timer_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_axi_timer_0_0/design_1_axi_timer_0_0.vho'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_axi_timer_0_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_axi_timer_0_0/design_1_axi_timer_0_0.veo'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_rst_processing_system7_0_50M_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_rst_processing_system7_0_50M_0/design_1_rst_processing_system7_0_50M_0.vho'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_rst_processing_system7_0_50M_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_rst_processing_system7_0_50M_0/design_1_rst_processing_system7_0_50M_0.veo'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_auto_pc_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_auto_pc_0/design_1_auto_pc_0.vho'. Please regenerate to continue.
+WARNING: [IP_Flow 19-3664] IP 'design_1_auto_pc_0' generated file not found 'c:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/ip/design_1_auto_pc_0/design_1_auto_pc_0.veo'. Please regenerate to continue.
+open_project: Time (s): cpu = 00:00:15 ; elapsed = 00:00:08 . Memory (MB): peak = 756.180 ; gain = 157.152
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+INFO: [HDL 9-2216] Analyzing Verilog file "C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v" into library work [C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v:1]
+INFO: [HDL 9-2216] Analyzing Verilog file "C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1.v" into library work [C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/hdl/design_1.v:1]
+[Mon Sep 19 14:36:27 2016] Launched synth_1...
+Run output will be captured here: C:/Temp/inf3995-02/tp/tp3/tp3.runs/synth_1/runme.log
+launch_runs impl_1 -jobs 4
+[Mon Sep 19 14:38:45 2016] Launched impl_1...
+Run output will be captured here: C:/Temp/inf3995-02/tp/tp3/tp3.runs/impl_1/runme.log
+launch_runs impl_1 -to_step write_bitstream -jobs 4
+[Mon Sep 19 14:40:26 2016] Launched impl_1...
+Run output will be captured here: C:/Temp/inf3995-02/tp/tp3/tp3.runs/impl_1/runme.log
+ERROR: [Vivado 12-4352] Hardware Handoff files are not generated for the following Block Designs 
+design_1.bd
+. It may be because of any of the following reasons: Block design has not been generated, one or more IP are locked in the block design, or block design was generated with 2014.1 or earlier version of Vivado.
+Re-generate the block design(s) and re-export
+reset_run impl_1 -prev_step 
+launch_runs impl_1 -to_step write_bitstream -jobs 4
+[Mon Sep 19 14:42:00 2016] Launched impl_1...
+Run output will be captured here: C:/Temp/inf3995-02/tp/tp3/tp3.runs/impl_1/runme.log
+exit
+INFO: [Common 17-206] Exiting Vivado at Mon Sep 19 14:47:00 2016...

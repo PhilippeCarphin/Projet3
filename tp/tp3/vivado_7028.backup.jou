@@ -1,0 +1,20 @@
+#-----------------------------------------------------------
+# Vivado v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Mon Sep 19 14:48:58 2016
+# Process ID: 7028
+# Current directory: C:/Temp/inf3995-02/tp/tp3
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent7128 C:\Temp\inf3995-02\tp\tp3\tp3.xpr
+# Log file: C:/Temp/inf3995-02/tp/tp3/vivado.log
+# Journal file: C:/Temp/inf3995-02/tp/tp3\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Temp/inf3995-02/tp/tp3/tp3.xpr
+open_bd_design {C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd}
+set_property synth_checkpoint_mode Singular [get_files  C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd]
+generate_target all [get_files  C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] -no_script -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd]
+launch_run -jobs 4 design_1_synth_1
+export_simulation -of_objects [get_files C:/Temp/inf3995-02/tp/tp3/tp3.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/Temp/inf3995-02/tp/tp3/tp3.ip_user_files/sim_scripts -force -quiet

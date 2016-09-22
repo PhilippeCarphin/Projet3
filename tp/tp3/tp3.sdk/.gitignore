@@ -1,0 +1,9 @@
+.metadata
+SDK.log
+webtalk
+./bsp/**/lib
+#./tp3/debug
+**/debug
+./tp3/release
+*.o
+
