@@ -58,10 +58,10 @@ int main()
 
 	/* the mac address of the board. this should be unique per board */
 	unsigned char mac_ethernet_address[] =
-	{ 0x00, 0x18, 0x3e, 0x00, 0x00, 0x22 };
+	{ 0x00, 0x18, 0x3e, 0x00, 0x00, 0x24 };
 
 	/* initlize IP addresses to be used */
-	IP4_ADDR(&ipaddr,  132, 207, 89, 22);
+	IP4_ADDR(&ipaddr,  132, 207, 89, 24);
 	IP4_ADDR(&netmask, 255, 255, 255,  0);
 	IP4_ADDR(&gw,      132, 207, 89,  1);
 
