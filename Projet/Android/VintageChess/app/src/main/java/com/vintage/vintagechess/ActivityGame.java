@@ -7,11 +7,13 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
-public class ActivityGame extends AppCompatActivity {
+public class ActivityGame extends AppCompatActivity implements View.OnClickListener {
 
     ImageView chessBoard;
+    ImageView display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,5 +29,24 @@ public class ActivityGame extends AppCompatActivity {
 //        chessBoard.setImageResource(imageResource);
 //        //Bitmap bitmap =
 //        Game.context = this.getApplicationContext();
+
+
+
+
+        display = (ImageView) findViewById(R.id.imageView);
+        ImageView imageTest = (ImageView) findViewById(R.id.imageView1);
+
+        imageTest.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.imageView1:
+                display.setImageResource(R.drawable.testchoice);
+                break;
+        }
     }
 }
+
