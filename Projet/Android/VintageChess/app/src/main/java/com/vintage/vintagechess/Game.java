@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
@@ -20,7 +23,7 @@ import java.util.LinkedList;
  * Created by User on 2016-10-18.
  */
 
-public class Game {
+public class Game{
 
     public static ImageView chessBoard;
     public static int width, height;
@@ -62,8 +65,7 @@ public class Game {
     }
 
 
-
-    public static void drawBoard() {
+    /*public static void drawBoard() {
 
 
         //Utilities.messageBox(Integer.valueOf(Integer.valueOf(width).toString(), "", activityGame);
@@ -75,7 +77,7 @@ public class Game {
         tempCanvas.drawRect(0, 0, 40, 40, paint);
         chessBoard.setImageDrawable(new BitmapDrawable(chessBoard.getResources(), tempBitmap));
 
-    }
+    }*/
 
     private class Piece {
 
