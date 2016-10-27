@@ -1,6 +1,8 @@
 package com.vintage.vintagechess;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +27,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     private Button buttonCreateGame;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,14 +49,14 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextPassword.setEnabled(false);
 
-        timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
+        /*timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
         timePickerOverTime = (TimePicker) findViewById(R.id.timePickerOverTime);
         timePickerMain.setIs24HourView(true);
         timePickerOverTime.setIs24HourView(true);
         timePickerMain.setHour(1);
         timePickerMain.setMinute(0);
         timePickerOverTime.setHour(0);
-        timePickerOverTime.setMinute(15);
+        timePickerOverTime.setMinute(15);*/
 
 
         numberPickerTurnsBeforedraw = (NumberPicker) findViewById(R.id.numberPicker);
@@ -81,8 +84,8 @@ public class ActivityCreateGame extends AppCompatActivity {
             boolean oneTablet = radioButton2.isChecked();
             String location = editTextLocation.getText().toString();
             String password = editTextPassword.getText().toString();
-            String normalTime = Utilities.getTimePickerString(timePickerMain);
-            String overTime = Utilities.getTimePickerString(timePickerOverTime);
+            //String normalTime = Utilities.getTimePickerString(timePickerMain);
+            //String overTime = Utilities.getTimePickerString(timePickerOverTime);
             String allowedTurns = Integer.valueOf(numberPickerTurnsBeforedraw.getValue()).toString();
 
             //handle errors in entries

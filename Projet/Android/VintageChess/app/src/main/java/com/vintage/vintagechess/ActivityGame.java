@@ -6,60 +6,29 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class ActivityGame extends AppCompatActivity implements View.OnTouchListener , View.OnClickListener{
 
     public static int X, Y;
-
-    /*
-    private enum Position {
-        a1(0, 1),
-        b1(-1, -1),
-        c1(-1, 0),
-        d1(1, 0),
-        e1(1, 0),
-        f1(1, 0),
-        g1(1, 0),
-        h1(1, 0),
-        a2(0, 1),
-        b2(-1, -1),
-        c2(-1, 0),
-        d2(1, 0),
-        e2(1, 0),
-        f2(1, 0),
-        g2(1, 0),
-        h2(1, 0),
-        a7(0, 1),
-        b7(-1, -1),
-        c7(-1, 0),
-        d7(1, 0),
-        e7(1, 0),
-        f7(1, 0),
-        g7(1, 0),
-        h7(1, 0),
-        a8(0, 1),
-        b8(-1, -1),
-        c8(-1, 0),
-        d8(1, 0),
-        e8(1, 0),
-        f8(1, 0),
-        g8(1, 0),
-        h8(1, 0);
-
-        Direction(int i, int j) {
-            X = i;
-            Y = j;
-        }
-    }*/
-
+    private final int INVALID_INDEX = -1;
+    private ArrayList<Piece> pieces = new ArrayList<Piece>();
+    private ArrayList<Piece> activePiece = new ArrayList<Piece>();
+    private ArrayList<Point> mActiveDragPoints;
+    public static int largeur = 152;
+    public static int midLargeur = 152/2;
 
     private static int a = 0;
     ImageView chessBoard;
@@ -81,7 +50,6 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     int testPieceY = 127;
     Canvas tempCanvas;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +58,7 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         chessBoard = (ImageView) findViewById(R.id.imageView);
         chessBoard.setImageResource(android.R.color.transparent);
 
+        CreatePieces("white", "1");
 
         Game.chessBoard = chessBoard;
         chessBoard.setOnTouchListener(this);
@@ -116,83 +85,159 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
 
     }
 
-    private int fieldImgXY[] = new int[2];
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         Game.width = chessBoard.getWidth();
         Game.height = chessBoard.getHeight();
         drawBoard();
+    }
+
+    /**********************************/
+    public void CreatePieces(String color, String style){
+        Piece pawn1 = new Piece(drawable(color, "pawn", style) ,1, style, color, "a7" );
+        Piece pawn2 = new Piece(drawable(color, "pawn", style) ,2, style, color, "b7" );
+        Piece pawn3 = new Piece(drawable(color, "pawn", style) ,3, style, color, "c7" );
+        Piece pawn4 = new Piece(drawable(color, "pawn", style) ,4, style, color, "d7" );
+        Piece pawn5 = new Piece(drawable(color, "pawn", style) ,5, style, color, "e7" );
+        Piece pawn6 = new Piece(drawable(color, "pawn", style) ,6, style, color, "f7" );
+        Piece pawn7 = new Piece(drawable(color, "pawn", style) ,7, style, color, "g7" );
+        Piece pawn8 = new Piece(drawable(color, "pawn", style) ,8, style, color, "h7" );
+        Piece rook1 = new Piece(drawable(color, "rook", style) ,9, style, color, "a8" );
+        Piece knight1 = new Piece(drawable(color, "knight", style) ,10, style, color, "b8" );
+        Piece bishop1 = new Piece(drawable(color, "bishop", style) ,11, style, color, "c8" );
+        Piece queen = new Piece(drawable(color, "queen", style) ,12, style, color, "d8" );
+        Piece king = new Piece(drawable(color, "king", style) ,13, style, color, "e8" );
+        Piece bishop2 = new Piece(drawable(color, "bishop", style) ,14, style, color, "f8" );
+        Piece knight2 = new Piece(drawable(color, "knight", style) ,15, style, color, "g8" );
+        Piece rook2 = new Piece(drawable(color, "rook", style) ,16, style, color, "h8" );
+
+        pieces.add(pawn1);
+        pieces.add(pawn2);
+        pieces.add(pawn3);
+        pieces.add(pawn4);
+        pieces.add(pawn5);
+        pieces.add(pawn6);
+        pieces.add(pawn7);
+        pieces.add(pawn8);
+        pieces.add(rook1);
+        pieces.add(rook2);
+        pieces.add(knight1);
+        pieces.add(knight2);
+        pieces.add(bishop1);
+        pieces.add(bishop2);
+        pieces.add(queen);
+        pieces.add(king);
+
+        Log.d("size", String.valueOf(pieces.size()));
 
     }
 
-    public void drawBoard() {
+    /**********************************/
+    public int drawable(String color, String PieceNeme, String style){
+        String separator = "_";
 
-        Log.d("DRAW", "");
+        String nameOfResource = color+separator+PieceNeme+separator+style;
+
+        Log.d("nameOfResource", nameOfResource);
+        int resourceId = this.getResources().getIdentifier(nameOfResource, "drawable", this.getPackageName());
+        Log.d("resourceId", String.valueOf(resourceId));
+        return resourceId;
+    }
+
+    /**********************************/
+    public void drawBoard() {
 
         Bitmap imagenAndroid = BitmapFactory.decodeResource(getResources(),R.drawable.bw_chess_board);
         imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
         tempCanvas = new Canvas(imagenAndroid);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.BLUE);
-        tempCanvas.drawRect(0, 0, 40, 40, paint);
 
-        testPiece = BitmapFactory.decodeResource(getResources(),R.drawable.black_bishop_1);
-        tempCanvas.drawBitmap(testPiece,testPieceX,testPieceY,null);
-        drawPieces(tempCanvas);
+        for(int i = 0; i<pieces.size(); i++ )
+        {
+            Bitmap imageBitmap = getBitmapImage(pieces.get(i).getId_());
+            int xPos = pieces.get(i).getxPosition();
+            int yPos = pieces.get(i).getyPosition();
+            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);  // largeure pas bonne
+        }
+
         chessBoard.setImageDrawable(new BitmapDrawable(chessBoard.getResources(), imagenAndroid));
         chessBoard.setOnTouchListener(this);
     }
 
-    public void drawPieces(Canvas can){
+    /**********************************/
+    public Bitmap getBitmapImage (int id) {
+        Bitmap bmp = BitmapFactory.decodeResource( getResources(), id );
+        Bitmap img = Bitmap.createScaledBitmap( bmp, 152*2, 152*2, true );
+        bmp.recycle();
 
-        //Bitmap blackPawn = BitmapFactory.decodeResource(getResources(),R.drawable.black_pawn_1);
-        Bitmap whitePawn = BitmapFactory.decodeResource(getResources(),R.drawable.white_pawn_1);
-        Bitmap whitebishop = BitmapFactory.decodeResource(getResources(),R.drawable.white_bishop_1);
-        Bitmap whiteking = BitmapFactory.decodeResource(getResources(),R.drawable.white_king_1);
-        Bitmap whiteknight= BitmapFactory.decodeResource(getResources(),R.drawable.white_knight_1);
-        Bitmap whitequeen= BitmapFactory.decodeResource(getResources(),R.drawable.white_queen_1);
-        Bitmap whiterook= BitmapFactory.decodeResource(getResources(),R.drawable.white_rook_1);
+        Log.d("Id", String.valueOf(id));
+        return img;
+    }
 
 
-       // for(int i = 1; i<7; i++){}
+    /**********************************/
+    private void lookForIntersection(Point touchDown)
+    {
+        final int index = getIntersectionPieceIndex(touchDown);
 
-        can.drawBitmap(whitePawn, 126+ 76 ,76,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 152 ,76 ,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 2*152,76,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 3*152 ,76 ,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 4*152,76 ,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 5*152,76 ,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 6*152,76 ,null);
-        can.drawBitmap(whitePawn, 126+ 76 + 7*152,76 ,null);
-
+        if( index != INVALID_INDEX )
+        {
+            final Piece piece = pieces.get(index);
+            Log.d("pieces.indexOf(piece)", String.valueOf(pieces.indexOf(piece)));
+            if( pieces.indexOf(piece) == INVALID_INDEX )
+            {
+                mActiveDragPoints.add(touchDown);
+                activePiece.add(pieces.get(index));
+            }
+        }
 
     }
-    @Override
-    public boolean onTouch(View v, MotionEvent curent) {
-        Log.d("DOWN", String.valueOf(1));
 
-        switch (curent.getAction())
+
+    private int getIntersectionPieceIndex(final Point point)
+    {
+        int index = INVALID_INDEX;
+        for(Piece piece : pieces)
+        {
+            if( true/*(piece.getxPosition()-midLargeur<point.x) && (piece.getxPosition()+midLargeur>point.x)  && (piece.getyPosition() - midLargeur < point.y) && (point.y< piece.getyPosition()+midLargeur)*/ )
+            {
+                index = pieces.indexOf(piece);
+                break;
+            }
+        }
+        return index;
+    }
+
+
+    private void movePiece(Point currentPoint, Point prevPoint, final Piece piece)
+    {
+        int xMoved = currentPoint.x- prevPoint.x;
+        int yMoved = currentPoint.y - prevPoint.y;
+        piece.setPosition(xMoved, yMoved);
+        mActiveDragPoints.set(mActiveDragPoints.indexOf(prevPoint), currentPoint);
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+
+        switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                testPieceY = (int)curent.getY();
-                testPieceX = (int)curent.getX();
-                Log.d("testPieceY", String.valueOf(testPieceY));
-                Log.d("testPieceX", String.valueOf(testPieceX));
-                Log.d("DOWN", String.valueOf(1));
-
+                Point touchDown = new Point((int)event.getX(), (int)event.getY());
+                lookForIntersection(touchDown);
                 break;
             case MotionEvent.ACTION_UP:
-                testPieceY = (int)curent.getY();
-                testPieceX = (int)curent.getX();
-                Log.d("testPieceY", String.valueOf(testPieceY));
-                Log.d("testPieceX", String.valueOf(testPieceX));
-                Log.d("UP", String.valueOf(1));
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                testPieceY = (int)curent.getY();
-                testPieceX = (int)curent.getX();
-                Log.d("MOVE", String.valueOf(1));
+                int count = 0;
+                for(Piece piece : activePiece)
+                {
+                    Point curretPoint = new Point((int)event.getX(count), (int)event.getY(count));
+                    movePiece(curretPoint, mActiveDragPoints.get(count), piece);
+                    count++;
+                }
                 break;
         }
         chessBoard.invalidate();

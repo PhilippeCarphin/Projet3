@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,12 +24,14 @@ import java.util.LinkedList;
  * Created by User on 2016-10-18.
  */
 
-public class Game{
+public class Game extends AppCompatActivity{
+
 
     public static ImageView chessBoard;
     public static int width, height;
 
     LinkedList<Piece> pieces;
+
 
     public void handleMove(int posX1, int posY1, int posX2, int posY2) {
 
@@ -59,13 +62,13 @@ public class Game{
                 else {
                     name = "king";
                 }
-                Piece newPiece = new Piece(name, x, y, isWhite);
+                //Piece newPiece = new Piece(name, x, y, isWhite);
             }
         }
     }
 
 
-    /*public static void drawBoard() {
+    public static void drawBoard() {
 
 
         //Utilities.messageBox(Integer.valueOf(Integer.valueOf(width).toString(), "", activityGame);
@@ -77,7 +80,7 @@ public class Game{
         tempCanvas.drawRect(0, 0, 40, 40, paint);
         chessBoard.setImageDrawable(new BitmapDrawable(chessBoard.getResources(), tempBitmap));
 
-    }*/
+    }
 
     private class Piece {
 
@@ -89,6 +92,8 @@ public class Game{
             resource_ = "drawable/pieces/" + (isWhite ? "White" : "Black") + type +"1";  // where myresource (without the extension) is the file
 
         }
+
+
     }
 
 }

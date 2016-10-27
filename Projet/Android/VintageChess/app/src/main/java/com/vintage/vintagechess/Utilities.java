@@ -24,7 +24,7 @@ public class Utilities {
         dlgAlert.create().show();
     }
 
-    public static String getTimePickerString(TimePicker tP) {
+    /*public static String getTimePickerString(TimePicker tP) {
         return Integer.valueOf(tP.getHour()).toString() + ":" + Integer.valueOf(tP.getMinute()).toString()+ ":00";
-    }
+    }*/
 }
