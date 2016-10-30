@@ -24,13 +24,45 @@ public class Piece extends AppCompatActivity {
     public String color_;
     public int id_; // drawabale
     public int identifier_;
+    public String name_;
 
-    public Piece(int id, int identifier, String style, String color, String position ){
+    public Piece(int id, int identifier, String style, String color, String name, String position ){
         id_ = id ;
         style_ = style;
         color_ = color;
         symboleXY_ = position;
         identifier_ = identifier;
+        name_ = name;
+    }
+
+    public void setSymbole(String symboleXY)
+    {
+        symboleXY_ = symboleXY;
+    }
+
+    public String getSymbole()
+    {
+        return symboleXY_ ;
+    }
+
+    public String getName()
+    {
+        return name_ ;
+    }
+
+    public String getColor()
+    {
+        return color_ ;
+    }
+
+    public String getStyle()
+    {
+        return style_ ;
+    }
+
+    public void setStyle(String style)
+    {
+        style_ = style;
     }
 
     public void setPosition(int x, int y)
@@ -61,12 +93,14 @@ public class Piece extends AppCompatActivity {
     public Pair<Integer,Integer> SymboleToXY(String position)
     {
         int i =  Integer.valueOf(position.charAt(0)) - 97;
-        int x = 131 + (i*largeur + midLargeur);
+        //int x = 131 + (i*largeur + midLargeur);
+        int x = 72 + (i*166);
         int j = 8 - Integer.valueOf(position.charAt(1))+48; // 48 cest le 1 en ascii
-        int y = (j*largeur + midLargeur) + 67;
+        //int y = (j*largeur + midLargeur) + 67;
+        int y = 70 + (j*166);
         Pair<Integer,Integer> xy = new Pair<>(x,y);
 
-        Log.d("symbole _ X_Y", position +" "+String.valueOf(x) + " " + String.valueOf(y));
+       // Log.d("symbole _ X_Y", position +" "+String.valueOf(x) + " " + String.valueOf(y));
         return xy;
     }
 
