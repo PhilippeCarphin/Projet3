@@ -1,7 +1,3 @@
-/*
- * json_tokens.h
- */
-
 #ifndef JSON_TOKENS_H_
 #define JSON_TOKENS_H_
 

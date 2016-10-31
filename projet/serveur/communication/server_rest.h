@@ -1,7 +1,3 @@
-/*
- * server_http_in.h
- */
-
 #ifndef SERVER_REST_H_
 #define SERVER_REST_H_
 
