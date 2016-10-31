@@ -14,17 +14,16 @@ import java.util.Map;
 
 public class Piece extends AppCompatActivity {
 
-
-    public static int largeur = 152;
-    public static int midLargeur = 152/2;
     public int xPosition_; // creer une map prochainement
     public int yPosition_;
     public String symboleXY_;
     public String style_;
     public String color_;
-    public int id_; // drawabale
+    public int id_;
     public int identifier_;
     public String name_;
+    public String player_;
+
 
     public Piece(int id, int identifier, String style, String color, String name, String position ){
         id_ = id ;
@@ -33,6 +32,16 @@ public class Piece extends AppCompatActivity {
         symboleXY_ = position;
         identifier_ = identifier;
         name_ = name;
+    }
+
+    public void setPlayer(String player)
+    {
+        player_ = player;
+    }
+
+    public String getPlayer()
+    {
+        return player_ ;
     }
 
     public void setSymbole(String symboleXY)
@@ -88,6 +97,11 @@ public class Piece extends AppCompatActivity {
     public int getId_()
     {
         return id_;
+    }
+
+    void setId_(int id)
+    {
+        id_=id;
     }
 
     public Pair<Integer,Integer> SymboleToXY(String position)

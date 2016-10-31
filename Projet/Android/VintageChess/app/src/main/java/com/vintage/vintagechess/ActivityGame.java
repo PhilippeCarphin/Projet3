@@ -1,24 +1,21 @@
 package com.vintage.vintagechess;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 //
 //inspiré de http://stackoverflow.com/questions/20881790/how-to-move-multiple-bitmaps-in-single-canvas-android
@@ -29,8 +26,8 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     private ArrayList<Piece> pieces = new ArrayList<Piece>();
     private ArrayList<Piece> activePiece = new ArrayList<Piece>();
     private ArrayList<Point> mActiveDragPoints= new ArrayList<Point>();
-    public static int largeur = 152;
-    public static int midLargeur = 152/2;
+
+    int boardId_;
 
     private static int a = 0;
     ImageView chessBoard;
@@ -55,8 +52,21 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     private String[] whitePosition = new String[]{"a7", "b7","c7", "d7","e7", "f7","g7", "h7","a8", "b8","c8", "d8","e8", "f8","g8", "h8" };
     private String[] blackPosition = new String[]{"a2", "b2","c2", "d2","e2", "f2","g2", "h2","a1", "b1","c1", "d1","e1", "f1","g1", "h1" };
 
+
+    public int getBoardId()
+    {
+        return boardId_;
+
+    }
+
+    public void setBoardId(int id)
+    {
+        boardId_ = id;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
@@ -64,6 +74,9 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         chessBoard.setImageResource(android.R.color.transparent);
 
         Game.chessBoard = chessBoard;
+
+        boardId_ = drawableChessBoard("bw_chess");
+
         chessBoard.setOnTouchListener(this);
 
         CreatePieces("white", "1");
@@ -96,7 +109,7 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         super.onWindowFocusChanged(hasFocus);
         Game.width = chessBoard.getWidth();
         Game.height = chessBoard.getHeight();
-        drawBoard("1", "white", "bw_chess");
+        drawBoard();
     }
 
     /**********************************/
@@ -109,22 +122,22 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         {
             position = blackPosition;
         }
-        Piece pawn1 = new Piece(drawable(color, "pawn", style) ,1, style, color,"pawn", position[0] );
-        Piece pawn2 = new Piece(drawable(color, "pawn", style) ,2, style, color,"pawn", position[1]);
-        Piece pawn3 = new Piece(drawable(color, "pawn", style) ,3, style, color,"pawn", position[2] );
-        Piece pawn4 = new Piece(drawable(color, "pawn", style) ,4, style, color,"pawn", position[3] );
-        Piece pawn5 = new Piece(drawable(color, "pawn", style) ,5, style, color,"pawn", position[4] );
-        Piece pawn6 = new Piece(drawable(color, "pawn", style) ,6, style, color,"pawn", position[5]);
-        Piece pawn7 = new Piece(drawable(color, "pawn", style) ,7, style, color,"pawn", position[6] );
-        Piece pawn8 = new Piece(drawable(color, "pawn", style) ,8, style, color,"pawn", position[7] );
-        Piece rook1 = new Piece(drawable(color, "rook", style) ,9, style, color,"rook", position[8] );
-        Piece knight1 = new Piece(drawable(color, "knight", style) ,10, style, color,"knight", position[9] );
-        Piece bishop1 = new Piece(drawable(color, "bishop", style) ,11, style, color,"bishop", position[10] );
-        Piece queen = new Piece(drawable(color, "queen", style) ,12, style, color,"queen", position[11] );
-        Piece king = new Piece(drawable(color, "king", style) ,13, style, color,"king", position[12] );
-        Piece bishop2 = new Piece(drawable(color, "bishop", style) ,14, style, color,"bishop", position[13] );
-        Piece knight2 = new Piece(drawable(color, "knight", style) ,15, style, color,"knight", position[14] );
-        Piece rook2 = new Piece(drawable(color, "rook", style) ,16, style, color,"rook", position[15] );
+        Piece pawn1 = new Piece(drawablePieces(color, "pawn", style) ,1, style, color,"pawn", position[0] );
+        Piece pawn2 = new Piece(drawablePieces(color, "pawn", style) ,2, style, color,"pawn", position[1]);
+        Piece pawn3 = new Piece(drawablePieces(color, "pawn", style) ,3, style, color,"pawn", position[2] );
+        Piece pawn4 = new Piece(drawablePieces(color, "pawn", style) ,4, style, color,"pawn", position[3] );
+        Piece pawn5 = new Piece(drawablePieces(color, "pawn", style) ,5, style, color,"pawn", position[4] );
+        Piece pawn6 = new Piece(drawablePieces(color, "pawn", style) ,6, style, color,"pawn", position[5]);
+        Piece pawn7 = new Piece(drawablePieces(color, "pawn", style) ,7, style, color,"pawn", position[6] );
+        Piece pawn8 = new Piece(drawablePieces(color, "pawn", style) ,8, style, color,"pawn", position[7] );
+        Piece rook1 = new Piece(drawablePieces(color, "rook", style) ,9, style, color,"rook", position[8] );
+        Piece knight1 = new Piece(drawablePieces(color, "knight", style) ,10, style, color,"knight", position[9] );
+        Piece bishop1 = new Piece(drawablePieces(color, "bishop", style) ,11, style, color,"bishop", position[10] );
+        Piece queen = new Piece(drawablePieces(color, "queen", style) ,12, style, color,"queen", position[11] );
+        Piece king = new Piece(drawablePieces(color, "king", style) ,13, style, color,"king", position[12] );
+        Piece bishop2 = new Piece(drawablePieces(color, "bishop", style) ,14, style, color,"bishop", position[13] );
+        Piece knight2 = new Piece(drawablePieces(color, "knight", style) ,15, style, color,"knight", position[14] );
+        Piece rook2 = new Piece(drawablePieces(color, "rook", style) ,16, style, color,"rook", position[15] );
 
         pieces.add(pawn1);
         pieces.add(pawn2);
@@ -147,7 +160,7 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     }
 
     /**********************************/
-    public int drawable(String color, String PieceNeme, String style){
+    public int drawablePieces(String color, String PieceNeme, String style){
         String separator = "_";
 
         String nameOfResource = color+separator+PieceNeme+separator+style;
@@ -169,11 +182,10 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     }
 
     /**********************************/
-    public void drawBoard(String style, String color, String board) {
+    public void drawBoard() {
 
-        int idBoard = drawableChessBoard(board);
 
-        Bitmap imagenAndroid = BitmapFactory.decodeResource(getResources(),idBoard);
+        Bitmap imagenAndroid = BitmapFactory.decodeResource(getResources(),boardId_);
         //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
         imagenAndroid = Bitmap.createScaledBitmap( imagenAndroid, Game.width , Game.width , true );
         tempCanvas = new Canvas(imagenAndroid);
@@ -181,8 +193,8 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         for(int i = 0; i<pieces.size(); i++ )
         {
             Bitmap imageBitmap = getBitmapImage(pieces.get(i).getId_());
-            int xPos = /*72+4*166*/ pieces.get(i).getxPosition();
-            int yPos = /*70+2*166*/ pieces.get(i).getyPosition();
+            int xPos =  pieces.get(i).getxPosition();
+            int yPos =  pieces.get(i).getyPosition();
             //Log.d("xPosyPos", String.valueOf(xPos) +" "+ String.valueOf(yPos));
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);  // largeure pas bonne
         }
@@ -262,34 +274,6 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        /*
-        switch (event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                Point touchDown = new Point((int)event.getX(), (int)event.getY());
-                lookForIntersection(touchDown);
-                int x = (int) event.getX();
-                int y = (int) event.getY();
-                Log.d("X, Y", String.valueOf(x) +" "+ String.valueOf(y));
-                positionToSymbol(x,y);
-                break;
-            case MotionEvent.ACTION_UP:
-
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int count = 0;
-                for(Piece piece : activePiece)
-                {
-                    Point curretPoint = new Point((int)event.getX(count), (int)event.getY(count));
-                    movePiece(curretPoint, mActiveDragPoints.get(count), piece);
-                    count++;
-                }
-                break;
-        }
-        chessBoard.invalidate();
-        drawBoard();
-        return true;*/
-
         final int action  = event.getActionMasked();
         final int pointer = event.getActionIndex();
 
@@ -324,7 +308,7 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
                 break;
         }
         chessBoard.invalidate();
-        drawBoard("1", "white", "bw_chess");
+        drawBoard();
         return true;
     }
 
@@ -335,57 +319,50 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         switch (v.getId())
         {
             case R.id.imageView1:
-                chessBoard.setImageResource(R.drawable.red_chess_board);
-                drawBoard("1", "white", "red_chess");
+                changePiecesAndBoard("1", "red_chess");
                 undoColorFilter();
                 redStyle1.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
+
                 v.invalidate();
                 break;
             case R.id.imageView2:
-                chessBoard.setImageResource(R.drawable.red_chess_board);
-                drawBoard("2", "white", "red_chess");
+                changePiecesAndBoard("2", "red_chess");
                 undoColorFilter();
                 redStyle2.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                v.invalidate();
                 break;
             case R.id.imageView3:
-                chessBoard.setImageResource(R.drawable.bw_chess_board);
-                drawBoard("1", "white", "bw_chess");
+                changePiecesAndBoard("1", "bw_chess");
                 undoColorFilter();
                 bwStyle1.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
                 break;
             case R.id.imageView4:
-                chessBoard.setImageResource(R.drawable.bw_chess_board);
-                drawBoard("2", "white", "bw_chess");
+                changePiecesAndBoard("2", "bw_chess");
                 undoColorFilter();
                 bwStyle2.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
                 break;
             case R.id.imageView5:
-               chessBoard.setImageResource(R.drawable.blue_chess_board);
-                drawBoard("1", "white", "blue_chess");
+                changePiecesAndBoard("1", "blue_chess");
                 undoColorFilter();
                 blueStyle1.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
                 break;
             case R.id.imageView6:
-                chessBoard.setImageResource(R.drawable.blue_chess_board);
-                drawBoard("2", "white", "blue_chess");
+                changePiecesAndBoard("2", "blue_chess");
                 undoColorFilter();
                 blueStyle2.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
                 break;
             case R.id.imageView7:
-                chessBoard.setImageResource(R.drawable.wood_chess_board);
-                drawBoard("1", "white", "wood_chess");
+                changePiecesAndBoard("1", "wood_chess");
                 undoColorFilter();
                 woodStyle1.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
                 break;
             case R.id.imageView8:
-                chessBoard.setImageResource(R.drawable.wood_chess_board);
-                drawBoard("2", "white", "wood_chess");
+                changePiecesAndBoard("2", "wood_chess");
                 undoColorFilter();
                 woodStyle2.getDrawable().setColorFilter(0x77000000, PorterDuff.Mode.DARKEN);
                 v.invalidate();
@@ -405,21 +382,21 @@ public class ActivityGame extends AppCompatActivity implements View.OnTouchListe
         woodStyle2.getDrawable().setColorFilter(null);
     }
 
-    public void changePieces(String style){
+    public void changePiecesAndBoard(String piecesStyle, String boardStyle){
 
-        //"wood_chess_"
-        //  "blue_chess"
-        //       "bw_chess"
-        //              "red_chess"
+        int newIdBoard = drawableChessBoard(boardStyle);
+        boardId_ = newIdBoard;
+        chessBoard.setImageResource(boardId_);
 
         for(int i = 0; i<pieces.size(); i++)
         {
-            pieces.get(i).setStyle(style);
-
+            pieces.get(i).setStyle(piecesStyle);
+            int newIdPiece = drawablePieces(pieces.get(i).getColor(), pieces.get(i).getName(), piecesStyle);
+            pieces.get(i).setId_(newIdPiece);
         }
+
+        drawBoard();
     }
-
-
 
 }
 
