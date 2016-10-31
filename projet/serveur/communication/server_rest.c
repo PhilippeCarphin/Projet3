@@ -90,8 +90,10 @@ int REST_handle_request(enum request_type type, const char *data)
  *****************************************************************************/
 int newGame_request(const char *data)
 {
+	/* chessgame_stucorrec */
+	
 	/* read JSON and store into struct game_info */	
-	struct game_info *info = parse_game_info(data);
+	struct game_info *info = parse_game_info(data, chessBoard_getGameInfo());
 	
 	printf("- Player 1: %s\n", info->player_1);
 	printf("- Player 2: %s\n", info->player_2);
@@ -131,6 +133,20 @@ int move_request(const char *data)
 	/* split data into variables */
 	sscanf(data, "POST /move/%d/%[^-]-%s\n", &player, src, dst);
 	
+	/* 
+	UTILISATION
+		struct Reponse resp;
+	   move_piece(player, src, dst, &resp)
+	   
+	IMPLEMENTATION
+	   move_piece(...){
+		   resp->response_code = ...
+		   if( bad stuff )
+			   retur -1;
+		   ...
+		   
+		   return 0;
+	   }
 	/* call something like: struct move_info *move_piece(int player, const char *src, const char *dst); */
 	/* TODO */
 	
