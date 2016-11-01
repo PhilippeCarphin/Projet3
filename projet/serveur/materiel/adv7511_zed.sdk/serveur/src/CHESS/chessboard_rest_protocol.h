@@ -1,8 +1,11 @@
 //ajouter les ifdef indef
 
+#ifndef CHESSBOARD_REST_PROTOCOL_H_
+#define CHESSBOARD_REST_PROTOCOL_H_
+
 #define MAX_STR_LENGTH 1024
 
-enum ChessboardRestStatus {OK = 200, unathorized = 401, gameInProgress = 403, deplacementIllegal = 406, tempsEcoule = 408 };
+enum ChessboardRestStatus {OK = 200, unathorized = 401, gameInProgress = 403, deplacementIllegal = 406, tempsEcoule = 408, NOT_IMPLEMENTED = -1 };
 enum State {NORMAL, CHECKMATE, CHECK, STALEMATE};
 typedef struct GameInfo {
 	char player_1[MAX_STR_LENGTH];
@@ -45,6 +48,6 @@ typedef struct BoardPosition {
 	int move_no;
 	char positions[32][2];	/* 32 pieces, 2 char per position */
 }BoardPosition;
-
+#endif /* CHESSBOARD_REST_PROTOCOL_H_ */
 
 
