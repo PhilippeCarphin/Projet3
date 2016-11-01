@@ -143,8 +143,8 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 	{
 		if (player1Pieces[i].alive == true)
 		{
-			boardPosition->positions[i][0] = player1Pieces[i].x;
-			boardPosition->positions[i][1] = player1Pieces[i].y;			
+			boardPosition->positions[i][0] = player1Pieces[i].x + 'a';
+			boardPosition->positions[i][1] = player1Pieces[i].y + 1;
 		}
 		else
 		{
@@ -156,8 +156,8 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 	{
 		if (player2Pieces[i].alive == true)
 		{
-			boardPosition->positions[i+16][0] = player2Pieces[i].x;
-			boardPosition->positions[i+16][1] = player2Pieces[i].y;			
+			boardPosition->positions[i+16][0] = player2Pieces[i].x + 'a';
+			boardPosition->positions[i+16][1] = player2Pieces[i].y + 1;
 		}
 		else
 		{

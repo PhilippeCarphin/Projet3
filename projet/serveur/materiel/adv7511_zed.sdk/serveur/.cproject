@@ -34,6 +34,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/HTTP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/TCP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/CHESS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/TESTS}&quot;"/>
 								</option>
 								<inputType id="xilinx.gnu.arm.c.compiler.input.1219917776" name="C source files" superClass="xilinx.gnu.arm.c.compiler.input"/>
 							</tool>

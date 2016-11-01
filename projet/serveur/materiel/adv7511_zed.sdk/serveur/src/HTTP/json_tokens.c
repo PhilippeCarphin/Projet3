@@ -1,8 +1,7 @@
+#include "json_tokens.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "jsmn.h"
 
 /******************************************************************************
  * Compares the content of a token with a string

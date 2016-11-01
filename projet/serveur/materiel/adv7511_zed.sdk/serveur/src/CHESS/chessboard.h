@@ -1,8 +1,10 @@
-#include "chessboard_rest_protocol.h"
+
 //ifdef chose
 
 #ifndef CHESSBOARD_H_
 #define CHESSBOARD_H_
+
+#include "chessboard_rest_protocol.h"
 
 enum ChessboardRestStatus new_game(GameInfo *gameInfo);					/* return 200 if ok */
 enum ChessboardRestStatus move_piece(int player, const char *src, const char *dst, MoveInfo* moveInfo);

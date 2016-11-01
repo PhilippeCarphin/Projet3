@@ -1,24 +1,10 @@
-#include <stdio.h>
-#include <string.h>
-
+#include "server_rest.h"
 #include "json_from_struct.h"
 #include "json_to_struct.h"
+#include "macros.h"
 #include "chessboard.h"
 
-enum request_type
-{
-	NEW_GAME,
-	MOVE,
-	PROMOTE,
-	GET_TIME,
-	GET_SUMMARY,
-	GET_BOARD,
-	POST_BOARD,
-	GET_DETAILS,
-	START,
-	END,
-	ERROR
-};
+#include <stdio.h>
 
 int newGame_request(const char *data, char *REST_response);
 int move_request(const char *data, char *REST_response);
@@ -106,19 +92,19 @@ int newGame_request(const char *data, char *REST_response)
 
 	*/
 	
-	printf("- Player 1: %s\n", info.player_1);
-	printf("- Player 2: %s\n", info.player_2);
-	printf("- Round: %s\n", info.round);
-	printf("- Location: %s\n", info.location);
-	printf("- Secret code: %s\n", info.secret_code);
-	printf("- Two tablets: %d\n", info.two_tablet);
-	printf("- En passant: %d\n", info.en_passant);
-	printf("- Timer format:\n");
-	printf("\t- Time: %d\n", info.timer_format.time);
-	printf("\t- Increment: %d\n", info.timer_format.increment);
-	printf("\t- Limit: %d\n", info.timer_format.limit);
-	printf("\t- Overtime: %d\n", info.timer_format.overtime);
-	printf("\t- Overtime increment: %d\n\n", info.timer_format.overtime_increment);
+	PRINT("- Player 1: %s\n", info.player_1);
+	PRINT("- Player 2: %s\n", info.player_2);
+	PRINT("- Round: %s\n", info.round);
+	PRINT("- Location: %s\n", info.location);
+	PRINT("- Secret code: %s\n", info.secret_code);
+	PRINT("- Two tablets: %d\n", info.two_tablet);
+	PRINT("- En passant: %d\n", info.en_passant);
+	PRINT("- Timer format:\n");
+	PRINT("\t- Time: %d\n", info.timer_format.time);
+	PRINT("\t- Increment: %d\n", info.timer_format.increment);
+	PRINT("\t- Limit: %d\n", info.timer_format.limit);
+	PRINT("\t- Overtime: %d\n", info.timer_format.overtime);
+	PRINT("\t- Overtime increment: %d\n\n", info.timer_format.overtime_increment);
 	
 	/* call something like: int new_game(struct game_info *info); */
 	int err = new_game(&info);
@@ -253,7 +239,6 @@ int getSummary_request(char *REST_response)
  *****************************************************************************/
 int getBoard_request(char *REST_response)
 {
-	
 	/* call something like: struct board_position *get_board(); */
 	struct BoardPosition board;
 	int err = get_board(&board);
@@ -299,10 +284,10 @@ int postBoard_request(const char *data, char *REST_response)
 	parse_board_position(data, &board);
 	
 	int i;
-	printf("- Turn: %d\n", board.turn);
-	printf("- Move no: %d\n", board.move_no);
+	xil_printf("- Turn: %d\n", board.turn);
+	xil_printf("- Move no: %d\n", board.move_no);
 	for (i = 0; i < 32; i++)
-		printf("%s\n", board.positions[i]);
+		xil_printf("%s\n", board.positions[i]);
 	
 	/* call something like: int set_board(struct board_position *board); */
 	int err = set_board(&board);

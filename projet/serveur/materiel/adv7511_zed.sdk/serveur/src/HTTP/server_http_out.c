@@ -1,18 +1,12 @@
+#include "server_http_out.h"
+#include "http_codes.h"
+#include "macros.h"
+
 #include <string.h>
 #include <stdio.h>
 
 #define MAX_LENGTH 2048
 #define MSG_LEN 50
-
-/* used in header building */
-const int HTTP_OK = 200;
-const int HTTP_FORBIDDEN = 403;
-const int HTTP_NOT_FOUND = 404;
-const int HTTP_NOT_ACCEPTABLE = 406;
-const int HTTP_REQUEST_TIMEOUT = 408;
-const int HTTP_INTERNAL_SERVER_ERROR = 500;
-const int HTTP_NOT_IMPLEMENTED = 501;
-const int HTTP_VERSION_NOT_SUPPORTED = 505;
 
 const char *build_response(int code, char *content_type, const char *content);
 const char *build_header(int code, char *content_type, int content_length);
@@ -25,7 +19,7 @@ void HTTP_REST_to_HTTP(const char *rest, char* http)
 {
 	strcpy(http, build_response(HTTP_OK, "text/plain", rest));
 	
-	printf("%s\n", http);
+	PRINT("%s\n", http);
 }
 
 /******************************************************************************
@@ -35,7 +29,7 @@ void HTTP_code_to_HTTP(int code, char *http)
 {
 	strcpy(http, build_response(code, "text/plain", ""));
 	
-	printf("%s\n", http);
+	PRINT("%s\n", http);
 }
 
 /******************************************************************************
@@ -76,6 +70,8 @@ void get_http_message(int code, char *msg)
 	
 	if (code == HTTP_OK)
 		m = "200 OK";
+	else if (code == HTTP_BAD_REQUEST)
+		m = "400 Bad Request";
 	else if (code == HTTP_FORBIDDEN)
 		m = "403 Forbidden";
 	else if (code == HTTP_NOT_FOUND)
@@ -89,7 +85,7 @@ void get_http_message(int code, char *msg)
 	else if (code == HTTP_NOT_IMPLEMENTED)
 		m = "501 Not Implemented";
 	else if (code == HTTP_VERSION_NOT_SUPPORTED)
-		m = "505 HTTP Version not supported";
+		m = "505 HTTP Version Not Supported";
 	
 	sprintf(msg,"%s",m);
 }

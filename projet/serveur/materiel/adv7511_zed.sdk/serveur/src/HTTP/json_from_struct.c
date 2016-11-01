@@ -1,7 +1,7 @@
+#include "json_from_struct.h"
 #include <string.h>
 #include <stdio.h>
-
-#include "chessboard_rest_protocol.h"
+#include "macros.h"
 
 /******************************************************************************
  *
@@ -41,7 +41,7 @@ int set_state(enum State state, char *buf)
 /******************************************************************************
  *
  *****************************************************************************/
-int set_pieces(char positions[][2], char pieces[][2][20])
+int set_pieces(char positions[32][2], char pieces[18][50])
 {
 	int i = 0;
 	static const char position_names[][20] = {
@@ -49,26 +49,30 @@ int set_pieces(char positions[][2], char pieces[][2][20])
 		"king2", "queen2", "bishop2A", "bishop2B", "rook2A", "rook2B", "knight2A", "knight2B"
 	};
 
+	/* king1 to knight1B */
 	for (i = 0; i < 8; i++)
 	{
-		sprintf(pieces[i][0], "\"%s\": %c%c", position_names[i], positions[i][0], positions[i][1]);
+		sprintf(pieces[i], "\"%s\": %c%d", position_names[i], positions[i][0], positions[i][1]);
 	}
-	sprintf(pieces[8][0], "\"pawn1\": [ %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c ]",
+	/* pawn1 */
+	sprintf(pieces[8], "\"pawn1\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
 			positions[8][0],  positions[8][1],  positions[9][0],  positions[9][1],
 			positions[10][0], positions[10][1],	positions[11][0], positions[11][1],
 			positions[12][0], positions[12][1],	positions[13][0], positions[13][1],
 			positions[14][0], positions[14][1],	positions[15][0], positions[15][1]
 	);
 
-	for (i = 0; i < 8; i++)
+	/* king2 to knight2B */
+	for (i = 9; i < 17; i++)
 	{
-		sprintf(pieces[i][1], "\"%s\": %c%c", position_names[i+8], positions[i+8][0], positions[i+8][1]);
+		sprintf(pieces[i], "\"%s\": %c%d", position_names[i-1], positions[i+7][0], positions[i+7][1]);
 	}
-	sprintf(pieces[8][1], "\"pawn2\": [ %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c ]",
-			positions[8][0],  positions[8][1],  positions[9][0],  positions[9][1],
-			positions[10][0], positions[10][1],	positions[11][0], positions[11][1],
-			positions[12][0], positions[12][1],	positions[13][0], positions[13][1],
-			positions[14][0], positions[14][1],	positions[15][0], positions[15][1]
+	/* pawn2 */
+	sprintf(pieces[17], "\"pawn2\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
+			positions[24][0], positions[24][1], positions[25][0], positions[25][1],
+			positions[26][0], positions[26][1],	positions[27][0], positions[27][1],
+			positions[28][0], positions[28][1],	positions[29][0], positions[29][1],
+			positions[30][0], positions[30][1],	positions[31][0], positions[31][1]
 	);
 
 	return 0;
@@ -91,7 +95,7 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"pieceEliminated\": %c%c, \"promotion\": %s, \"state\": %s}",
+			"{\"pieceEliminated\": %c%d, \"promotion\": %s, \"state\": %s}",
 			info.piece_eliminated[0], info.piece_eliminated[1], promotion, state);
  }
  
@@ -130,18 +134,18 @@ int move_info_to_json(MoveInfo info, char *json)
  int board_position_to_json(BoardPosition board, char *json)
  {
 	/* fill json string from values in struct */
-	char pieces[8][2][20];	/* does not contain pawns */
+	char pieces[32][50];
 
 	set_pieces(board.positions, pieces);
 
 	return sprintf(json,
 			"{\"turn\": %d, \"move_no\": %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
 			board.turn, board.move_no,
-			pieces[0][0], pieces[1][0], pieces[2][0], pieces[3][0],
-			pieces[4][0], pieces[5][0], pieces[6][0], pieces[7][0],
-			pieces[8][0], pieces[0][1], pieces[1][1], pieces[2][1],
-			pieces[3][1], pieces[4][1], pieces[5][1], pieces[6][1],
-			pieces[7][1], pieces[8][1]
+			pieces[0], pieces[1], pieces[2], pieces[3],
+			pieces[4], pieces[5], pieces[6], pieces[7],
+			pieces[8], pieces[9], pieces[10], pieces[11],
+			pieces[12], pieces[13], pieces[14], pieces[15],
+			pieces[16], pieces[17]
 	);
  }
  

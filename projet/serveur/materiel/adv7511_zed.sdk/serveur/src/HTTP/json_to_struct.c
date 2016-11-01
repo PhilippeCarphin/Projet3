@@ -1,9 +1,5 @@
-#include <string.h>
-#include <stdio.h>
-
-#include "jsmn.h"
+#include "json_to_struct.h"
 #include "json_tokens.h"
-#include  "chessboard_rest_protocol.h"
 
 /******************************************************************************
  * Creates a game_info structure from a JSON formatted string.

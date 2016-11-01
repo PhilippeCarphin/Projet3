@@ -1,15 +1,15 @@
-#include <string.h>
-#include <stdio.h>
-
+#include "server_http_in.h"
 #include "server_rest.h"
 #include "server_http_out.h"
 #include "chessboard_rest_protocol.h"
+#include "http_codes.h"
+#include "macros.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 #define MAX_LENGTH 2048
-
-#define HTTP_ERR_NONE 0
-#define HTTP_ERR_VERSION_NOT_SUPPORTED -1
-#define HTTP_BAD_REQUEST -2
 
 void *get_header(const char *request, char *header);
 int validate_request(const char *header);
@@ -29,7 +29,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 		
 	/* get header */
 	get_header(request, header);	
-	if ((err = validate_request(header)) < 0)
+	if ((err = validate_request(header)) != HTTP_OK)
 	{
 		HTTP_code_to_HTTP(err, HTTP_response);
 		return -1;
@@ -48,7 +48,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 		HTTP_code_to_HTTP(HTTP_BAD_REQUEST, HTTP_response);
 		return -1;
 	}
-	
+
 	/* send request to REST module */
 	char REST_response[1000];
 	if (len > 0) 
@@ -56,8 +56,6 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	else
 		err = REST_handle_request(type, header, REST_response);
 
-
-	// char REST_response[1000];
 	if(err == OK) {
 		HTTP_REST_to_HTTP(REST_response, HTTP_response);
 		return 0;
@@ -100,8 +98,8 @@ int validate_request(const char *header)
 {
 	/* HTTP version must be 1.1 */
 	if (!strstr(header, "HTTP/1.1"))
-		return HTTP_ERR_VERSION_NOT_SUPPORTED;	
-	return HTTP_ERR_NONE;
+		return HTTP_VERSION_NOT_SUPPORTED;
+	return HTTP_OK;
 }
 
 /******************************************************************************
