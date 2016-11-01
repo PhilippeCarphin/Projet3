@@ -1,0 +1,6 @@
+#ifndef SERVER_HTTP_IN_H_
+#define SERVER_HTTP_IN_H_
+
+int HTTP_dispatchRequest(const char *request, char *HTTP_response);
+
+#endif /* SERVER_HTTP_IN_H_ */

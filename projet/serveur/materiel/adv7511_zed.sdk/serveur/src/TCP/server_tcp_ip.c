@@ -6,7 +6,7 @@
  */
 #include "server_tcp_ip.h"
 #include <stdio.h>
-#include "server_http.h"
+#include "server_http_in.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 #include "xil_printf.h"
@@ -21,9 +21,6 @@ struct CallBackArgs
 	const char* response; // pointer to the start of the response
 
 };
-
-
-
 
 /******************************************************************************
  * Function to start the tcp/ip server
@@ -81,7 +78,7 @@ err_t large_file_ack_callback(void *arg, struct tcp_pcb *tpcb, u16_t len)
 	if (callBackInformation->index + callBackInformation->maxPacketLength < callBackInformation->responseLength)
 	{
 		/* try to write the next part of our response */
-		error = tcp_write(tpcb, callBackInformation->response + callBackInformation->index, callBackInformation->maxPacketLength, TCP_WRITE_FLAG_COPY); // frank les a fait
+		error = tcp_write(tpcb, callBackInformation->response + callBackInformation->index, callBackInformation->maxPacketLength, TCP_WRITE_FLAG_COPY);
 		if (error != ERR_OK)
 		{
 			return error;  // if we can't write we will try again the next time this callback is called
@@ -118,19 +115,25 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 	/* indicate that the packet has been received */
 	//tcp_recved(tpcb, p->len);
 	int maxPacketLength = tcp_sndbuf(tpcb);
-	int responseLength = 0;
 	/* decode the expected HTTP request and generate the appropriate response */
-	const char *response = decode_request(p->payload,&responseLength);
+	char HTTP_response[1000];
+	HTTP_dispatchRequest(p->payload, HTTP_response);
+	int len = strlen(HTTP_response);
+
+	// appel de fonction
+	//      http_dispatch_request(p->payload, HTTP_response)
+	// maintenant response contient la reponse
+	// tcp_write( HTTP_response)
 	/* if the response is too large to be sent in one packet, set a callback function to sent the next parts*/
-	if (responseLength > maxPacketLength)
+	if (len > maxPacketLength)
 	{
 
 		/* set the parameters for our callback */
 		args.index = 0;
 		args.maxPacketLength = maxPacketLength;
-		args.response = response;
-		args.responseLength = responseLength;
-		err = tcp_write(tpcb, response + args.index, args.maxPacketLength, TCP_WRITE_FLAG_COPY); // frank les a fait
+		args.response = HTTP_response;
+		args.responseLength = len;
+		err = tcp_write(tpcb, HTTP_response + args.index, args.maxPacketLength, TCP_WRITE_FLAG_COPY);
 		tcp_output(tpcb);
 		/* set our struct as the callback argument */
 		tcp_arg(tpcb,(void*)&args);
@@ -139,7 +142,7 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 	}
 	else
 	{
-		err = tcp_write(tpcb, response, strlen(response), TCP_WRITE_FLAG_COPY); // frank les a fait
+		err = tcp_write(tpcb, HTTP_response, len, TCP_WRITE_FLAG_COPY);
 	}
 
 
