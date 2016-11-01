@@ -28,13 +28,13 @@
 								<option id="xilinx.gnu.compiler.inferred.swplatform.includes.1899905517" name="Software Platform Include Path" superClass="xilinx.gnu.compiler.inferred.swplatform.includes"/>
 								<option id="xilinx.gnu.compiler.inferred.swplatform.flags.719336786" name="Software Platform Inferred Flags" superClass="xilinx.gnu.compiler.inferred.swplatform.flags" value="  " valueType="string"/>
 								<option id="xilinx.gnu.compiler.dircategory.includes.1190519723" name="Include Paths" superClass="xilinx.gnu.compiler.dircategory.includes" valueType="includePath">
-									<listOptionValue builtIn="false" value="../../serveur_bsp/ps7_cortexa9_0/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/HDMI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/HTTP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/TCP}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/CHESS}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/serveur/src/TESTS}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/standalone_bsp_0/ps7_cortexa9_0/include}&quot;"/>
 								</option>
 								<inputType id="xilinx.gnu.arm.c.compiler.input.1219917776" name="C source files" superClass="xilinx.gnu.arm.c.compiler.input"/>
 							</tool>
@@ -62,6 +62,7 @@
 								</option>
 								<option id="xilinx.gnu.c.link.option.paths.1707203188" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/standalone_bsp_0/ps7_cortexa9_0/lib}&quot;"/>
 								</option>
 								<inputType id="xilinx.gnu.linker.input.653968905" superClass="xilinx.gnu.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
