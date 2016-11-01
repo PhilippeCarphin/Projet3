@@ -1,6 +1,8 @@
 #ifndef _BOARD_DISPLAY_H_
 #define _BOARD_DISPLAY_H_
 
+#define PIECE_DATA_SIZE 800000 // 800k
+#define CHARS_DATA_SIZE 200000 // 200k
 /******************************************************************************
  * Stuff for the chessboard coordinates and piece identification
 ******************************************************************************/
@@ -33,6 +35,8 @@ struct PlayerTimes{
 };
 
 int draw_chess_board();
+
+int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_dat);
 int boardDisplay_init();
 
 int set_chess_board_params(int top, int left, int square_size, u32 margin);

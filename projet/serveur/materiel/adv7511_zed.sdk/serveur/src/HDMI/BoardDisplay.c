@@ -6,9 +6,8 @@
 #include "BoardDisplay.h"
 
 
-#define PIECE_DATA_SIZE 8 // 8k
-#define CHARS_DATA_SIZE 2 // 2k
-/******************************************************************************
+
+/*****************************************************************************
  *
 ******************************************************************************/
 struct BoardData{
@@ -30,20 +29,17 @@ enum Colors { 	BACKGROUND = 0x00000000,
  * Stuff pertaining to bitmaps of characters and pieces
 ******************************************************************************/
 static BMP chars;
-static struct RGBA chars_data[CHARS_DATA_SIZE];
+static struct RGBA *chars_data;
 static int char_width; 
 static int line_skip; // line_skip should be more than the height of a letter;
 
 static BMP pieces;
-static struct RGBA pieces_data[PIECE_DATA_SIZE];
+static struct RGBA *pieces_data;
 static int piece_width;
 static int piece_height;
 
 #define v_offset 10;
 #define h_offset 10;
-
-
-
 
 /******************************************************************************
  * Declarations of functions
@@ -63,6 +59,12 @@ int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
 // int update_times(struct Player_times);
 
+int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_dat)
+{
+	chars_data = chars_dat;
+	pieces_data = pieces_dat;
+	return 0;
+}
 
 
 /******************************************************************************
