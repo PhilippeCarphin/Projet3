@@ -7,16 +7,27 @@
 
 #include "TCP/tcp.h"
 #include "HDMI/hdmi.h"
+#include "DrawHDMI.h"
+#include "BoardDisplay.h"
 
-//#include "test_http.h"
+#include "test_http.h"
 
 int main(){
+
+	// Declare huge buffers on the stack
+	u32 screen_buf[1280*1024];
+	struct RGBA chars_data[CHARS_DATA_SIZE];
+	struct RGBA pieces_data[PIECE_DATA_SIZE];
+
+	// give their addresses to the modules that will use them
+	set_screen_buffer(screen_buf);
+	BoardDisplay_set_image_buffers(chars_data, pieces_data);
 
 	init_HDMI();
 	init_TCP();
 
-	//test_new_game();
-	//test_get_board();
+	test_new_game();
+	test_get_board();
 
 	while(1){
 		run_HDMI();

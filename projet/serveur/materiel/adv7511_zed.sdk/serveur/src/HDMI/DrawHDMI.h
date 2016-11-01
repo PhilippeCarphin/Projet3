@@ -13,5 +13,5 @@ int draw_partial_bitmap(u32 screen_top, u32 screen_left,
 		u32 img_top, u32 img_left, u32 img_bottom, u32 img_right,
 		BMP *bmp, struct RGBA *data);
 int draw_full_bitmap(u32 screen_top, u32 screen_left, BMP *bmp, struct RGBA *data);
-
+int set_screen_buffer(u32 *screen_buffer);
 #endif // _DRAW_HDMI_H_
