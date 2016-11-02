@@ -96,9 +96,14 @@ void *get_header(const char *request, char *header)
  *****************************************************************************/
 int validate_request(const char *header)
 {
+	/* Empty header: bad request */
+	if (header[0] == '\0')
+		return HTTP_BAD_REQUEST;
+	
 	/* HTTP version must be 1.1 */
 	if (!strstr(header, "HTTP/1.1"))
 		return HTTP_VERSION_NOT_SUPPORTED;
+	
 	return HTTP_OK;
 }
 

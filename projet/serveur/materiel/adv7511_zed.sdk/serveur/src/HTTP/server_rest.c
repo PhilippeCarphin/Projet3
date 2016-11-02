@@ -18,7 +18,7 @@ int start_request(char *REST_response);
 int end_request(const char *data, char *REST_response);
 
 /******************************************************************************
- * 
+ * Uses a big switch-case block to send data to the right handling function.
  *****************************************************************************/
 int REST_handle_request(enum request_type type, const char *data, char *REST_response)
 {
@@ -73,12 +73,10 @@ int REST_handle_request(enum request_type type, const char *data, char *REST_res
  *****************************************************************************/
 int newGame_request(const char *data, char *REST_response)
 {
-	/* read JSON and store into struct game_info */
+	/* read JSON and store into struct game_info */	
 	struct GameInfo info;
-	// dans chessboard.c:
-	// static struct game_info current_game;
-
 	parse_game_info(data, &info);
+
 	/*
 	new_game(struct game_info *gi)
 	{
@@ -129,20 +127,6 @@ int move_request(const char *data, char *REST_response)
 	/* split data into variables */
 	sscanf(data, "POST /move/%d/%[^-]-%s\n", &player, src, dst);
 	
-	/* 
-	UTILISATION
-		struct Reponse resp;
-	   move_piece(player, src, dst, &resp)
-	   
-	IMPLEMENTATION
-	   move_piece(...){
-		   resp->response_code = ...
-		   if( bad stuff )
-			   retur -1;
-		   ...
-		   
-		   return 0;
-	   }*/
 	/* call something like: struct move_info *move_piece(int player, const char *src, const char *dst); */
 	MoveInfo info;
 	int err = move_piece(player, src, dst, &info);
