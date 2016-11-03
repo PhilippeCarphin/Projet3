@@ -23,52 +23,52 @@ enum request_type get_type(const char *header);
  *****************************************************************************/
 int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 {
-	static char header[MAX_LENGTH];
-	static char body[MAX_LENGTH];
+	static char header[MAX_LENGTH];	/* header part of request */
+	static char body[MAX_LENGTH];	/* body part of request */
 	int len, err;
 		
 	/* get header */
 	get_header(request, header);	
 	if ((err = validate_request(header)) != HTTP_OK)
 	{
-		HTTP_code_to_HTTP(err, HTTP_response);
+		HTTP_build_from_code(err, HTTP_response);	/* Invalid request */
 		return err;
 	}
 	
 	/* get body */
 	if ((len = get_body_length(header)) > 0)
 	{
-		get_body(request, body, len);		
+		get_body(request, body, len);	/* There is a body */
 	}
 	
 	/* get type */
 	enum request_type type = get_type(header);
-	if (type == ERROR)
+	if (type == ERROR)	/* could not identify type */
 	{
-		HTTP_code_to_HTTP(HTTP_BAD_REQUEST, HTTP_response);
+		HTTP_build_from_code(HTTP_BAD_REQUEST, HTTP_response);
 		return HTTP_BAD_REQUEST;
 	}
 
 	/* send request to REST module */
-	char REST_response[1000];
-	if (len > 0) 
+	char REST_response[MAX_LENGTH];
+	if (len > 0) /* request BODY is the important part */
 		err = REST_handle_request(type, body, REST_response);
-	else
+	else		/* request HEADER is the important part */
 		err = REST_handle_request(type, header, REST_response);
 
-	if(err == OK)
+	if(err == OK)	/* REST module responded OK */
 	{
-		HTTP_REST_to_HTTP(REST_response, HTTP_response);
+		HTTP_build_from_REST(REST_response, HTTP_response);
 		return 0;
 	}
-	else if (err < 0)
+	else if (err < 0)	/* REST's response is invalid */
 	{
-		HTTP_code_to_HTTP(HTTP_INTERNAL_SERVER_ERROR, HTTP_response);
+		HTTP_build_from_code(HTTP_INTERNAL_SERVER_ERROR, HTTP_response);
 		return HTTP_INTERNAL_SERVER_ERROR;
 	}
-	else
+	else	/* REST module's response is valid, but not OK */
 	{
-		HTTP_code_to_HTTP(err, HTTP_response);
+		HTTP_build_from_code(err, HTTP_response);
 		return 0;
 	}
 }

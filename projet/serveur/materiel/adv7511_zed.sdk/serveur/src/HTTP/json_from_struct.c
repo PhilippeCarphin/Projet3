@@ -1,10 +1,13 @@
 #include "json_from_struct.h"
-#include <string.h>
-#include <stdio.h>
 #include "macros.h"
 
+#include <string.h>
+#include <stdio.h>
+
+static const int MAX_STR_LEN = 50;
+
 /******************************************************************************
- *
+ * Transforms a C boolean (0 or 1) into its JSON equivalent (yes or no).
  *****************************************************************************/
 int set_yes_no(int boolean, char *buf)
 {
@@ -19,7 +22,7 @@ int set_yes_no(int boolean, char *buf)
 }
 
 /******************************************************************************
- *
+ * Puts the enum State into words, for JSON.
  *****************************************************************************/
 int set_state(enum State state, char *buf)
 {
@@ -39,12 +42,17 @@ int set_state(enum State state, char *buf)
 }
 
 /******************************************************************************
- *
+ * From given positions, creates the individual JSON fields into the pieces array.
+ * JSON fields are of format:
+ * 	"king1": a1
+ * for non-pawn pieces, while pawns are displayed in format:
+ * 	"pawn1": [ b1, b2, b4, b5, c8, d6, e3, f7 ]
  *****************************************************************************/
-int set_pieces(char positions[32][2], char pieces[18][50])
+int set_pieces(char positions[32][2], char fields[18][MAX_STR_LEN])
 {
 	int i = 0;
-	static const char position_names[][20] = {
+	static const char position_names[][20] =
+	{
 		"king1", "queen1", "bishop1A", "bishop1B", "rook1A", "rook1B", "knight1A", "knight1B",
 		"king2", "queen2", "bishop2A", "bishop2B", "rook2A", "rook2B", "knight2A", "knight2B"
 	};
@@ -52,23 +60,22 @@ int set_pieces(char positions[32][2], char pieces[18][50])
 	/* king1 to knight1B */
 	for (i = 0; i < 8; i++)
 	{
-		sprintf(pieces[i], "\"%s\": %c%d", position_names[i], positions[i][0], positions[i][1]);
+		sprintf(fields[i], "\"%s\": %c%d", position_names[i], positions[i][0], positions[i][1]);
 	}
 	/* pawn1 */
-	sprintf(pieces[8], "\"pawn1\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
+	sprintf(fields[8], "\"pawn1\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
 			positions[8][0],  positions[8][1],  positions[9][0],  positions[9][1],
 			positions[10][0], positions[10][1],	positions[11][0], positions[11][1],
 			positions[12][0], positions[12][1],	positions[13][0], positions[13][1],
 			positions[14][0], positions[14][1],	positions[15][0], positions[15][1]
 	);
-
 	/* king2 to knight2B */
 	for (i = 9; i < 17; i++)
 	{
-		sprintf(pieces[i], "\"%s\": %c%d", position_names[i-1], positions[i+7][0], positions[i+7][1]);
+		sprintf(fields[i], "\"%s\": %c%d", position_names[i-1], positions[i+7][0], positions[i+7][1]);
 	}
 	/* pawn2 */
-	sprintf(pieces[17], "\"pawn2\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
+	sprintf(fields[17], "\"pawn2\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
 			positions[24][0], positions[24][1], positions[25][0], positions[25][1],
 			positions[26][0], positions[26][1],	positions[27][0], positions[27][1],
 			positions[28][0], positions[28][1],	positions[29][0], positions[29][1],
@@ -79,19 +86,21 @@ int set_pieces(char positions[32][2], char pieces[18][50])
 }
 
 /******************************************************************************
- * 
+ * Transforms a MoveInfo struct into its JSON equivalent.
  *****************************************************************************/
 int move_info_to_json(MoveInfo info, char *json)
  {
-	char promotion[4];
-	char state[10];
-	int err[2];
+	char promotion[4];	/* [yes|no] */
+	char state[10];		/* [normal|checkmate|check|stalemate] */
+	int err[2];			/* return values of following functions */
 
+	/* change integer and enum values into strings */
 	err[0] = set_yes_no(info.promotion, promotion);
 	err[1] = set_state(info.game_status, state);
-
 	if (err[0] < 0 || err[1] < 0)
+	{
 		return -1;
+	}
 
 	/* fill json string from values in struct */
 	return sprintf(json,
@@ -100,7 +109,7 @@ int move_info_to_json(MoveInfo info, char *json)
  }
  
 /******************************************************************************
- *
+ * Transforms a TimeInfo struct into its JSON equivalent.
  *****************************************************************************/
  int time_info_to_json(TimeInfo info, char *json)
  {
@@ -110,17 +119,19 @@ int move_info_to_json(MoveInfo info, char *json)
  }
  
 /******************************************************************************
- *
+ * Transforms a TurnInfo struct into its JSON equivalent.
  *****************************************************************************/
  int turn_info_to_json(TurnInfo info, char *json)
  {
-	 char state[10];
-	 int err;
+	 char state[10];	/* [normal|checkmate|check|stalemate] */
+	 int err;			/* return value of set_state */
 
+	/* change enum value into string */
 	 err = set_state(info.game_status, state);
-
 	 if (err < 0)
+	 {
 		 return -1;
+	 }
 
 	/* fill json string from values in struct */
 	return sprintf(json,
@@ -129,37 +140,46 @@ int move_info_to_json(MoveInfo info, char *json)
  }
  
 /******************************************************************************
- *
+ * Transforms a BoardPosition struct into its JSON equivalent.
  *****************************************************************************/
  int board_position_to_json(BoardPosition board, char *json)
  {
+	 /*
+	  * All pieces but pawns, for both players:
+	  * 	16 pieces, requiring 16 fields.
+	  * Remaining pawns are split into 2 groups (player 1 & 2):
+	  * 	8 pieces per group, 2 groups, requiring 2 fields.
+	  */
+	char fields[18][MAX_STR_LEN];
+
+	/* format individual pieces into JSON, so its less of a huge one-liner */
+	set_pieces(board.positions, fields);
+
 	/* fill json string from values in struct */
-	char pieces[32][50];
-
-	set_pieces(board.positions, pieces);
-
 	return sprintf(json,
 			"{\"turn\": %d, \"move_no\": %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
 			board.turn, board.move_no,
-			pieces[0], pieces[1], pieces[2], pieces[3],
-			pieces[4], pieces[5], pieces[6], pieces[7],
-			pieces[8], pieces[9], pieces[10], pieces[11],
-			pieces[12], pieces[13], pieces[14], pieces[15],
-			pieces[16], pieces[17]
+			fields[0], fields[1], fields[2], fields[3],
+			fields[4], fields[5], fields[6], fields[7],
+			fields[8], fields[9], fields[10], fields[11],
+			fields[12], fields[13], fields[14], fields[15],
+			fields[16], fields[17]
 	);
  }
  
 /******************************************************************************
- *
+ * Transforms a GameInfo struct into its JSON equivalent.
  *****************************************************************************/
  int game_info_to_json(GameInfo info, char *json)
  {
-	char en_passant[4];
+	char en_passant[4];	/* [yes|no] */
 
+	/* change int value into string */
 	int err = set_yes_no(info.en_passant, en_passant);
-
 	if (err < 0)
+	{
 		return -1;
+	}
 
 	/* fill json string from values in struct */
 	return sprintf(json,

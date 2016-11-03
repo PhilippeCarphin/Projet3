@@ -15,7 +15,7 @@ void get_http_message(int code, char *msg);
 /******************************************************************************
  * Put an HTTP header onto input and send it to TCP module.
  *****************************************************************************/
-void HTTP_REST_to_HTTP(const char *rest, char* http)
+void HTTP_build_from_REST(const char *rest, char* http)
 {
 	strcpy(http, build_response(HTTP_OK, "text/plain", rest));
 	
@@ -25,7 +25,7 @@ void HTTP_REST_to_HTTP(const char *rest, char* http)
 /******************************************************************************
  * Creates an HTTP error response from error code and send it to TCP module.
  *****************************************************************************/
-void HTTP_code_to_HTTP(int code, char *http)
+void HTTP_build_from_code(int code, char *http)
 {
 	strcpy(http, build_response(code, "text/plain", ""));
 	

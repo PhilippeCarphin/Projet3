@@ -1,3 +1,10 @@
+/*
+ * json_tokens.h
+ *
+ * Common functions used by json_to_struct.h to compare data and
+ * transform tokens into useful types (string, bool, int).
+ */
+
 #ifndef JSON_TOKENS_H_
 #define JSON_TOKENS_H_
 

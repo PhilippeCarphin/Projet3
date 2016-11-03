@@ -1,5 +1,9 @@
 /*
  * json_from_struct.h
+ *
+ * Create transfer-ready JSON string from the Chessboard module's internal
+ * structures. Does not use any external library, as the operations are
+ * straightforward (extensive use of sprintf).
  */
 
 #ifndef JSON_FROM_STRUCT_H_

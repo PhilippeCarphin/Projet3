@@ -1,10 +1,12 @@
 #include "json_tokens.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 /******************************************************************************
- * Compares the content of a token with a string
+ * Compares the content of a token with a string. Returns 0 if found.
+ * Implementation is taken from one of jsmn library's examples.
  *****************************************************************************/
 int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
 	if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&

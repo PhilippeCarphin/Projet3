@@ -1,3 +1,10 @@
+/*
+ * server_rest.h
+ *
+ * Called from HTTP module, uses JSON to format requests and
+ * send them to Chessboard module.
+ */
+
 #ifndef SERVER_REST_H_
 #define SERVER_REST_H_
 

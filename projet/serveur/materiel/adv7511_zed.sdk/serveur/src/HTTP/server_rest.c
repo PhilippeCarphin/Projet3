@@ -105,12 +105,12 @@ int newGame_request(const char *data, char *REST_response)
 	PRINT("\t- Overtime increment: %d\n\n", info.timer_format.overtime_increment);
 	
 	/* call something like: int new_game(struct game_info *info); */
-	int err = new_game(&info);
+	int status = new_game(&info);
 	
 	REST_response[0] = '\0';
 
 	/* send answer to client via HTTP */
-	return err;
+	return status;
 }
 
 /******************************************************************************
@@ -129,19 +129,16 @@ int move_request(const char *data, char *REST_response)
 	
 	/* call something like: struct move_info *move_piece(int player, const char *src, const char *dst); */
 	MoveInfo info;
-	int err = move_piece(player, src, dst, &info);
+	int status = move_piece(player, src, dst, &info);
 	
-	if ( err == OK )
+	if ( status == OK )
 	{
 		/* convert to JSON and send to client */
 		move_info_to_json(info, REST_response);
-		return err;
 	}
-	else
-	{
-		/* send error code to client via HTTP */
-		return err;
-	}
+
+	/* send status code to client */
+	return status;
 }
 
 /******************************************************************************
@@ -159,11 +156,11 @@ int promote_request(const char *data, char *REST_response)
 	sscanf(data, "POST /promote/%d/%s\n", &player, new_type);
 	
 	/* call something like: int promote_piece(int player, const char *new_type); */
-	int err = promote_piece(player, new_type);
+	int status = promote_piece(player, new_type);
 	
 	/* send code to client via HTTP (200, 401 or 408) */
 	REST_response[0] = '\0';
-	return err;
+	return status;
 }
 
 /******************************************************************************
@@ -181,19 +178,15 @@ int getTime_request(const char *data, char *REST_response)
 	
 	/* call something like: struct time_info *get_time(int player); */
 	struct TimeInfo info;
-	int err = get_time(player, &info);
+	int status = get_time(player, &info);
 	
-	if (err == OK)
+	if (status == OK)
 	{	
 		/* convert to JSON and send to client */
 		time_info_to_json(info, REST_response);
-		return err;
 	}
-	else
-	{
-		/* send error code to client via HTTP */
-		return err;
-	}
+	/* send status code to client */
+	return status;
 }
 
 /******************************************************************************
@@ -203,19 +196,15 @@ int getSummary_request(char *REST_response)
 {
 	/* call something like: struct turn_info *get_summary(); */
 	struct TurnInfo info;
-	int err = get_summary(&info);
+	int status = get_summary(&info);
 	
-	if (err == OK)
+	if (status == OK)
 	{
 		/* convert to JSON and send to client */
 		turn_info_to_json(info, REST_response);
-		return err;
 	}
-	else
-	{
-		/* send error code to client via HTTP */
-		return err;
-	}
+	/* send status code to client */
+	return status;
 }
 
 /******************************************************************************
@@ -225,19 +214,15 @@ int getBoard_request(char *REST_response)
 {
 	/* call something like: struct board_position *get_board(); */
 	struct BoardPosition board;
-	int err = get_board(&board);
+	int status = get_board(&board);
 	
-	if (err == OK)
+	if (status == OK)
 	{
 		/* convert to JSON and send to client */
 		board_position_to_json(board, REST_response);
-		return err;
 	}
-	else
-	{
-		/* send error code to client via HTTP */
-		return err;
-	}
+	/* send status code to client */
+	return status;
 }
 
 /******************************************************************************
@@ -274,11 +259,11 @@ int postBoard_request(const char *data, char *REST_response)
 		PRINT("%c%c\n", board.positions[i][0], board.positions[i][1]);
 	
 	/* call something like: int set_board(struct board_position *board); */
-	int err = set_board(&board);
+	int status = set_board(&board);
 	
 	/* send code to client via HTTP (200 or 401) */
 	REST_response[0] = '\0';
-	return err;
+	return status;
 }
 
 /******************************************************************************
@@ -288,19 +273,15 @@ int getDetails_request(char *REST_response)
 {
 	/* call something like: struct game_info *get_game_info(); */
 	struct GameInfo info;
-	int err = get_game_info(&info);
+	int status = get_game_info(&info);
 	
-	if (err == OK)
+	if (status == OK)
 	{
 		/* convert to JSON and send to client */
 		game_info_to_json(info, REST_response);
-		return err;
 	}
-	else
-	{
-		/* send error code to client via HTTP */
-		return err;
-	}
+	/* send status code to client */
+	return status;
 }
 
 /******************************************************************************
@@ -309,11 +290,11 @@ int getDetails_request(char *REST_response)
 int start_request(char *REST_response)
 {
 	/* call something like: int start_game(); */
-	int err = start_game();
+	int status = start_game();
 	
 	/* send code to client via HTTP (200 or 401) */
 	REST_response[0] = '\0';
-	return err;
+	return status;
 }
 
 /******************************************************************************
@@ -322,9 +303,9 @@ int start_request(char *REST_response)
 int end_request(const char *data, char *REST_response)
 {
 	/* call something like: int end_game(); */
-	int err = end_game();
+	int status = end_game();
 	
 	/* send code to client via HTTP (200 or 401) */
 	REST_response[0] = '\0';
-	return err;
+	return status;
 }
