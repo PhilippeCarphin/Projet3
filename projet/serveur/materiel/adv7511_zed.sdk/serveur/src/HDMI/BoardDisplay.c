@@ -4,6 +4,7 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
+#include "debug.h"
 
 
 
@@ -30,24 +31,23 @@ enum Colors { 	BACKGROUND = 0x00000000,
 ******************************************************************************/
 static BMP chars;
 static struct RGBA *chars_data;
-static int char_width; 
-static int line_skip; // line_skip should be more than the height of a letter;
+static int char_width = 15;
+static int line_skip = 28; // line_skip should be more than the height of a letter;
 
 static BMP pieces;
 static struct RGBA *pieces_data;
-static int piece_width;
-static int piece_height;
+static int piece_width = 102;
+static int piece_height = 202;
 
 #define v_offset 10;
 #define h_offset 10;
-
 /******************************************************************************
  * Declarations of functions
 ******************************************************************************/
 int draw_piece(PieceType type, PieceColor color, int file, int rank);
 int color_square(int file, int rank, int color);
 int clear_square(int file, int rank);
-int boardDisplay_init();
+int BoardDisplay_init();
 int set_chess_board_params(int top, int left, int square_size, u32 margin);
 int draw_chess_board();
 int move_piece(struct Move *move);
@@ -63,6 +63,20 @@ int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_d
 {
 	chars_data = chars_dat;
 	pieces_data = pieces_dat;
+	return 0;
+}
+
+int BoardDisplay_init()
+{
+	int err;
+	if( (err = read_bitmap_file("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
+		return err;
+	}
+	if( (err = read_bitmap_file("Letters.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
+		return err;
+	}
 	return 0;
 }
 
@@ -96,6 +110,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 {
 	u32 cursor_top = screen_top;
 	u32 cursor_left = screen_left;
+	int err;
 	char c;
 	while( (c = *str++) != 0)
 	{
@@ -110,7 +125,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		}
 		else if ( 32 < c && c <= '~' )
 		{
-			draw_char(cursor_top, cursor_left, c);
+			if( (err =draw_char(cursor_top, cursor_left, c)) != 0) return err;
 			cursor_left += char_width;
 		}
 		else
@@ -260,14 +275,15 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	int rank = R1;
 	int err;
 
+	draw_string(100,100,"HELLO");
+
 	draw_square(bd.top - bd.margin,bd.left - bd.margin,
 			8*bd.square_size + 2*bd.margin, 8*bd.square_size + 2*bd.margin,
 			MARGIN_COLOR);
 	for( file = A; file <= H; file++)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
-#warning "TODO Please add the pieces and read the bitmap files"
-#if 0
+
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
@@ -292,7 +308,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(BLACK, BISHOP, F, R8)) != 0) return err;
 	if((err = draw_piece(BLACK, KING,   E, R8)) != 0) return err;
 	if((err = draw_piece(BLACK, QUEEN,  D, R8)) != 0) return err;
-#endif
+
 	
 	return 0;
 

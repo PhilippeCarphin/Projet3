@@ -5,6 +5,7 @@
 
 #include "xil_io.h"
 #include "DrawHDMI.h"
+#include "debug.h"
 
 #define MIN(x, y)	(x < y ? x : y)
 #define MAX(x, y) 	(x > y ? x : y)
@@ -13,15 +14,8 @@
 #define MAX_W 1300
 #define MAX_H 1300
 
-#define WHERE xil_printf("%s():",__FUNCTION__);
-#define WHEREL xil_printf("%s() (%s,%d)",__FUNCTION__,__FILE__,__LINE__);
 
-#define FBEGIN xil_printf("%s(): Begin\n",__FUNCTION__);
-#define FEND xil_printf("%s(): End\n",__FUNCTION__);
 
-#define FONT_BMP_SIZE 300*10000
-
-u32 screenBuf[1280*1024];
 /******************************************************************************
 * Buffer for the screen.  A long buffer that will be treated as a 2D matrix
 * with dimensions w for width and h for height.
@@ -206,16 +200,4 @@ int draw_partial_bitmap(u32 screen_top, u32 screen_left,
 int draw_full_bitmap(u32 screen_top, u32 screen_left, BMP *bmp, struct RGBA *data)
 {
 	return draw_partial_bitmap(screen_top, screen_left, 0,0,bmp->Height, bmp->Width,bmp, data);
-}
-
-// SHOOTER ÇA DANS BOARD_DISPLAY
-static BMP letters;
-static struct RGBA letters_data[FONT_BMP_SIZE];
-static u32 letter_width = 10;
-
-int draw_letter(u32 screen_top, u32 screen_left, char c)
-{
-	return draw_partial_bitmap(screen_top, screen_left,
-										0,           letter_width*(c-32),
-										letters.Height, letter_width*(c-32+1), &letters, letters_data);
 }

@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "xil_io.h"
+#include "debug.h"
 
 const int BMP_HEADER_SIZE = 54;
 
@@ -248,21 +249,29 @@ int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax)
 {
 	//ouvrir fichier
 	FIL fil;       /* File object */
-
-	/* Register work area to the default drive */
-	f_mount(&FatFs, "", 0);
-
+	FRESULT fr;
+	WHERE xil_printf("Path to open = %s\n", path);
+    f_mount(&FatFs, "0:/", 1);
 	/* Open file */
-	if (f_open(&fil, path, FA_READ))
+	fr = f_open(&fil, path, FA_READ);
+
+	if(fr){
+		WHERE xil_printf("Unable to open file %s for reading\n", path);
 		return -1;
+	}
 
 	/* Put info in supplied header struct and read data into dataBucket */
-	if(ReadBitmapHeader(bmp,&fil))
+	if(ReadBitmapHeader(bmp,&fil)){
+		WHERE xil_printf("Unable to read header for %s\n", path);
 		return -1;
+	}
+
+	WHERE xil_printf("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
 
 	/* Process data from dataBucket into destination RGBA array */
 	if(bitmap_data_to_RGBA_array(bmp, imgData, imgDataMax))
 		return -1;
+
 
 	return 0;
 }
