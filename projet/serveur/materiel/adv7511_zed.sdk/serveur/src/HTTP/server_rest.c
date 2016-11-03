@@ -268,10 +268,10 @@ int postBoard_request(const char *data, char *REST_response)
 	parse_board_position(data, &board);
 	
 	int i;
-	xil_printf("- Turn: %d\n", board.turn);
-	xil_printf("- Move no: %d\n", board.move_no);
+	PRINT("- Turn: %d\n", board.turn);
+	PRINT("- Move no: %d\n", board.move_no);
 	for (i = 0; i < 32; i++)
-		xil_printf("%s\n", board.positions[i]);
+		PRINT("%c%c\n", board.positions[i][0], board.positions[i][1]);
 	
 	/* call something like: int set_board(struct board_position *board); */
 	int err = set_board(&board);

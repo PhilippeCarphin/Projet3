@@ -1,5 +1,6 @@
 #include "json_to_struct.h"
 #include "json_tokens.h"
+#include "xil_io.h"
 
 /******************************************************************************
  * Creates a game_info structure from a JSON formatted string.
@@ -148,13 +149,16 @@ int parse_game_info(const char *data, GameInfo *gameinfo)
 	
 	jsmn_init(&parser);
 	number_of_tokens = jsmn_parse(&parser, data, strlen(data), tokens, sizeof(tokens)/sizeof(tokens[0]));
-		
+
 	/* Assume the top-level element is an object */
 	if (number_of_tokens < 0)
+	{
 		return -1;
+	}
 	if (number_of_tokens < 1 || tokens[0].type != JSMN_OBJECT)
+	{
 		return -1;
-	
+	}
 	/* Loop over all keys of the root object */
 	for (i = 1, number_of_pieces = 0; i < number_of_tokens; i+=2)
 	{

@@ -6,9 +6,30 @@
  */
 
 #include "server_http_in.h"
-#include "xil_printf.h"
+#include "test_http.h"
+#include "xil_io.h"
 
 /* Note: the Host field need not be accurate for tests to succeed */
+
+/******************************************************************************
+ * Runs all HTTP test in this file, one after the other.
+ *****************************************************************************/
+void test_http_all()
+{
+	test_empty();
+	test_invalid_version();
+	test_bad_request();
+	test_new_game();
+	test_get_board();
+	test_start();
+	test_move();
+	test_promote();
+	test_get_time();
+	test_get_summary();
+	test_post_board();
+	test_get_details();
+	test_end();
+}
 
 /******************************************************************************
  * Request: [EMPTY REQUEST]
@@ -69,7 +90,8 @@ void test_invalid_version()
 void test_bad_request()
 {
 	int result;
-	char request[] = "SALUT /board\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+	//char request[] = "SALUT /board\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+	char request[] = "GET /fdsddsa";
 	char response[2048];
 
 	xil_printf("\n******************* TEST BAD REQUEST *******************\n");
@@ -312,6 +334,7 @@ void test_get_details()
 /******************************************************************************
  * Request: POST /status/board
  *			HTTP/1.1
+ *			Content-Length: 334
  *
  *			{
  *				"turn": 1,
@@ -343,7 +366,7 @@ void test_get_details()
 void test_post_board()
 {
 	int result;
-	char request[] = "{\"turn\": 1,\"move_no\": 2,\"king1\": a1,\"queen1\": a2,\"bishop1A\": a3,\"bishop1B\": a4,\"rook1A\": a5,\"rook1B\": a6,\"knight1A\": a7,\"knight1B\": a8,\"pawn1\": [ b1, b2, b3, b4, b5, b6, b7, b8 ],\"king2\": c1,\"queen2\": c2,\"bishop2A\": c3,\"bishop2B\": c4,\"rook2A\": c5,\"rook2B\": c6,\"knight2A\": c7,\"knight2B\": c8,\"pawn2\": [ d1, d2, d3, d4, d5, d6, d7, d8 ]}";
+	char request[] = "POST /status/board\r\nHTTP/1.1\r\nContent-Length: 334\r\n\r\n{\"turn\": 1,\"move_no\": 2,\"king1\": a1,\"queen1\": a2,\"bishop1A\": a3,\"bishop1B\": a4,\"rook1A\": a5,\"rook1B\": a6,\"knight1A\": a7,\"knight1B\": a8,\"pawn1\": [ b1, b2, b3, b4, b5, b6, b7, b8 ],\"king2\": c1,\"queen2\": c2,\"bishop2A\": c3,\"bishop2B\": c4,\"rook2A\": c5,\"rook2B\": c6,\"knight2A\": c7,\"knight2B\": c8,\"pawn2\": [ d1, d2, d3, d4, d5, d6, d7, d8 ]}";
 	char response[2048];
 
 	xil_printf("\n******************* TEST POST BOARD *****************\n");

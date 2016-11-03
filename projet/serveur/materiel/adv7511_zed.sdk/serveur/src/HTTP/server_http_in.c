@@ -32,7 +32,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	if ((err = validate_request(header)) != HTTP_OK)
 	{
 		HTTP_code_to_HTTP(err, HTTP_response);
-		return -1;
+		return err;
 	}
 	
 	/* get body */
@@ -46,7 +46,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	if (type == ERROR)
 	{
 		HTTP_code_to_HTTP(HTTP_BAD_REQUEST, HTTP_response);
-		return -1;
+		return HTTP_BAD_REQUEST;
 	}
 
 	/* send request to REST module */
@@ -56,9 +56,15 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	else
 		err = REST_handle_request(type, header, REST_response);
 
-	if(err == OK) {
+	if(err == OK)
+	{
 		HTTP_REST_to_HTTP(REST_response, HTTP_response);
 		return 0;
+	}
+	else if (err < 0)
+	{
+		HTTP_code_to_HTTP(HTTP_INTERNAL_SERVER_ERROR, HTTP_response);
+		return HTTP_INTERNAL_SERVER_ERROR;
 	}
 	else
 	{

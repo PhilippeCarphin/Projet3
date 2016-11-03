@@ -8,6 +8,9 @@
 #ifndef TEST_HTTP_H_
 #define TEST_HTTP_H_
 
+/* One function to run them all */
+void test_http_all();
+
 /* Invalid requests */
 void test_empty();
 void test_invalid_version();
