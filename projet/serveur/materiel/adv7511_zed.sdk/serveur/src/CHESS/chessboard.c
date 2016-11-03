@@ -10,7 +10,7 @@ typedef struct Piece
 	int x;
 	int y;
 	int rock;
-	int enPassant;
+	int enPassant; // TODO: could become a bool. Should be set after the permitted jump and unset the turn after.
 	bool player1;
 }Piece;
 
@@ -43,6 +43,17 @@ static TurnInfo currentTurnInfo;
 
 static void ChessGameInitialisation()
 {
+	// clean the board
+	int i, j;
+	for (i = 0; i < 8; i++)
+	{
+		for (j = 0; j < 8; j++)
+		{
+			boardGame[i][j] = 0;
+		}
+	}
+
+
 	// we initialize the pieces of the first players
 	player1Pieces[0] = PieceInitialisation(3,0,king,true);
 	player1Pieces[1] = PieceInitialisation(4,0,queen,true);
@@ -61,6 +72,12 @@ static void ChessGameInitialisation()
 	player1Pieces[14] = PieceInitialisation(6,1,pawn,true);
 	player1Pieces[15] = PieceInitialisation(7,1,pawn,true);
 	
+	// place P1 pieces on the board
+	for (i = 0; i < 16; i++)
+	{
+		boardGame[player1Pieces[i].x][player1Pieces[i].y] = &player1Pieces[i];
+	}
+
 	// we initialize the pieces for the second player
 	player2Pieces[0] = PieceInitialisation(3,7,king,false);
 	player2Pieces[1] = PieceInitialisation(4,7,queen,false);
@@ -78,14 +95,8 @@ static void ChessGameInitialisation()
 	player2Pieces[13] = PieceInitialisation(5,6,pawn,false);
 	player2Pieces[14] = PieceInitialisation(6,6,pawn,false);
 	player2Pieces[15] = PieceInitialisation(7,6,pawn,false);
-
 	
-	int i =0;
-	for (i = 0; i < 16; i++)
-	{
-		boardGame[player1Pieces[i].x][player1Pieces[i].y] = &player1Pieces[i];
-	}
-	
+	// place P2 pieces on the board
 	for (i = 0; i < 16; i++)
 	{
 		boardGame[player2Pieces[i].x][player2Pieces[i].y] = &player2Pieces[i];
@@ -113,7 +124,189 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 
 enum ChessboardRestStatus move_piece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
-	return NOT_IMPLEMENTED;
+	// extract positions and pieces
+	int xs = src[0]-'a'; // x of source position
+	int ys = src[1]-'1'; // y of source position
+	int xd = dst[0]-'a'; // x of destination
+	int yd = dst[1]-'1'; // y of destination
+	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
+		return NOT_IMPLEMENTED; // out of the board
+
+	if (boardGame[xs][ys] == 0)
+		return deplacementIllegal; // no piece here
+
+	if (xs == xd && ys == yd)
+		return deplacementIllegal; // not moving
+
+	Piece *piece = boardGame[xs][ys];
+
+	if (piece->player1 == true ? player != 1 : player != 2)
+		return deplacementIllegal; // opponent piece
+
+	switch (piece->pieceType)
+	{
+	case king:
+		// TODO: check for Castle/Roque/special move
+		if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
+			return deplacementIllegal; //moving too far
+		// TODO: check for dangerous position
+		break;
+
+	case rook:
+		if (xs != xd)
+		{
+			if(ys!=yd)
+				return deplacementIllegal; // moving in both directions
+			else
+			{ // moving on the x
+				int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
+				for (; i < (xs > xd ? xs : xd); ++i) // i < max
+					if(boardGame[i][ys] != 0)
+						return deplacementIllegal; // passing over a piece
+			}
+		}
+		else
+		{ // moving on the y
+			int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
+			for (; i < (ys > yd ? ys : yd); ++i) // i < max
+				if(boardGame[xs][i] != 0)
+					return deplacementIllegal; // passing over a piece
+		}
+		break;
+
+	case bishop:
+		//if ( (xs > xd ? xs - xd : xd - xs) != (ys > yd ? ys - yd : yd - ys) ) // abs(diff X) != abs(diff Y)
+		if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
+			return deplacementIllegal; // not moving equally in both directions
+
+		if ((xs < xd && ys < yd))
+		{ // meme signe
+			int i = (xs < xd ? xs : xd); // min X
+			int j = (ys < yd ? ys : yd); // min Y
+			int dist = (xs > xd ? xs - xd : xd - xs);
+			int k = 1;
+			for (; k < dist; ++k )
+				if(boardGame[i+k][j+k] != 0)
+					return deplacementIllegal; // passing over a piece
+		}
+		else
+		{ // signe different
+			int i = (xs < xd ? xs : xd); // min X
+			int j = (ys > yd ? ys : yd); // max Y
+			int dist = (xs > xd ? xs - xd : xd - xs);
+			int k = 1;
+			for (; k < dist; ++k )
+				if(boardGame[i+k][j-k] != 0)
+					return deplacementIllegal; // passing over a piece
+		}
+		break;
+
+	case knight:
+		{
+			int x = (xs > xd ? xs - xd : xd - xs); // abs(diff X)
+			int y = (ys > yd ? ys - yd : yd - ys); // abs(diff Y)
+
+			if (x + y != 3 || x == 3 || y == 3)// should move 3 squares but not all in the same direction
+				return deplacementIllegal;
+		}
+		break;
+
+	case queen:
+		if (xs != xd || ys != yd) // not moving like a Rook
+		{
+			if (xs - xd  != ys - yd && xs - xd  != yd - ys) // not moving like a Bishop
+				return deplacementIllegal; // not moving equally in both directions
+			 // moving like a Bishop
+			if ((xs < xd && ys < yd))
+			{ // meme signe
+				int i = (xs < xd ? xs : xd); // min X
+				int j = (ys < yd ? ys : yd); // min Y
+				int dist = (xs > xd ? xs - xd : xd - xs);
+				int k = 1;
+				for (; k < dist; ++k )
+					if(boardGame[i+k][j+k] != 0)
+						return deplacementIllegal; // passing over a piece
+			}
+			else
+			{ // signe different
+				int i = (xs < xd ? xs : xd); // min X
+				int j = (ys > yd ? ys : yd); // max Y
+				int dist = (xs > xd ? xs - xd : xd - xs);
+				int k = 1;
+				for (; k < dist; ++k )
+					if(boardGame[i+k][j-k] != 0)
+						return deplacementIllegal; // passing over a piece
+			}
+
+		}
+		else
+		{
+			// moving like a Rook
+			if (xs != xd)
+			{ // moving on the x
+				int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
+				for (; i < (xs > xd ? xs : xd); ++i) // i < max
+					if(boardGame[i][ys] != 0)
+						return deplacementIllegal; // passing over a piece
+
+			}
+			else
+			{ // moving on the y
+				int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
+				for (; i < (ys > yd ? ys : yd); ++i) // i < max
+					if(boardGame[xs][i] != 0)
+						return deplacementIllegal; // passing over a piece
+			}
+
+		}
+		break;
+	case pawn:
+		if(	piece->player1 == true ?
+			xs == 1 && xd == 3 && ys == yd && boardGame[2][ys] == 0 :
+			xs == 6 && xd == 4 && ys == yd && boardGame[5][ys] == 0
+			) // if first time jump
+			piece->enPassant = true; // TODO: clean this flag on the next turn
+		else if(xs - xd != (piece->player1 == true ? 1 : -1 )) // does not advance exactly 1 square
+		{
+			return deplacementIllegal;
+		}
+		else
+		{
+			if ((ys > yd ? ys - yd : yd - ys) > 1) // abs(diff Y) > 1
+				return deplacementIllegal; // moving too much in Y
+			if (ys == yd && boardGame[xd][yd] != 0)
+				return deplacementIllegal; // capturing in front
+
+			if((ys > yd ? ys - yd : yd - ys) == 1) // moving diagonnally / capturing
+			{
+				Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
+				if (enPassant != 0 && // capturing En Passant
+					enPassant->enPassant == 1 && // can be captured En Passant
+					enPassant->player1 == true ? yd ==  5: yd == 2) // is not your own piece
+				{
+					enPassant->alive = false; // special capture
+					boardGame[xd][ys] = 0; // special cleaning
+				}
+				else if (boardGame[xd][yd] == 0) // not capturing on arrival
+					return deplacementIllegal; // not capturing
+			}
+		}
+
+	default:
+		return NOT_IMPLEMENTED; // unidentified piece type
+	}
+
+
+	if (boardGame[xd][yd] != 0)
+	{
+		if ((boardGame[xd][yd]->player1 == true && player == 1) || (boardGame[xd][yd]->player1 == false && player == 2))
+			return deplacementIllegal; // capturing allied piece
+		boardGame[xd][yd]->alive = false; // capture enemy piece
+	}
+	boardGame[xd][yd] = piece; // move the piece
+	boardGame[xs][ys] = 0; // clear the source space
+
+	return OK;
 }
 
 enum ChessboardRestStatus promote_piece(int player, const char *new_type)
