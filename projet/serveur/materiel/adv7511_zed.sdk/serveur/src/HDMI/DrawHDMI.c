@@ -192,8 +192,10 @@ int draw_partial_bitmap(u32 screen_top, u32 screen_left,
 		for(s_j = screen_left, b_j = img_top; s_j < screen.w  && b_j < img_right ; ++s_j, ++b_j)
 		{
 			/* Image pixel (b_i,b_j) ---> screen pixel (s_i,s_j)*/
-			if(set_pixel_RGBA(s_i,s_j,data[b_i*bmp->Width + b_j])) return -1;
+			if(set_pixel_RGBA(s_i,s_j,data[(bmp->Height-b_i)*bmp->Width + (bmp->Width - b_j)])) return -1;
 		}
+
+	WHERE xil_printf("Drew something in the screen\n");
 	return 0;
 }
 

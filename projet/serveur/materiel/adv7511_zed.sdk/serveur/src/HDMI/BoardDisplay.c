@@ -36,8 +36,8 @@ static int line_skip = 28; // line_skip should be more than the height of a lett
 
 static BMP pieces;
 static struct RGBA *pieces_data;
-static int piece_width = 102;
-static int piece_height = 202;
+static int piece_width = 133;
+static int piece_height = 102;
 
 #define v_offset 10;
 #define h_offset 10;
@@ -69,12 +69,13 @@ int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_d
 int BoardDisplay_init()
 {
 	int err;
-	if( (err = read_bitmap_file("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
-		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
-		return err;
-	}
+
 	if( (err = read_bitmap_file("Letters.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
+		return err;
+	}
+	if( (err = read_bitmap_file("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
 	return 0;
@@ -125,7 +126,10 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		}
 		else if ( 32 < c && c <= '~' )
 		{
-			if( (err =draw_char(cursor_top, cursor_left, c)) != 0) return err;
+			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
+				WHERE xil_printf("Could not draw char %c\n");
+				return err;
+			}
 			cursor_left += char_width;
 		}
 		else
@@ -275,8 +279,6 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	int rank = R1;
 	int err;
 
-	draw_string(100,100,"HELLO");
-
 	draw_square(bd.top - bd.margin,bd.left - bd.margin,
 			8*bd.square_size + 2*bd.margin, 8*bd.square_size + 2*bd.margin,
 			MARGIN_COLOR);
@@ -284,6 +286,11 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
+	draw_partial_bitmap(500,200,
+						0,0,
+						102,133,
+						&pieces,pieces_data);
+#if 0
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
@@ -309,7 +316,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(BLACK, KING,   E, R8)) != 0) return err;
 	if((err = draw_piece(BLACK, QUEEN,  D, R8)) != 0) return err;
 
-	
+#endif
 	return 0;
 
 }

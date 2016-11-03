@@ -185,11 +185,10 @@ int process_32bit_pixels(BMP *bmp, struct RGBA *dst, int dstMax)
 	struct RGBA rgba;
 	while ( i < bmp->ImageDataSize)
 	{
-		rgba.A = dataBucket[i++];
 		rgba.B = dataBucket[i++];
 		rgba.G = dataBucket[i++];
 		rgba.R = dataBucket[i++];
-
+		rgba.A = dataBucket[i++];
 		dst[j++] = rgba;
 	}
 	return 0;
@@ -267,7 +266,7 @@ int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax)
 	}
 
 	WHERE xil_printf("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
-
+	ReadBitMap(bmp,&fil);
 	/* Process data from dataBucket into destination RGBA array */
 	if(bitmap_data_to_RGBA_array(bmp, imgData, imgDataMax))
 		return -1;
