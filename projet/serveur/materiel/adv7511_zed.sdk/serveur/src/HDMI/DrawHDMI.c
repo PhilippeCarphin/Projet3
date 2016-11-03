@@ -188,12 +188,15 @@ int draw_partial_bitmap(u32 screen_top, u32 screen_left,
 
 	int s_i,s_j; // coordinates in the screen
 	int b_i, b_j; // coordinates in the bitmap
+
 	for( s_i = screen_top    , b_i = img_top; s_i < screen.h  && b_i < img_bottom; ++s_i, ++b_i)
-		for(s_j = screen_left, b_j = img_top; s_j < screen.w  && b_j < img_right ; ++s_j, ++b_j)
+	{
+		for(s_j = screen_left, b_j = img_left; s_j < screen.w  && b_j < img_right ; ++s_j, ++b_j)
 		{
 			/* Image pixel (b_i,b_j) ---> screen pixel (s_i,s_j)*/
-			if(set_pixel_RGBA(s_i,s_j,data[(bmp->Height-b_i)*bmp->Width + (bmp->Width - b_j)])) return -1;
+			if(set_pixel_RGBA(s_i,s_j,data[(bmp->Height - b_i - 1) * bmp->Width +(b_j)])) return -1;
 		}
+	}
 
 	WHERE xil_printf("Drew something in the screen\n");
 	return 0;

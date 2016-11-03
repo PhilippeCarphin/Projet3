@@ -271,7 +271,7 @@ int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax)
 	if(bitmap_data_to_RGBA_array(bmp, imgData, imgDataMax))
 		return -1;
 
-
+	// f_close
 	return 0;
 }
 

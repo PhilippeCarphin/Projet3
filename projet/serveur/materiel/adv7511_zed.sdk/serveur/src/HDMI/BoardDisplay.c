@@ -6,7 +6,8 @@
 #include "BoardDisplay.h"
 #include "debug.h"
 
-
+#define MIN(x, y)	(x < y ? x : y)
+#define MAX(x, y) 	(x > y ? x : y)
 
 /*****************************************************************************
  *
@@ -37,7 +38,7 @@ static int line_skip = 28; // line_skip should be more than the height of a lett
 static BMP pieces;
 static struct RGBA *pieces_data;
 static int piece_width = 133;
-static int piece_height = 102;
+static int piece_height = 204 - WHITE;
 
 #define v_offset 10;
 #define h_offset 10;
@@ -183,24 +184,24 @@ int draw_piece(PieceType type, PieceColor color, int file, int rank)
 	 * where the white pieces are in one row at the top and the black pieces
 	 * are in the same order at the bottom.
 	 */
-	u32 bmp_top = color * piece_height;
-	u32 bmp_left = type * piece_width;
+	u32 bmp_top = color;
+	u32 bmp_left = type;
 
 	u32 bmp_bottom = bmp_top + piece_height;
-	u32 bmp_right = bmp_left + piece_width;
+	u32 bmp_right = MIN(bmp_left + piece_width,800);
 
 	/*
 	 * Assuming ranks are numbered from 1 to eight with the eighth rank
 	 * at the top of the board on the screen.
 	 */
-	u32 screen_top = rank_to_pixel(rank) + v_offset;
-	u32 screen_left = file_to_pixel(file) + h_offset;
+	u32 screen_top = bd.top + rank_to_pixel(rank) + v_offset;
+	u32 screen_left = bd.left + file_to_pixel(file) + h_offset;
 
 	/* 
 	 * v_offset and h_offset to make the pieces centered inside their squares
 	 */
-	screen_top += v_offset;
-	screen_left += h_offset;
+	//screen_top += v_offset;
+	//screen_left += h_offset;
 
 
 	return draw_partial_bitmap( screen_top , screen_left,
@@ -278,7 +279,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	int file = A;
 	int rank = R1;
 	int err;
-
+	set_background_color(0x00666666);
 	draw_square(bd.top - bd.margin,bd.left - bd.margin,
 			8*bd.square_size + 2*bd.margin, 8*bd.square_size + 2*bd.margin,
 			MARGIN_COLOR);
@@ -286,20 +287,31 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
-	draw_partial_bitmap(500,200,
+	// Dessiner un carré de largeur 140 et de hauteur 204
+	draw_square(500,900,140,204,YELLOW);
+
+	// Dessiner la portion du bitmap de i = 0, j = 0 à i = 204, j = 140
+	draw_partial_bitmap(500,900,
 						0,0,
-						102,133,
+						204,140,
 						&pieces,pieces_data);
-#if 0
+
+	// Dessiner le bitmap au complet
+	draw_full_bitmap(bd.top + 3*bd.square_size,bd.left, &pieces, pieces_data);
+
+	// Dessiner le bitmap au complet
+	draw_full_bitmap(100, 30, &chars, chars_data);
+
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
 		if((err = draw_piece(PAWN, BLACK, file, R7)) != 0) return err;
 	}
-
+#if 0
 
 	if((err = draw_piece(WHITE, ROOK,   A, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, ROOK,   H, R1)) != 0) return err;
+
 	if((err = draw_piece(WHITE, KNIGHT, B, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, KNIGHT, G, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, BISHOP, C, R1)) != 0) return err;
