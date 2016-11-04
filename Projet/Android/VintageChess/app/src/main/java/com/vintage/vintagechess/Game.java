@@ -4,18 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.provider.ContactsContract;
 import android.util.Log;
-import android.util.Pair;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import java.util.LinkedList;
@@ -24,20 +16,35 @@ import java.util.LinkedList;
  * Created by User on 2016-10-18.
  */
 
-public class Game extends AppCompatActivity{
+public class Game {
 
 
-    public static ImageView chessBoard;
-    public static int width, height;
+    public static ImageView board;
+    public static ImageView motionlessPieces;
+    public static ImageView movingPiece;
+    public static Context activityGame;
+    public static String board_style;
+    public static String style;
+    public static double offset = 0.05133;
+    private static Point downPos;
+    private static Point lastPos;
+    private static Piece currentPiece;
+    private static Bitmap boardImg;
+    public static int leftSpace;
 
-    LinkedList<Piece> pieces;
+    private static LinkedList<Piece> pieces = new LinkedList<Piece>();
 
 
-    public void handleMove(int posX1, int posY1, int posX2, int posY2) {
+    public static void initializeGame() {
 
+        board_style = "red";
+        style = "1";
+        initializePieces();
+        setBoardImg();
     }
 
-    private void initializePieces() {
+    private static void initializePieces() {
+        pieces = new LinkedList<Piece>();
         int [] verticals = {0, 1, 6, 7};
         for  (int x = 0 ; x < 8 ; x++) {
             for (int y : verticals) {
@@ -57,43 +64,152 @@ public class Game extends AppCompatActivity{
                     name = "bishop";
                 }
                 else if (x == 4) {
-                    name = "queen";
-                }
-                else {
                     name = "king";
                 }
-                //Piece newPiece = new Piece(name, x, y, isWhite);
+                else {
+                    name = "queen";
+                }
+                Piece newPiece = new Piece(name, x, y, isWhite);
+                pieces.add(newPiece);
             }
         }
     }
 
+    public static void drawFullBoard() {
+        drawBoard();
+        drawMotionlessPieces();
+    }
 
     public static void drawBoard() {
 
+        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas tempCanvas = new Canvas(imageAndroid);
+        tempCanvas.drawBitmap(boardImg,0,0,null);
 
-        //Utilities.messageBox(Integer.valueOf(Integer.valueOf(width).toString(), "", activityGame);
-
-        Bitmap tempBitmap = Bitmap.createBitmap(width, width, Bitmap.Config.RGB_565);//chessboard.getWidth(), chessboard.getHeight(), Bitmap.Config.RGB_565);
-        Canvas tempCanvas = new Canvas(tempBitmap);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.BLUE);
-        tempCanvas.drawRect(0, 0, 40, 40, paint);
-        chessBoard.setImageDrawable(new BitmapDrawable(chessBoard.getResources(), tempBitmap));
+        board.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
 
     }
 
-    private class Piece {
-
-        int x_, y_;
-        String resource_;
-        public Piece(String type, int x, int y, boolean isWhite) {
-            x_ = x;
-            y_ = y;
-            resource_ = "drawable/pieces/" + (isWhite ? "White" : "Black") + type +"1";  // where myresource (without the extension) is the file
-
+    public static void drawMotionlessPieces() {
+        //int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
+        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+        //boardImg.copy(boardImg.getConfig(), true);
+        Canvas tempCanvas = new Canvas(imageAndroid);
+        for(Piece p : pieces) {
+            Bitmap imageBitmap = p.getBitmap();
+            Point position = p.p_;
+            int xPos =  getPosition(position.x);
+            int yPos =  getPosition(position.y);
+            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
         }
 
-
+        motionlessPieces.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
+        //board.setOnTouchListener(activityGame);
     }
 
+    public static void drawMovingPiece() {
+        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+
+        if (currentPiece != null) {
+            Canvas tempCanvas = new Canvas(imageAndroid);
+            Bitmap imageBitmap = currentPiece.getBitmap();
+            Point position = currentPiece.p_;
+            int xPos =  getPosition(position.x);
+            int yPos =  getPosition(position.y);
+            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
+            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
+        }
+
+        movingPiece.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
+    }
+
+    public static int getSquareWidth() {
+        return (int)((1-2*offset)*board.getHeight()/8.0);
+    }
+
+    public static int getBoardOffset() {
+        return (int)(board.getHeight() * offset);
+    }
+
+    public static int getPosition(int d) {
+        return getBoardOffset() + d*getSquareWidth();
+    }
+
+    private static Piece getPieceOnCell(Point po) {
+        for (Piece p : pieces) {
+            if (p.p_.equals(po)) return p;
+        }
+        return null;
+    }
+
+    public static void handleFingerDown(int xPix, int yPix) {
+        downPos = getboardCoordinates(xPix, yPix);
+        if (downPos != null) {
+            currentPiece = getPieceOnCell(downPos);
+        }
+        if (currentPiece != null) {
+            pieces.remove(currentPiece);
+            drawMotionlessPieces();
+        }
+    }
+
+    private static Point getboardCoordinates(int xPix, int yPix) {
+        int x, y, xView, yView;
+        int min, max;
+
+        xView = xPix - (board.getWidth()-board.getHeight())/2;
+        yView = yPix;
+        min = getBoardOffset();
+        max = board.getHeight() - getBoardOffset();
+        if (xView < min || xView > max || yView < min || yView > max) {
+            Log.d("", "out of bounds");
+            return null;
+        }
+        float insideWidth = board.getHeight()-getBoardOffset()*2;
+        x = (int)(8*(((float)(xView - getBoardOffset()))/insideWidth));
+        y = (int)(8*(((float)(yView - getBoardOffset()))/insideWidth));
+        return new Point(x, y);
+    }
+
+    public static void handleFingerUp() {
+        if (currentPiece != null) {
+            pieces.add(currentPiece);
+        }
+        downPos = null;
+        lastPos = null;
+        currentPiece = null;
+        drawMotionlessPieces();
+        drawMovingPiece();
+    }
+
+    public static void handleMove(int xPix, int yPix) {
+        if (downPos == null || currentPiece == null ) {
+            handleFingerUp();
+            return;
+        }
+        Point p = getboardCoordinates(xPix, yPix);
+        if (lastPos == null) {
+            lastPos = p;
+            currentPiece.p_.set(lastPos.x, lastPos.y);
+            drawMovingPiece();
+        }
+        else if (!p.equals(lastPos.x, lastPos.y)) {
+            //Log.d("changed position", "");
+            currentPiece.p_.set(p.x, p.y);
+            drawMovingPiece();
+        }
+        //drawBoard();
+    }
+
+    public static void setBoardImg() {
+        int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
+        boardImg = BitmapFactory.decodeResource(activityGame.getResources(), id);
+        //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
+        boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
+    }
+
+
+
 }
+
+

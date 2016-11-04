@@ -1,121 +1,41 @@
 package com.vintage.vintagechess;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.util.Pair;
-
-import java.util.Map;
+import android.graphics.Point;
 
 /**
- * Created by Sabrina on 2016-10-25.
+ * Created by User on 2016-11-01.
  */
 
-public class Piece extends AppCompatActivity {
-
-    public int xPosition_; // creer une map prochainement
-    public int yPosition_;
-    public String symboleXY_;
-    public String style_;
-    public String color_;
-    public int id_;
-    public int identifier_;
-    public String name_;
-    public String player_;
-
-
-    public Piece(int id, int identifier, String style, String color, String name, String position ){
-        id_ = id ;
-        style_ = style;
-        color_ = color;
-        symboleXY_ = position;
-        identifier_ = identifier;
-        name_ = name;
+public class Piece {
+    public Point p_;
+    public boolean isWhite_;
+    public String type_;
+    public Piece(String type, int x, int y, boolean isWhite) {
+        p_ = new Point(x,y);
+        isWhite_ = isWhite;
+        type_ = type;
     }
 
-    public void setPlayer(String player)
-    {
-        player_ = player;
+    public int getResourceID() {
+        String resourceName = (isWhite_ ? "white" : "black") + "_"+ type_ + "_" +Game.style;  // where myresource (without the extension) is the file
+        Context context = Game.activityGame;
+        return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
     }
 
-    public String getPlayer()
-    {
-        return player_ ;
+
+
+    public Bitmap getBitmap() {
+        Bitmap bmp = BitmapFactory.decodeResource( Game.activityGame.getResources(), getResourceID() );
+        int w = (int)(Game.board.getHeight() - Game.board.getHeight()*Game.offset*2)/8;
+        Bitmap img = Bitmap.createScaledBitmap( bmp, w, w, true );
+        bmp.recycle();
+
+        //Log.d("Id", String.valueOf(id));
+        return img;
     }
 
-    public void setSymbole(String symboleXY)
-    {
-        symboleXY_ = symboleXY;
-    }
-
-    public String getSymbole()
-    {
-        return symboleXY_ ;
-    }
-
-    public String getName()
-    {
-        return name_ ;
-    }
-
-    public String getColor()
-    {
-        return color_ ;
-    }
-
-    public String getStyle()
-    {
-        return style_ ;
-    }
-
-    public void setStyle(String style)
-    {
-        style_ = style;
-    }
-
-    public void setPosition(int x, int y)
-    {
-        xPosition_ = x;
-        yPosition_ = y;
-    }
-
-    public int getxPosition()
-    {
-
-        xPosition_ = SymboleToXY(symboleXY_).first;
-
-        return xPosition_ ;
-    }
-
-    public int getyPosition()
-    {
-        yPosition_ = SymboleToXY(symboleXY_).second;
-        return yPosition_ ;
-    }
-
-    public int getId_()
-    {
-        return id_;
-    }
-
-    void setId_(int id)
-    {
-        id_=id;
-    }
-
-    public Pair<Integer,Integer> SymboleToXY(String position)
-    {
-        int i =  Integer.valueOf(position.charAt(0)) - 97;
-        //int x = 131 + (i*largeur + midLargeur);
-        int x = 72 + (i*166);
-        int j = 8 - Integer.valueOf(position.charAt(1))+48; // 48 cest le 1 en ascii
-        //int y = (j*largeur + midLargeur) + 67;
-        int y = 70 + (j*166);
-        Pair<Integer,Integer> xy = new Pair<>(x,y);
-
-       // Log.d("symbole _ X_Y", position +" "+String.valueOf(x) + " " + String.valueOf(y));
-        return xy;
-    }
 
 }
