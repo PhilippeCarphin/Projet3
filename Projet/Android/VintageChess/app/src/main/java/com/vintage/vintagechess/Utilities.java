@@ -2,6 +2,8 @@ package com.vintage.vintagechess;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TimePicker;
 
@@ -24,7 +26,8 @@ public class Utilities {
         dlgAlert.create().show();
     }
 
-    /*public static String getTimePickerString(TimePicker tP) {
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public static String getTimePickerString(TimePicker tP) {
         return Integer.valueOf(tP.getHour()).toString() + ":" + Integer.valueOf(tP.getMinute()).toString()+ ":00";
-    }*/
+    }
 }

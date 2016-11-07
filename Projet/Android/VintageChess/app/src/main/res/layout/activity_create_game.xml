@@ -18,7 +18,6 @@
         android:layout_height="fill_parent"
         android:layout_weight="1"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
         <!-- SETTING THE GAME LOCATION -->
@@ -105,6 +104,32 @@
             </RadioGroup>
         </LinearLayout>
 
+    <!-- PICKING THE NAME OF THE PALYER-->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="11">
+
+        <TextView
+            android:text="Name player1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/textNamePlayer1"
+            android:layout_gravity="center|left"
+            android:gravity="center|left"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:ems="5"
+            android:id="@+id/editTextNamePlayer1"
+            android:layout_gravity="center|left"
+            android:layout_weight="1" />
+        </LinearLayout>
+
         <!-- PICKING THE GAME PASSWORD -->
         <LinearLayout
             android:orientation="horizontal"
@@ -133,6 +158,24 @@
 
         </LinearLayout>
 
+        <!-- EN_PASSANT OPTION -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:weightSum="1">
+
+            <Switch
+                android:text="EnPassant option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:id="@+id/switchEnPassant"
+                android:layout_weight="0.91" />
+
+        </LinearLayout>
+
         <!-- PICKING EACH PLAYER'S TIME -->
         <LinearLayout
             android:orientation="horizontal"
@@ -141,7 +184,7 @@
             android:layout_weight="11">
 
             <TextView
-                android:text="Normal Time"
+                android:text="Game Time "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textTimePerPlayer"
@@ -149,7 +192,7 @@
                 android:layout_gravity="center|left"
                 android:gravity="center|left" />
 
-            <!--<TimePicker
+            <TimePicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/timePickerTimePerPlayer"
@@ -157,7 +200,33 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_alignParentRight="true"
-                android:theme="@android:style/Theme.Holo.Light" />-->
+                android:theme="@android:style/Theme.Holo.Light" />
+        </LinearLayout>
+
+        <!-- PICKING EACH PLAYER'S INCREMENT TIME -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="11">
+
+            <TextView
+                android:text="Time per play (s)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textIncementTime"
+                android:layout_weight="2"
+                android:layout_gravity="center|left"
+                android:gravity="center|left" />
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numberPickerTimePerPlay"
+                android:layout_weight="1"
+                android:layout_gravity="center|left"
+                android:gravity="center|left" />
+
         </LinearLayout>
 
         <!-- PICKING THE OVER TIME -->
@@ -175,7 +244,7 @@
                 android:layout_gravity="center|left"
                 android:gravity="center|left" />
 
-            <!--<TimePicker
+            <TimePicker
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/timePickerOverTime"
@@ -183,8 +252,33 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_alignParentRight="true"
-                android:theme="@android:style/Theme.Holo.Light" />-->
+                android:theme="@android:style/Theme.Holo.Light" />
                 />
+        </LinearLayout>
+
+        <!-- PICKING THE OVER TIME INCREMENT-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="11">
+            <TextView
+                android:text="Over Time per play (s)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textOverTimeIncrement"
+                android:layout_weight="1"
+                android:layout_gravity="center|left"
+                android:gravity="center|left" />
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/numberPickerOverTimePerPlay"
+                android:layout_weight="0.67"
+                android:layout_gravity="center|left"
+                android:gravity="center|left" />
+
         </LinearLayout>
 
         <!-- LAYOUT TO PICK NUMBER OF TURNS BEFORE DRAW -->
@@ -207,7 +301,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/numberPicker"
-                android:layout_weight="1"
+                android:layout_weight="1.02"
                 android:layout_gravity="center|left"
                 android:gravity="center|left" />
 

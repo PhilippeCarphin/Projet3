@@ -21,11 +21,7 @@ class GetRequestTask extends AsyncTask<String, String, String> {
         protected String doInBackground(String... args) {
 
             // params comes from the execute() call: params[0] is the url.
-            try {
-                return runRequest(args[0]);
-            } catch (IOException e) {
-                return "Unable to retrieve web page. URL may be invalid.";
-            }
+            return runRequest(args[0]);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override
@@ -42,7 +38,7 @@ class GetRequestTask extends AsyncTask<String, String, String> {
         return new String(buffer);
     }
 
-        private void runRequest(String s) {
+        private String runRequest(String s) {
             //textView.setText(result);
             InputStream is = null;
             // Only display the first 500 characters of the retrieved
@@ -73,5 +69,6 @@ class GetRequestTask extends AsyncTask<String, String, String> {
             catch (Exception ex){
 
             }
+            return s;
         }
 }

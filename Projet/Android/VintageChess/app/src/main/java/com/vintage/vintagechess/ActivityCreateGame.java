@@ -5,27 +5,43 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TimePicker;
+
+import org.json.JSONException;
 
 public class ActivityCreateGame extends AppCompatActivity {
 
     private RadioGroup radioSelect;
     private RadioButton radioButton1, radioButton2;
 
-    private EditText editTextLocation, editTextPassword;
+    private EditText editTextLocation, editTextPassword, editTextPlayerName;
 
-    private TimePicker timePickerMain, timePickerOverTime;
+    private TimePicker timePickerMain,timePickerOverTime;
+    private Switch enPassant;
 
-    private NumberPicker numberPickerTurnsBeforedraw;
+    private NumberPicker numberPickerTurnsBeforedraw, numberPickerOverTimePerPlay, numberPickerTimePerPlay;
 
     private Button buttonCreateGame;
+    public static String location;
+    public static boolean oneTablet;
+    public static String password;
+    public static String playerName1;
+    public static String normalTime;
+    public static String overTime;
+    public static String allowedTurns;
+    public static String timePerPlay;
+    public static String overTimeIncr;
+    public static boolean enPassantOption;
 
+    static REST rest;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -43,26 +59,32 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
-
-
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextPassword.setEnabled(false);
+        editTextPlayerName = (EditText) findViewById(R.id.editTextNamePlayer1);
 
-        /*timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
+        timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
         timePickerOverTime = (TimePicker) findViewById(R.id.timePickerOverTime);
+
         timePickerMain.setIs24HourView(true);
         timePickerOverTime.setIs24HourView(true);
         timePickerMain.setHour(1);
         timePickerMain.setMinute(0);
         timePickerOverTime.setHour(0);
-        timePickerOverTime.setMinute(15);*/
+        timePickerOverTime.setMinute(15);
 
+
+        numberPickerOverTimePerPlay = (NumberPicker) findViewById(R.id.numberPickerOverTimePerPlay);
+        setNumbrePicker(numberPickerOverTimePerPlay, 1, 200, 30);
+
+        numberPickerTimePerPlay = (NumberPicker) findViewById(R.id.numberPickerTimePerPlay);
+        setNumbrePicker(numberPickerTimePerPlay, 1, 200, 30);
 
         numberPickerTurnsBeforedraw = (NumberPicker) findViewById(R.id.numberPicker);
-        numberPickerTurnsBeforedraw.setMinValue(1);
-        numberPickerTurnsBeforedraw.setMaxValue(200);
-        numberPickerTurnsBeforedraw.setValue(51);
+        setNumbrePicker(numberPickerTurnsBeforedraw, 1, 200, 40);
+
+        enPassant = (Switch) findViewById(R.id.switchEnPassant);
 
         buttonCreateGame = (Button) findViewById(R.id.buttonCreateGame);
         buttonCreateGame.setOnClickListener(new View.OnClickListener() {
@@ -71,27 +93,42 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
+    }
 
-
+    private void setNumbrePicker(NumberPicker numbrePicker, int minValue, int maxValue, int currentValue)
+    {
+        numbrePicker.setMinValue(minValue);
+        numbrePicker.setMaxValue(maxValue);
+        numbrePicker.setValue(currentValue);
     }
 
     private void handleRadioChange() {
             editTextPassword.setEnabled(radioButton2.isChecked());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */
     private void handleClick(View v) {
         try {
-            boolean oneTablet = radioButton2.isChecked();
-            String location = editTextLocation.getText().toString();
-            String password = editTextPassword.getText().toString();
-            //String normalTime = Utilities.getTimePickerString(timePickerMain);
-            //String overTime = Utilities.getTimePickerString(timePickerOverTime);
-            String allowedTurns = Integer.valueOf(numberPickerTurnsBeforedraw.getValue()).toString();
+            oneTablet = radioButton2.isChecked();
+            enPassantOption = enPassant.isChecked();
+            location = editTextLocation.getText().toString();
+            playerName1 = editTextPlayerName.getText().toString();
+            password = editTextPassword.getText().toString();
+            normalTime = Utilities.getTimePickerString(timePickerMain);
+            timePerPlay = Integer.valueOf(numberPickerTimePerPlay.getValue()).toString();
+            overTime = Utilities.getTimePickerString(timePickerOverTime);
+            overTimeIncr = Integer.valueOf(numberPickerTimePerPlay.getValue()).toString();
+            allowedTurns = Integer.valueOf(numberPickerTurnsBeforedraw.getValue()).toString();
 
             //handle errors in entries
             if (radioButton2.isChecked()) {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
+
+            /*****REST TEST*****/
+            String newGame = rest.postNewGame();
+            rest.getGameDetails(newGame);
+
 
 
             Intent intent = new Intent(v.getContext(), ActivityGame.class);

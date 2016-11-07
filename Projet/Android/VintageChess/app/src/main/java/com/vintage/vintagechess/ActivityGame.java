@@ -16,11 +16,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Space;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
-//
-//inspiré de http://stackoverflow.com/questions/20881790/how-to-move-multiple-bitmaps-in-single-canvas-android
-//
 public class ActivityGame extends AppCompatActivity {
 
     private final int INVALID_INDEX = -1;
@@ -40,6 +39,7 @@ public class ActivityGame extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
