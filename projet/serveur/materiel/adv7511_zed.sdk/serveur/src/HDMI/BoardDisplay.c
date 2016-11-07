@@ -31,12 +31,12 @@ enum Colors { 	BACKGROUND = 0x00000000,
  * Stuff pertaining to bitmaps of characters and pieces
 ******************************************************************************/
 static BMP chars;
-static struct RGBA *chars_data;
+static u8 *chars_data;
 static int char_width = 15;
 static int line_skip = 28; // line_skip should be more than the height of a letter;
 
 static BMP pieces;
-static struct RGBA *pieces_data;
+static u8 *pieces_data;
 static int piece_width = 133;
 static int piece_height = 204 - WHITE;
 
@@ -60,7 +60,7 @@ int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
 // int update_times(struct Player_times);
 
-int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_dat)
+int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat)
 {
 	chars_data = chars_dat;
 	pieces_data = pieces_dat;
@@ -71,11 +71,11 @@ int BoardDisplay_init()
 {
 	int err;
 
-	if( (err = read_bitmap_file("Letters.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file_2("Letters.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
-	if( (err = read_bitmap_file("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file_2("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
@@ -98,7 +98,7 @@ int draw_char(u32 screen_top, u32 screen_left, char c)
 	u32 bmp_bottom = chars.Height;
 	u32 bmp_right = bmp_left + char_width;
 
-	return draw_partial_bitmap( screen_top, screen_left, 
+	return draw_partial_bitmap_2( screen_top, screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&pieces, pieces_data);
@@ -188,7 +188,7 @@ int draw_piece(PieceType type, PieceColor color, int file, int rank)
 	u32 bmp_left = type;
 
 	u32 bmp_bottom = bmp_top + piece_height;
-	u32 bmp_right = MIN(bmp_left + piece_width,800);
+	u32 bmp_right = MIN(bmp_left + 60,800);
 
 	/*
 	 * Assuming ranks are numbered from 1 to eight with the eighth rank
@@ -204,7 +204,7 @@ int draw_piece(PieceType type, PieceColor color, int file, int rank)
 	//screen_left += h_offset;
 
 
-	return draw_partial_bitmap( screen_top , screen_left,
+	return draw_partial_bitmap_2( screen_top , screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&pieces, pieces_data);
@@ -244,12 +244,12 @@ int clear_square(int file, int rank)
 ******************************************************************************/
 int boardDisplay_loadImages()
 {
-	if(read_bitmap_file("pieces_filename", &pieces, pieces_data, PIECE_DATA_SIZE))
+	if(read_bitmap_file_2("pieces_filename", &pieces, pieces_data, PIECE_DATA_SIZE))
 	{
 		xil_printf("%s(): Unable to read pieces bitmap",__FUNCTION__);
 		return -1;
 	}
-	if(read_bitmap_file("characters_filename", &chars, chars_data, CHARS_DATA_SIZE))
+	if(read_bitmap_file_2("characters_filename", &chars, chars_data, CHARS_DATA_SIZE))
 	{
 		xil_printf("%s(): Unable to read chars bitmap",__FUNCTION__);
 		return -1;
@@ -291,27 +291,28 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	draw_square(500,900,140,204,YELLOW);
 
 	// Dessiner la portion du bitmap de i = 0, j = 0 à i = 204, j = 140
-	draw_partial_bitmap(500,900,
+	draw_partial_bitmap_2(500,900,
 						0,0,
 						204,140,
 						&pieces,pieces_data);
 
 	// Dessiner le bitmap au complet
-	draw_full_bitmap(bd.top + 3*bd.square_size,bd.left, &pieces, pieces_data);
+	draw_full_bitmap_2(bd.top + 3*bd.square_size,bd.left, &pieces, pieces_data);
 
 	// Dessiner le bitmap au complet
-	draw_full_bitmap(100, 30, &chars, chars_data);
+	draw_full_bitmap_2(100, 30, &chars, chars_data);
+	draw_string(150,30, "!\"\nPHIL");
 
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
 		if((err = draw_piece(PAWN, BLACK, file, R7)) != 0) return err;
 	}
-#if 0
+
 
 	if((err = draw_piece(WHITE, ROOK,   A, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, ROOK,   H, R1)) != 0) return err;
-
+#if 0
 	if((err = draw_piece(WHITE, KNIGHT, B, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, KNIGHT, G, R1)) != 0) return err;
 	if((err = draw_piece(WHITE, BISHOP, C, R1)) != 0) return err;

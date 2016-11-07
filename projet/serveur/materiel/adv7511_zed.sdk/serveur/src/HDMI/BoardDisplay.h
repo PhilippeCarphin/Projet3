@@ -36,7 +36,7 @@ struct PlayerTimes{
 
 int draw_chess_board();
 
-int BoardDisplay_set_image_buffers(struct RGBA *chars_dat, struct RGBA *pieces_dat);
+int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat);
 int BoardDisplay_init();
 
 int set_chess_board_params(int top, int left, int square_size, u32 margin);
