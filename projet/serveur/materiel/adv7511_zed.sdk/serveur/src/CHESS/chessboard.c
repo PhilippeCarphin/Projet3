@@ -11,14 +11,14 @@ typedef struct Piece
 	int y;
 	int rock;
 	int enPassant; // TODO: could become a bool. Should be set after the permitted jump and unset the turn after.
-	bool player1;
+	PlayerID playerID;
 }Piece;
 
 static Piece* boardGame[8][8];
 static Piece player1Pieces[16];
 static Piece player2Pieces[16];
 
-static Piece PieceInitialisation(int x, int y,PieceType type, bool isPlayer1)
+static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 {
 	Piece piece;
 	piece.pieceType = type;
@@ -27,7 +27,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, bool isPlayer1)
 	piece.y = y;
 	piece.enPassant = 0;
 	piece.rock = 0;
-	piece.player1 = isPlayer1;
+	piece.playerID = playerID;
 	return piece;
 }
 
@@ -40,69 +40,75 @@ static bool player1Turn = true;
 static GameInfo currentGameInfo;
 static TurnInfo currentTurnInfo;
 
-
-static void ChessGameInitialisation()
+void setBoard(Piece* playerPieces)
 {
-	// clean the board
-	int i, j;
-	for (i = 0; i < 8; i++)
-	{
-		for (j = 0; j < 8; j++)
-		{
-			boardGame[i][j] = 0;
-		}
-	}
-
-
-	// we initialize the pieces of the first players
-	player1Pieces[0] = PieceInitialisation(3,0,king,true);
-	player1Pieces[1] = PieceInitialisation(4,0,queen,true);
-	player1Pieces[2] = PieceInitialisation(2,0,bishop,true);
-	player1Pieces[3] = PieceInitialisation(5,0,bishop,true);
-	player1Pieces[4] = PieceInitialisation(0,0,rook,true);
-	player1Pieces[5] = PieceInitialisation(7,0,rook,true);
-	player1Pieces[6] = PieceInitialisation(1,0,knight,true);
-	player1Pieces[7] = PieceInitialisation(6,0,knight,true);
-	player1Pieces[8] = PieceInitialisation(0,1,pawn,true);
-	player1Pieces[9] = PieceInitialisation(1,1,pawn,true);
-	player1Pieces[10] = PieceInitialisation(2,1,pawn,true);
-	player1Pieces[11] = PieceInitialisation(3,1,pawn,true);
-	player1Pieces[12] = PieceInitialisation(4,1,pawn,true);
-	player1Pieces[13] = PieceInitialisation(5,1,pawn,true);
-	player1Pieces[14] = PieceInitialisation(6,1,pawn,true);
-	player1Pieces[15] = PieceInitialisation(7,1,pawn,true);
-	
+	int i = 0;
 	// place P1 pieces on the board
 	for (i = 0; i < 16; i++)
 	{
-		boardGame[player1Pieces[i].x][player1Pieces[i].y] = &player1Pieces[i];
+		boardGame[playerPieces[i].x][playerPieces[i].y] = &playerPieces[i];
 	}
+}
+
+void clearBoard()
+{
+	int i = 0;
+	for (i = 0; i < 8;i++)
+	{
+		int j = 0;
+		for (j = 0; j < 8; j++)
+		{
+			boardGame[i][j] = 0; // TODO MAKE NULL
+		}
+	}
+}
+
+static void ChessGameInitialisation()
+{
+	// we clear the board
+	clearBoard();
+	
+	// we initialize the pieces of the first players
+	player1Pieces[0] = PieceInitialisation(3,0,king,player1);
+	player1Pieces[1] = PieceInitialisation(4,0,queen,player1);
+	player1Pieces[2] = PieceInitialisation(2,0,bishop,player1);
+	player1Pieces[3] = PieceInitialisation(5,0,bishop,player1);
+	player1Pieces[4] = PieceInitialisation(0,0,rook,player1);
+	player1Pieces[5] = PieceInitialisation(7,0,rook,player1);
+	player1Pieces[6] = PieceInitialisation(1,0,knight,player1);
+	player1Pieces[7] = PieceInitialisation(6,0,knight,player1);
+	player1Pieces[8] = PieceInitialisation(0,1,pawn,player1);
+	player1Pieces[9] = PieceInitialisation(1,1,pawn,player1);
+	player1Pieces[10] = PieceInitialisation(2,1,pawn,player1);
+	player1Pieces[11] = PieceInitialisation(3,1,pawn,player1);
+	player1Pieces[12] = PieceInitialisation(4,1,pawn,player1);
+	player1Pieces[13] = PieceInitialisation(5,1,pawn,player1);
+	player1Pieces[14] = PieceInitialisation(6,1,pawn,player1);
+	player1Pieces[15] = PieceInitialisation(7,1,pawn,player1);
+	
+	// place P1 pieces on the board
+	setBoard(player1Pieces);
 
 	// we initialize the pieces for the second player
-	player2Pieces[0] = PieceInitialisation(3,7,king,false);
-	player2Pieces[1] = PieceInitialisation(4,7,queen,false);
-	player2Pieces[2] = PieceInitialisation(2,7,bishop,false);
-	player2Pieces[3] = PieceInitialisation(5,7,bishop,false);
-	player2Pieces[4] = PieceInitialisation(0,7,rook,false);
-	player2Pieces[5] = PieceInitialisation(7,7,rook,false);
-	player2Pieces[6] = PieceInitialisation(1,7,knight,false);
-	player2Pieces[7] = PieceInitialisation(6,7,knight,false);
-	player2Pieces[8] = PieceInitialisation(0,6,pawn,false);
-	player2Pieces[9] = PieceInitialisation(1,6,pawn,false);
-	player2Pieces[10] = PieceInitialisation(2,6,pawn,false);
-	player2Pieces[11] = PieceInitialisation(3,6,pawn,false);
-	player2Pieces[12] = PieceInitialisation(4,6,pawn,false);
-	player2Pieces[13] = PieceInitialisation(5,6,pawn,false);
-	player2Pieces[14] = PieceInitialisation(6,6,pawn,false);
-	player2Pieces[15] = PieceInitialisation(7,6,pawn,false);
+	player2Pieces[0] = PieceInitialisation(3,7,king,player2);
+	player2Pieces[1] = PieceInitialisation(4,7,queen,player2);
+	player2Pieces[2] = PieceInitialisation(2,7,bishop,player2);
+	player2Pieces[3] = PieceInitialisation(5,7,bishop,player2);
+	player2Pieces[4] = PieceInitialisation(0,7,rook,player2);
+	player2Pieces[5] = PieceInitialisation(7,7,rook,player2);
+	player2Pieces[6] = PieceInitialisation(1,7,knight,player2);
+	player2Pieces[7] = PieceInitialisation(6,7,knight,player2);
+	player2Pieces[8] = PieceInitialisation(0,6,pawn,player2);
+	player2Pieces[9] = PieceInitialisation(1,6,pawn,player2);
+	player2Pieces[10] = PieceInitialisation(2,6,pawn,player2);
+	player2Pieces[11] = PieceInitialisation(3,6,pawn,player2);
+	player2Pieces[12] = PieceInitialisation(4,6,pawn,player2);
+	player2Pieces[13] = PieceInitialisation(5,6,pawn,player2);
+	player2Pieces[14] = PieceInitialisation(6,6,pawn,player2);
+	player2Pieces[15] = PieceInitialisation(7,6,pawn,player2);
 	
 	// place P2 pieces on the board
-	for (i = 0; i < 16; i++)
-	{
-		boardGame[player2Pieces[i].x][player2Pieces[i].y] = &player2Pieces[i];
-	}
-	
-	gameStarted = true;
+	setBoard(player2Pieces);
 	player1Turn = true;
 }
 
@@ -130,7 +136,7 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	int xd = dst[0]-'a'; // x of destination
 	int yd = dst[1]-'1'; // y of destination
 	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
-		return NOT_IMPLEMENTED; // out of the board
+		return deplacementIllegal; // out of the board
 
 	if (boardGame[xs][ys] == 0)
 		return deplacementIllegal; // no piece here
@@ -140,7 +146,7 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 
 	Piece *piece = boardGame[xs][ys];
 
-	if (piece->player1 == true ? player != 1 : player != 2)
+	if (piece->playerID != player)
 		return deplacementIllegal; // opponent piece
 
 	switch (piece->pieceType)
@@ -261,12 +267,12 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 		}
 		break;
 	case pawn:
-		if(	piece->player1 == true ?
+		if(	piece->playerID == player1 ?
 			xs == 1 && xd == 3 && ys == yd && boardGame[2][ys] == 0 :
 			xs == 6 && xd == 4 && ys == yd && boardGame[5][ys] == 0
 			) // if first time jump
 			piece->enPassant = true; // TODO: clean this flag on the next turn
-		else if(xs - xd != (piece->player1 == true ? 1 : -1 )) // does not advance exactly 1 square
+		else if(xd - xs != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
 		{
 			return deplacementIllegal;
 		}
@@ -281,8 +287,8 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 			{
 				Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
 				if (enPassant != 0 && // capturing En Passant
-					enPassant->enPassant == 1 && // can be captured En Passant
-					enPassant->player1 == true ? yd ==  5: yd == 2) // is not your own piece
+					enPassant->enPassant == true && // can be captured En Passant
+					enPassant->playerID == player1 ? yd ==  5: yd == 2) // is not your own piece
 				{
 					enPassant->alive = false; // special capture
 					boardGame[xd][ys] = 0; // special cleaning
@@ -291,6 +297,8 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 					return deplacementIllegal; // not capturing
 			}
 		}
+		//promote stuff if promote
+		break;
 
 	default:
 		return NOT_IMPLEMENTED; // unidentified piece type
@@ -299,13 +307,20 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 
 	if (boardGame[xd][yd] != 0)
 	{
-		if ((boardGame[xd][yd]->player1 == true && player == 1) || (boardGame[xd][yd]->player1 == false && player == 2))
+		if (boardGame[xd][yd]->playerID == player)
 			return deplacementIllegal; // capturing allied piece
 		boardGame[xd][yd]->alive = false; // capture enemy piece
 	}
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
 
+	// increment turn, change player turn, time stuff
+	//call HDMI draw functions
+	//setboard position
+	//check for path, checkmate,
+	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
+	currentTurnInfo.move_no++;
+	currentTurnInfo.game_status = NORMAL; // FOR NOW
 	return OK;
 }
 
@@ -364,20 +379,76 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 
 enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 {
-	return NOT_IMPLEMENTED;
+// cleasr the board
+	ChessGameInitialisation();
+	clearBoard();
+	
+	// we set player1 pieces 
+	int i= 0;
+	for (i = 0; i < 16; i++)
+	{
+		if (boardPosition->positions[i][0] == 'x')
+		{
+			player1Pieces[i].alive = false;
+		}
+		else
+		{
+			player1Pieces[i].alive = true;
+			player1Pieces[i].x = boardPosition->positions[i][0];
+			player1Pieces[i].y = boardPosition->positions[i][1];
+		}
+		
+	}
+	
+	// we set player 2 pieces
+	for (i = 16; i < 32; i++)
+	{
+		if (boardPosition->positions[i][0] == 'x')
+		{
+			player2Pieces[i].alive = false;
+		}
+		else
+		{
+			player2Pieces[i].alive = true;
+			player2Pieces[i].x = boardPosition->positions[i][0];
+			player2Pieces[i].y = boardPosition->positions[i][1];
+		}	
+	}
+	// we set the board
+	setBoard(player1Pieces);
+	setBoard(player2Pieces);
+	return OK;
+	
 }
 
 enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
 {
-	return NOT_IMPLEMENTED;
+	
+	gameInfo = &currentGameInfo;
+	return OK;
 }
 
 enum ChessboardRestStatus start_game()
 {
-	return NOT_IMPLEMENTED;
+	if (gameStarted)
+	{
+		return gameInProgress;
+	}
+	else
+	{
+		gameStarted = true;
+		return OK;
+	}
+		return OK;
 }
 
 enum ChessboardRestStatus end_game()
 {
-	return NOT_IMPLEMENTED;
+	if (!gameStarted)
+	{
+		return NOT_IMPLEMENTED;
+	}
+	gameStarted = false;
+	return OK;
 }
+

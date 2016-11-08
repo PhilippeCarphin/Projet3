@@ -1,5 +1,4 @@
 #include "bitmap.h"
-#include "xil_types.h"
 
 #include "xil_io.h"
 #include "DrawHDMI.h"
@@ -127,10 +126,9 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 int draw_information(struct GameInfo *gi)
 {
 	int some_top = 0, some_left = 0;
-	draw_string(some_top, some_left, gi->player1);
-	draw_string(some_top, some_left, gi->player2);
+	//draw_string(some_top, some_left, gi->player1);
+	//draw_string(some_top, some_left, gi->player2);
 	// ...
-	draw_string(some_top, some_left, gi->event);
 
 	return 0;
 }

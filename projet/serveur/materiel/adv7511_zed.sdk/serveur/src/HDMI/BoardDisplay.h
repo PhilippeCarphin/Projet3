@@ -1,6 +1,7 @@
 #ifndef _BOARD_DISPLAY_H_
 #define _BOARD_DISPLAY_H_
-
+#include "chessboard_rest_protocol.h"
+#include "xil_types.h"
 #define PIECE_DATA_SIZE 800000 // 800k
 #define CHARS_DATA_SIZE 200000 // 200k
 /******************************************************************************
@@ -21,12 +22,6 @@ struct Move{
 	Rank d_rank;
 };
 
-// TEMPORARY:
-struct GameInfo{
-	char player1[10];
-	char player2[10];
-	char event[10];
-};
 
 // TEMPORARY:
 struct PlayerTimes{
