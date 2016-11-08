@@ -19,11 +19,11 @@ struct BoardData{
 };
 static struct BoardData bd;
 
-enum Colors { 	BACKGROUND = 0x00000000,
-				DARK_SQUARE_COLOR = 0x00EEEED2,
-				LIGHT_SQUARE_COLOR = 0x00769656,
-				YELLOW = 0x00FFFF00,
-				MARGIN_COLOR = 0x00955C3E
+enum Colors { 	BACKGROUND = 0xFF000000,
+				DARK_SQUARE_COLOR = 0xFFEEEED2,
+				LIGHT_SQUARE_COLOR = 0xFF769656,
+				YELLOW = 0xFFFFFF00,
+				MARGIN_COLOR = 0xFF955C3E
 };
 extern struct Screen screen;
 /******************************************************************************
@@ -93,6 +93,11 @@ int BoardDisplay_init()
 	offsets[KNIGHT] = 8;
 	offsets[KING] = 8;
 	offsets[BISHOP] = 6;
+
+	set_screen_dimensions(1280,1024);
+	set_chess_board_params(200,50,90,25);
+	set_background_color(0x00000000); // Set the entire screen to blue.
+	draw_chess_board();
 	return 0;
 }
 
@@ -295,7 +300,19 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
 	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
 
+	char c;
+	int offset = bd.square_size / 2 - 10;
+	for(c = 'A'; c <= 'H'; ++c)
+	{
+		draw_char(bd.top + 8*bd.square_size, bd.left + offset + (c-'A')*bd.square_size, c);
+		draw_char(bd.top - 24 , bd.left + offset + (c-'A')*bd.square_size, c);
+	}
 
+	for(c = '8'; c >= '1'; --c)
+	{
+		draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left - 17, c);
+		draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left + 8*bd.square_size +3, c);
+	}
 	// TESTS de la fonction move_piece
 	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
 	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
@@ -310,7 +327,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	BoardDisplay_move_piece(&mv);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4");
-#if 0
+
 	mv.c = BLACK;
 	mv.t = PAWN;
 	mv.o_file = E;
@@ -333,6 +350,17 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4  e5\n2. Nf3");
 
+	mv.c = BLACK;
+	mv.t = KNIGHT;
+	mv.o_file = B;
+	mv.o_rank = R8;
+	mv.d_file = C;
+	mv.d_rank = R6;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5\n2. Nf3 Nc6");
+#if 0
 #endif
 	return 0;
 }
