@@ -26,7 +26,7 @@ enum Colors { 	BACKGROUND = 0x00000000,
 				YELLOW = 0x00FFFF00,
 				MARGIN_COLOR = 0x00955C3E
 };
-
+extern struct Screen screen;
 /******************************************************************************
  * Stuff pertaining to bitmaps of characters and pieces
 ******************************************************************************/
@@ -128,16 +128,25 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		else if ( 32 < c && c <= '~' )
 		{
 			if( c >= 'W') c -= 1;
+			if( cursor_left + char_width + 2 >= screen.w){
+				cursor_left = screen_left;
+				cursor_top += line_skip;
+			}
 			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
 				WHERE xil_printf("Could not draw char %c\n");
 				return err;
 			}
-			cursor_left += char_width;
+
+			else
+			{
+				cursor_left += char_width;
+			}
 		}
 		else
 		{
 			xil_printf("%s(): Unknown char\n", __FUNCTION__);
 		}
+
 	}
 	return 0;
 }
@@ -306,6 +315,9 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	// draw_string(150,30, "J'arrive a dessiner des strings a l'ecran, je lis les bitmaps correctement\nmais ya quelque chose\navec la transparence que je fais pas bien.\nJe suis pas mal sur que je vais pouvoir trouver demain.\n    -Phil");
 	//draw_square(0,0,100,(204-124),YELLOW);
 	//draw_partial_bitmap(0,0,124,300,204,400,&pieces,pieces_data);
+
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+			"Salut les amis, maintenant, je dessine une string dans l'ecran.  Je peux utiliser des '\\n' mais en plus, la fonction va automatiquement ajouter des sauts de ligne si on depasse le bord de l'ecran.");
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;

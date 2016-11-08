@@ -17,4 +17,16 @@ int draw_partial_bitmap_2(  u32 screen_top, u32 screen_left,
 							BMP *bmp, u8 *data);
 int draw_full_bitmap(u32 screen_top, u32 screen_left, BMP *bmp, struct RGBA *data);
 int set_screen_buffer(u32 *screen_buffer);
+
+
+/******************************************************************************
+* Buffer for the screen.  A long buffer that will be treated as a 2D matrix
+* with dimensions w for width and h for height.
+******************************************************************************/
+struct Screen{
+	u32 w;
+	u32 h;
+	u32 *buffer;
+};
+
 #endif // _DRAW_HDMI_H_

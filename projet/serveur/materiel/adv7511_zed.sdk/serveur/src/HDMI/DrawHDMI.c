@@ -16,19 +16,9 @@
 
 
 
-/******************************************************************************
-* Buffer for the screen.  A long buffer that will be treated as a 2D matrix
-* with dimensions w for width and h for height.
-******************************************************************************/
-struct Screen{
-	u32 w;
-	u32 h;
-	u32 *buffer;
-};
-
 
 /* The screen instance that will be managed by the drawing functions */
-static struct Screen screen;
+struct Screen screen;
 
 int set_screen_buffer(u32 *screen_buffer)
 {
