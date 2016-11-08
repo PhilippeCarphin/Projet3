@@ -180,6 +180,7 @@ public class Game {
         currentPiece = null;
         drawMotionlessPieces();
         drawMovingPiece();
+        new GetRequestTask().execute("http://www.google.com");
     }
 
     public static void handleMove(int xPix, int yPix) {

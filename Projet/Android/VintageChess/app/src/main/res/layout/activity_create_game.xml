@@ -109,7 +109,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="11">
+        android:layout_weight="12">
 
         <TextView
             android:text="Name player1"
@@ -164,7 +164,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="12"
-            android:weightSum="1">
+            android:layout_gravity="center|left"
+            android:gravity="center|left">
 
             <Switch
                 android:text="EnPassant option"
@@ -181,7 +182,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="11">
+            android:layout_weight="12">
 
             <TextView
                 android:text="Game Time "
@@ -208,7 +209,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="11">
+            android:layout_weight="12">
 
             <TextView
                 android:text="Time per play (s)"
@@ -234,7 +235,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="11">
+            android:layout_weight="12">
             <TextView
                 android:text="Over Time"
                 android:layout_width="wrap_content"
@@ -261,7 +262,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="11">
+            android:layout_weight="12">
             <TextView
                 android:text="Over Time per play (s)"
                 android:layout_width="wrap_content"
@@ -301,7 +302,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/numberPicker"
-                android:layout_weight="1.02"
+                android:layout_weight="0.67"
                 android:layout_gravity="center|left"
                 android:gravity="center|left" />
 

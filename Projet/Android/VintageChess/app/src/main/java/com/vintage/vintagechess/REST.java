@@ -27,7 +27,7 @@ public class REST {
     public static String postNewGame() throws JSONException {
 
 
-        JSONObject outerObject = new JSONObject();
+               JSONObject outerObject = new JSONObject();
         JSONObject innerObject = new JSONObject();
 
         innerObject.put("time",activityGame.normalTime);
@@ -56,17 +56,19 @@ public class REST {
         return moving;
     }
 
-    public static void getPieceEleminated(String eliminatedPiece)
+    public static Piece getEliminatedPiece(String eliminatedPiece)
             throws JSONException {
 
         JSONObject jsonObject = new JSONObject(eliminatedPiece);
         String pieceEleminated = jsonObject.getString("pieceEleminated");
-        String pomotion = jsonObject.getString("pomotion");
+        String promotion = jsonObject.getString("promotion");
         String state = jsonObject.getString("state");
 
         Log.d("pieceEleminated : ",pieceEleminated);
-        Log.d("pomotion : ",pomotion);
+        Log.d("promotion : ",promotion);
         Log.d("state : ",state);
+
+        return null;
 
     }
 

@@ -1,5 +1,6 @@
 package com.vintage.vintagechess;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -69,20 +70,20 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         timePickerMain.setIs24HourView(true);
         timePickerOverTime.setIs24HourView(true);
-        timePickerMain.setHour(1);
-        timePickerMain.setMinute(0);
-        timePickerOverTime.setHour(0);
-        timePickerOverTime.setMinute(15);
+        timePickerMain.setCurrentHour(1);
+        timePickerMain.setCurrentMinute(0);
+        timePickerOverTime.setCurrentHour(0);
+        timePickerOverTime.setCurrentMinute(15);
 
 
         numberPickerOverTimePerPlay = (NumberPicker) findViewById(R.id.numberPickerOverTimePerPlay);
-        setNumbrePicker(numberPickerOverTimePerPlay, 1, 200, 30);
+        Utilities.setNumberPickerTime(numberPickerOverTimePerPlay, 1, 200, 30);
 
         numberPickerTimePerPlay = (NumberPicker) findViewById(R.id.numberPickerTimePerPlay);
-        setNumbrePicker(numberPickerTimePerPlay, 1, 200, 30);
+        Utilities.setNumberPickerTime(numberPickerTimePerPlay, 1, 200, 30);
 
         numberPickerTurnsBeforedraw = (NumberPicker) findViewById(R.id.numberPicker);
-        setNumbrePicker(numberPickerTurnsBeforedraw, 1, 200, 40);
+        Utilities.setNumberPickerTime(numberPickerTurnsBeforedraw, 1, 200, 40);
 
         enPassant = (Switch) findViewById(R.id.switchEnPassant);
 
@@ -95,12 +96,7 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     }
 
-    private void setNumbrePicker(NumberPicker numbrePicker, int minValue, int maxValue, int currentValue)
-    {
-        numbrePicker.setMinValue(minValue);
-        numbrePicker.setMaxValue(maxValue);
-        numbrePicker.setValue(currentValue);
-    }
+
 
     private void handleRadioChange() {
             editTextPassword.setEnabled(radioButton2.isChecked());

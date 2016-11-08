@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
 /**
@@ -26,8 +27,14 @@ public class Utilities {
         dlgAlert.create().show();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static String getTimePickerString(TimePicker tP) {
-        return Integer.valueOf(tP.getHour()).toString() + ":" + Integer.valueOf(tP.getMinute()).toString()+ ":00";
+        return Integer.valueOf(tP.getCurrentHour()).toString() + ":" + Integer.valueOf(tP.getCurrentMinute()).toString()+ ":00";
+    }
+
+    public static void setNumberPickerTime(NumberPicker numberPicker, int minValue, int maxValue, int currentValue)
+    {
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+        numberPicker.setValue(currentValue);
     }
 }
