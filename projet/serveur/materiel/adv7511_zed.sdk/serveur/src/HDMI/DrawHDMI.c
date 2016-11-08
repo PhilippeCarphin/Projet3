@@ -223,10 +223,10 @@ int get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData)
 
 	pixel = imgData + ( (bmp->Height - i - 1) * bytes_per_row + j * bytes_per_pixel );
 
-	a = *(pixel + 3);
+	a = *(pixel + 0);
 	r = *(pixel + 2);
 	g = *(pixel + 1);
-	b = *(pixel + 0);
+	b = *(pixel + 3);
 
 	a <<= 24;
 	r <<= 16;
@@ -271,7 +271,7 @@ int draw_partial_bitmap_2(  u32 screen_top, u32 screen_left,
 	WHERE xil_printf("Drew something in the screen\n");
 	return 0;
 }
-int draw_full_bitmap_2(u32 screen_top, u32 screen_left, BMP *bmp, struct RGBA *data)
+int draw_full_bitmap_2(u32 screen_top, u32 screen_left, BMP *bmp, u8 *data)
 {
 	return draw_partial_bitmap_2(screen_top, screen_left, 0,0,bmp->Height, bmp->Width,bmp, data);
 }

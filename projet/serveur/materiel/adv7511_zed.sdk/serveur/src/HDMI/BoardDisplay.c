@@ -83,7 +83,7 @@ int BoardDisplay_init()
 		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
-	if( (err = read_bitmap_file_2("CP.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file_2("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
@@ -309,6 +309,9 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	mv.d_rank = R4;
 
 	BoardDisplay_move_piece(&mv);
+
+
+
 	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4");
