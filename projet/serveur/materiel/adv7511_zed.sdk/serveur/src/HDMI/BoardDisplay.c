@@ -79,7 +79,7 @@ int BoardDisplay_init()
 {
 	int err;
 
-	if( (err = read_bitmap_file_2("Letters.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file_2("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
@@ -140,8 +140,6 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		}
 		else if ( 32 < c && c <= '~' )
 		{
-			if( c > 'W') c -= 1;
-			if( c == 'W') c = 'w';
 			if( cursor_left + char_width + 2 >= screen.w){
 				cursor_left = screen_left;
 				cursor_top += line_skip;
@@ -173,6 +171,7 @@ int draw_information(struct GameInfo *gi)
 
 	return 0;
 }
+
 /******************************************************************************
  * Something like this would be called regularly to make the times count down.
 ******************************************************************************/
@@ -301,7 +300,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 
 	// TESTS de la fonction move_piece
 	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
-
+	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
 	struct Move mv;
 	mv.c = WHITE;
 	mv.t = PAWN;
@@ -313,7 +312,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	BoardDisplay_move_piece(&mv);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4");
-
+#if 0
 	mv.c = BLACK;
 	mv.t = PAWN;
 	mv.o_file = E;
@@ -335,7 +334,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	BoardDisplay_move_piece(&mv);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4  e5\n2. Nf3");
-#if 0
+
 #endif
 	return 0;
 }
