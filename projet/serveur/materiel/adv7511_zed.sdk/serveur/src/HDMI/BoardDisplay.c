@@ -19,11 +19,11 @@ struct BoardData{
 };
 static struct BoardData bd;
 
-enum Colors { 	BACKGROUND = 0x00000000,
-				DARK_SQUARE_COLOR = 0x00EEEED2,
-				LIGHT_SQUARE_COLOR = 0x00769656,
-				YELLOW = 0x00FFFF00,
-				MARGIN_COLOR = 0x00955C3E
+enum Colors { 	BACKGROUND = 0xFF000000,
+				DARK_SQUARE_COLOR = 0xFFEEEED2,
+				LIGHT_SQUARE_COLOR = 0xFF769656,
+				YELLOW = 0xFFFFFF00,
+				MARGIN_COLOR = 0xFF955C3E
 };
 extern struct Screen screen;
 /******************************************************************************
@@ -55,6 +55,11 @@ int move_piece(struct Move *move);
 u32 file_to_pixel(int file);
 u32 rank_to_pixel(int rank);
 
+/******************************************************************************
+ * Used by BoardDisplay_move_piece, reset by
+******************************************************************************/
+static int first_move = 1;
+
 // New stuff
 int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
@@ -78,12 +83,12 @@ int BoardDisplay_init()
 {
 	int err;
 
-	if( (err = read_bitmap_file_2("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
-		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
+	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
-	if( (err = read_bitmap_file_2("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
-		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
+	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
 
@@ -93,6 +98,11 @@ int BoardDisplay_init()
 	offsets[KNIGHT] = 8;
 	offsets[KING] = 8;
 	offsets[BISHOP] = 6;
+
+	set_screen_dimensions(1280,1024);
+	set_chess_board_params(200,50,90,25);
+	set_background_color(0x00000000); // Set the entire screen to blue.
+	draw_chess_board();
 	return 0;
 }
 
@@ -112,7 +122,7 @@ int draw_char(u32 screen_top, u32 screen_left, char c)
 	u32 bmp_bottom = chars.Height;
 	u32 bmp_right = bmp_left + char_width;
 
-	return draw_partial_bitmap_2( screen_top, screen_left,
+	return draw_partial_bitmap( screen_top, screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&chars, chars_data);
@@ -144,13 +154,13 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 				cursor_top += line_skip;
 			}
 			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
-				WHERE xil_printf("Could not draw char %c\n");
+				WHERE DBG_PRINT("Could not draw char %c\n");
 				return err;
 			} else {
 				cursor_left += char_width;
 			}
 		} else {
-			xil_printf("%s(): Unknown char\n", __FUNCTION__);
+			DBG_PRINT("%s(): Unknown char\n", __FUNCTION__);
 		}
 
 	}
@@ -162,7 +172,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 ******************************************************************************/
 int draw_information(struct GameInfo *gi)
 {
-	int some_top = 0, some_left = 0;
+	//int some_top = 0, some_left = 0;
 	//draw_string(some_top, some_left, gi->player1);
 	//draw_string(some_top, some_left, gi->player2);
 	// ...
@@ -200,10 +210,10 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32	bmp_bottom = bmp_top + piece_height;
 	u32 bmp_right = MIN(bmp_left + 90,800);
 
-	u32 screen_top = bd.top + rank_to_pixel(rank) + v_offset;
-	u32 screen_left = bd.left + file_to_pixel(file) + offsets[type];
+	u32 screen_top = rank_to_pixel(rank) + v_offset;
+	u32 screen_left = file_to_pixel(file) + offsets[type];
 
-	return draw_partial_bitmap_2( screen_top , screen_left,
+	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&pieces, pieces_data);
@@ -214,22 +224,22 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 ******************************************************************************/
 int color_square(File file, Rank rank, u32 color)
 {
-	u32 screen_top = bd.top + rank_to_pixel(rank);
-	u32 screen_left = bd.left + file_to_pixel(file);
+	u32 screen_top = rank_to_pixel(rank);
+	u32 screen_left = file_to_pixel(file);
 	return draw_square(screen_top, screen_left, 
 						bd.square_size, bd.square_size, color);
 }
 
 /******************************************************************************
- *
+ * Set the color of a square to the correct color
 ******************************************************************************/
 int clear_square(File file, Rank rank)
 {
 	u32 color;
 	if( (rank + file) % 2 == 0 )
-		color = DARK_SQUARE_COLOR;
-	else 
 		color = LIGHT_SQUARE_COLOR;
+	else
+		color = DARK_SQUARE_COLOR;
 
 	return color_square(file, rank, color);
 }
@@ -246,17 +256,14 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	return 0;
 }
 
-
 /******************************************************************************
- * Like what I had in the example
- * draw bigger square in the back, then draw the pieces
+ * Draw an empty chessboard with margin, squares and coordinates
 ******************************************************************************/
- int draw_chess_board()
+int draw_empty_board()
 {
 	int file = A;
 	int rank = R1;
 	int err;
-	set_background_color(0x00666666);
 
 	// Dessiner la marge (un carré plus gros en arriere du board).
 	draw_square(bd.top - bd.margin,bd.left - bd.margin,
@@ -268,6 +275,38 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
+	return 0;
+}
+
+/******************************************************************************
+ * Draw coordinates
+******************************************************************************/
+int draw_coordinates()
+{
+	int err;
+	char c;
+	int offset = bd.square_size / 2 - 10;
+	for(c = 'A'; c <= 'H'; ++c)
+	{
+		if((err = draw_char(bd.top + 8*bd.square_size, bd.left + offset + (c-'A')*bd.square_size, c)) != 0) return err;
+		if((err = draw_char(bd.top - 24 , bd.left + offset + (c-'A')*bd.square_size, c)) != 0) return err;
+	}
+
+	for(c = '8'; c >= '1'; --c)
+	{
+		if((err = draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left - 17, c)) != 0) return err;
+		if((err = draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left + 8*bd.square_size +3, c)) != 0) return err;
+	}
+	return 0;
+}
+
+/******************************************************************************
+ * Draw pieces in their initial positions
+******************************************************************************/
+int draw_pieces()
+{
+	int err;
+	File file;
 	// Dessiner les pions.
 	for( file = A; file <= H; file++)
 	{
@@ -295,45 +334,25 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
 	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
 
+	return 0;
+}
 
-	// TESTS de la fonction move_piece
-	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
-	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
-	struct Move mv;
-	mv.c = WHITE;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R2;
-	mv.d_file = E;
-	mv.d_rank = R4;
+/******************************************************************************
+ * Draws the chessboard with pieces in their initial positions
+******************************************************************************/
+int test_move_piece();
+ int draw_chess_board()
+{
+	int err;
 
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4");
-#if 0
-	mv.c = BLACK;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R7;
-	mv.d_file = E;
-	mv.d_rank = R5;
+	if( (err = set_background_color(0x00666666)) != 0) return err;
+	if( (err = draw_empty_board()) != 0) return err;
+	if( (err = draw_coordinates()) != 0) return err;
+	if( (err = draw_pieces()) != 0) return err;
 
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5");
+	first_move = 1;
 
-	mv.c = WHITE;
-	mv.t = KNIGHT;
-	mv.o_file = G;
-	mv.o_rank = R1;
-	mv.d_file = F;
-	mv.d_rank = R3;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5\n2. Nf3");
-
-#endif
+	test_move_piece();
 	return 0;
 }
 
@@ -352,7 +371,6 @@ int BoardDisplay_move_piece(struct Move *move)
 	 * by restoring this to normal by clearing both squares and redrawing
 	 * the moved piece on the cleared square
 	 */
-	static int first_move = 1;
 	static struct Move last;
 	if( ! first_move )
 	{
@@ -384,7 +402,7 @@ int BoardDisplay_move_piece(struct Move *move)
 ******************************************************************************/
 u32 file_to_pixel(int file)
 {
-	return file * bd.square_size;
+	return bd.left + file * bd.square_size;
 }
 
 /******************************************************************************
@@ -392,5 +410,57 @@ u32 file_to_pixel(int file)
 ******************************************************************************/
 u32 rank_to_pixel(int rank)
 {
-	return (7 - rank) * bd.square_size;
+	return bd.top + (7 - rank) * bd.square_size;
+}
+
+int test_move_piece()
+{
+	// TESTS de la fonction move_piece
+	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
+	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
+	struct Move mv;
+	mv.c = WHITE;
+	mv.t = PAWN;
+	mv.o_file = E;
+	mv.o_rank = R2;
+	mv.d_file = E;
+	mv.d_rank = R4;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4");
+
+	mv.c = BLACK;
+	mv.t = PAWN;
+	mv.o_file = E;
+	mv.o_rank = R7;
+	mv.d_file = E;
+	mv.d_rank = R5;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5");
+
+	mv.c = WHITE;
+	mv.t = KNIGHT;
+	mv.o_file = G;
+	mv.o_rank = R1;
+	mv.d_file = F;
+	mv.d_rank = R3;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5\n2. Nf3");
+
+	mv.c = BLACK;
+	mv.t = KNIGHT;
+	mv.o_file = B;
+	mv.o_rank = R8;
+	mv.d_file = C;
+	mv.d_rank = R6;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5\n2. Nf3 Nc6");
+	return 0;
 }

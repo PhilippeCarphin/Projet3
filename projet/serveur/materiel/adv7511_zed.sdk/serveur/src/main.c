@@ -26,6 +26,7 @@ int main(){
 	init_HDMI();
 	init_TCP();
 
+
 	//test_http_all();
 
 	//test_new_game();
@@ -34,7 +35,6 @@ int main(){
 	//test_move();
 	//test_get_board();
 	test_game(); // coup du berger
-
 	while(1){
 		run_HDMI();
 		run_TCP();
