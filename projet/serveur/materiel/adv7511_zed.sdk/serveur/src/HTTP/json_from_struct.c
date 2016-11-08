@@ -11,7 +11,7 @@ static const int MAX_STR_LEN = 50;
  *****************************************************************************/
 int set_yes_no(int boolean, char *buf)
 {
-	if (boolean)
+	if (boolean == 1)
 	{
 		return sprintf(buf, "%s", "yes");
 	}
@@ -60,10 +60,10 @@ int set_pieces(char positions[32][2], char fields[18][MAX_STR_LEN])
 	/* king1 to knight1B */
 	for (i = 0; i < 8; i++)
 	{
-		sprintf(fields[i], "\"%s\": %c%d", position_names[i], positions[i][0], positions[i][1]);
+		sprintf(fields[i], "\"%s\": %c%c", position_names[i], positions[i][0], positions[i][1]);
 	}
 	/* pawn1 */
-	sprintf(fields[8], "\"pawn1\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
+	sprintf(fields[8], "\"pawn1\": [ %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c ]",
 			positions[8][0],  positions[8][1],  positions[9][0],  positions[9][1],
 			positions[10][0], positions[10][1],	positions[11][0], positions[11][1],
 			positions[12][0], positions[12][1],	positions[13][0], positions[13][1],
@@ -72,10 +72,10 @@ int set_pieces(char positions[32][2], char fields[18][MAX_STR_LEN])
 	/* king2 to knight2B */
 	for (i = 9; i < 17; i++)
 	{
-		sprintf(fields[i], "\"%s\": %c%d", position_names[i-1], positions[i+7][0], positions[i+7][1]);
+		sprintf(fields[i], "\"%s\": %c%c", position_names[i-1], positions[i+7][0], positions[i+7][1]);
 	}
 	/* pawn2 */
-	sprintf(fields[17], "\"pawn2\": [ %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d, %c%d ]",
+	sprintf(fields[17], "\"pawn2\": [ %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c, %c%c ]",
 			positions[24][0], positions[24][1], positions[25][0], positions[25][1],
 			positions[26][0], positions[26][1],	positions[27][0], positions[27][1],
 			positions[28][0], positions[28][1],	positions[29][0], positions[29][1],
@@ -104,7 +104,7 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"pieceEliminated\": %c%d, \"promotion\": %s, \"state\": %s}",
+			"{\"pieceEliminated\": %c%c, \"promotion\": %s, \"state\": %s}",
 			info.piece_eliminated[0], info.piece_eliminated[1], promotion, state);
  }
  
@@ -135,8 +135,8 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"turn\": %d, \"moveNo\": %d, \"lastMove\": %s, \"state\": %s}",
-			info.turn, info.move_no, info.last_move, state);
+			"{\"turn\": %d, \"moveNo\": %d, \"lastMove\": %c%c, \"state\": %s}",
+			info.turn, info.move_no, info.last_move[0], info.last_move[1], state);
  }
  
 /******************************************************************************

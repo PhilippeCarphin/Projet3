@@ -215,7 +215,7 @@ void test_get_board()
 void test_move()
 {	
 	int result;
-	char request[] = "POST /move/1/a2-a3\r\nHTTP/1.1";
+	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1";
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");

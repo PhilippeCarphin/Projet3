@@ -26,7 +26,14 @@ int main(){
 	init_HDMI();
 	init_TCP();
 
-	test_http_all();
+	//test_http_all();
+
+	test_new_game();
+	//test_get_board();
+
+	///test_start();
+	//test_move();
+	//test_get_board();
 
 	while(1){
 		run_HDMI();

@@ -110,6 +110,11 @@ static void ChessGameInitialisation()
 	// place P2 pieces on the board
 	setBoard(player2Pieces);
 	player1Turn = true;
+	currentTurnInfo.game_status = NORMAL;
+	currentTurnInfo.last_move[0] = 'x';
+	currentTurnInfo.last_move[1] = 'x';
+	currentTurnInfo.move_no = 0;
+	currentTurnInfo.turn = player1;
 }
 
 
@@ -310,9 +315,21 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 		if (boardGame[xd][yd]->playerID == player)
 			return deplacementIllegal; // capturing allied piece
 		boardGame[xd][yd]->alive = false; // capture enemy piece
+		moveInfo->piece_eliminated[0] = xd + 'a';
+		moveInfo->piece_eliminated[1] = yd + '1';
+
 	}
+	else
+	{
+		moveInfo->piece_eliminated[0] = 'x';
+		moveInfo->piece_eliminated[1] = 'x';
+	}
+	// we dont check for promotion right now
+
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
+	boardGame[xd][yd]->x = xd;
+	boardGame[xd][yd]->y = yd;
 
 	// increment turn, change player turn, time stuff
 	//call HDMI draw functions
@@ -321,6 +338,9 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
 	currentTurnInfo.game_status = NORMAL; // FOR NOW
+	moveInfo->promotion = false;
+	// not implemented
+	moveInfo->game_status = NORMAL;
 	return OK;
 }
 
@@ -352,7 +372,7 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 		if (player1Pieces[i].alive == true)
 		{
 			boardPosition->positions[i][0] = player1Pieces[i].x + 'a';
-			boardPosition->positions[i][1] = player1Pieces[i].y + 1;
+			boardPosition->positions[i][1] = player1Pieces[i].y + '1';
 		}
 		else
 		{
@@ -365,7 +385,7 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 		if (player2Pieces[i].alive == true)
 		{
 			boardPosition->positions[i+16][0] = player2Pieces[i].x + 'a';
-			boardPosition->positions[i+16][1] = player2Pieces[i].y + 1;
+			boardPosition->positions[i+16][1] = player2Pieces[i].y + '1';
 		}
 		else
 		{
@@ -394,8 +414,8 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 		else
 		{
 			player1Pieces[i].alive = true;
-			player1Pieces[i].x = boardPosition->positions[i][0];
-			player1Pieces[i].y = boardPosition->positions[i][1];
+			player1Pieces[i].x  = boardPosition->positions[i][0] - 'a';
+			player1Pieces[i].y  = boardPosition->positions[i][1] - '1';
 		}
 		
 	}
@@ -410,8 +430,8 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 		else
 		{
 			player2Pieces[i].alive = true;
-			player2Pieces[i].x = boardPosition->positions[i][0];
-			player2Pieces[i].y = boardPosition->positions[i][1];
+			player2Pieces[i].x = boardPosition->positions[i][0] - 'a';
+			player2Pieces[i].y = boardPosition->positions[i][1] - '1';
 		}	
 	}
 	// we set the board
@@ -424,7 +444,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
 {
 	
-	gameInfo = &currentGameInfo;
+	*gameInfo = currentGameInfo;
 	return OK;
 }
 
@@ -434,12 +454,8 @@ enum ChessboardRestStatus start_game()
 	{
 		return gameInProgress;
 	}
-	else
-	{
-		gameStarted = true;
-		return OK;
-	}
-		return OK;
+	gameStarted = true;
+	return OK;
 }
 
 enum ChessboardRestStatus end_game()
