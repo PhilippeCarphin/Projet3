@@ -16,8 +16,8 @@ int main(){
 
 	// Declare huge buffers on the stack
 	u32 screen_buf[1280*1024];
-	struct RGBA chars_data[CHARS_DATA_SIZE];
-	struct RGBA pieces_data[PIECE_DATA_SIZE];
+	u8 chars_data[CHARS_DATA_SIZE];
+	u8 pieces_data[PIECE_DATA_SIZE];
 
 	// give their addresses to the modules that will use them
 	set_screen_buffer(screen_buf);

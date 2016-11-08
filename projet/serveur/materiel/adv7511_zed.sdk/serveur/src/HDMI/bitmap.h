@@ -59,6 +59,7 @@ struct RGBA{
  * the application the way that it is done in TP3.
 *******************************************************************************/
 int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax);
+int read_bitmap_file_2(char *path, BMP *bmp, u8 *imgData, int imgDataMax);
 u32 RGBA_to_NRGB(struct RGBA rgba);
 
 

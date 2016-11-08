@@ -53,6 +53,7 @@
 #include "bitmap.h"
 #include "drawHDMI.h"
 #include "BoardDisplay.h"
+#include "sd_card.h"
 
 extern void delay_ms(u32 ms_count);
 extern char inbyte(void);
@@ -229,9 +230,10 @@ int init_HDMI()
 		draw_partial_bitmap(300,300, 0, 0, 123, 456, &image, imageData);
 	}
 #else
-// This replaces the previous block in the #if 0 part.
+// This replaces the previous block in the #if 0 part
+	BoardDisplay_init();
 	set_screen_dimensions(1280,1024);
-	set_chess_board_params(200,50,30,10);
+	set_chess_board_params(200,50,90,10);
 	set_background_color(0x00000000); // Set the entire screen to blue.
 	draw_chess_board();
 

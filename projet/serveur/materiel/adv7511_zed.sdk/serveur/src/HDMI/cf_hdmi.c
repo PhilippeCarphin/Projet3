@@ -131,7 +131,6 @@ void DDRVideoWr(unsigned short horizontalActiveTime,
 	unsigned long  backup     = 0;
 	unsigned short line       = 0;
 	unsigned long  index      = 0;
-	unsigned char  repetition = 0;
 
 	/*
 	 * We're going to have the HDMI function draw the screen's buffer, which
