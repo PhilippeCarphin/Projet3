@@ -131,6 +131,7 @@ int set_pixel_u32(int i, int j, u32 color)
 	//if( (color & 0xFF000000) == 0)
 	//	return -1;
 
+	if( color )
 	screen.buffer[i*screen.w + j] = color & 0x00ffffff;
 
 	return 0;
@@ -232,7 +233,7 @@ int get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData)
 
 	pixel = imgData + ( (bmp->Height - i - 1) * bytes_per_row + j * bytes_per_pixel );
 
-	a = *(pixel + 0);
+	a = *(pixel + 3);
 	r = *(pixel + 2);
 	g = *(pixel + 1);
 	b = *(pixel + 0);

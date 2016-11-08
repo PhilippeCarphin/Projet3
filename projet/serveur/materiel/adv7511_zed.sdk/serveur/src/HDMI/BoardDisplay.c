@@ -101,7 +101,7 @@ int draw_char(u32 screen_top, u32 screen_left, char c)
 	return draw_partial_bitmap_2( screen_top, screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
-								&pieces, pieces_data);
+								&chars, chars_data);
 }
 
 /******************************************************************************
@@ -127,6 +127,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		}
 		else if ( 32 < c && c <= '~' )
 		{
+			if( c >= 'W') c -= 1;
 			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
 				WHERE xil_printf("Could not draw char %c\n");
 				return err;
@@ -187,8 +188,8 @@ int draw_piece(PieceType type, PieceColor color, int file, int rank)
 	u32 bmp_top = color;
 	u32 bmp_left = type;
 
-	u32 bmp_bottom = bmp_top + piece_height;
-	u32 bmp_right = MIN(bmp_left + 60,800);
+	u32	bmp_bottom = bmp_top + piece_height;
+	u32 bmp_right = MIN(bmp_left + 90,800);
 
 	/*
 	 * Assuming ranks are numbered from 1 to eight with the eighth rank
@@ -288,21 +289,23 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 			if((err = clear_square(file,rank)) != 0) return err;
 
 	// Dessiner un carré de largeur 140 et de hauteur 204
-	draw_square(500,900,140,204,YELLOW);
+	//draw_square(500,900,140,204,YELLOW);
 
 	// Dessiner la portion du bitmap de i = 0, j = 0 à i = 204, j = 140
-	draw_partial_bitmap_2(500,900,
-						0,0,
-						204,140,
-						&pieces,pieces_data);
+	//draw_partial_bitmap_2(500,900,
+	//					0,0,
+	//					204,140,
+	//					&pieces,pieces_data);
 
 	// Dessiner le bitmap au complet
-	draw_full_bitmap_2(bd.top + 3*bd.square_size,bd.left, &pieces, pieces_data);
+	// draw_full_bitmap_2(bd.top + 3*bd.square_size,bd.left, &pieces, pieces_data);
 
 	// Dessiner le bitmap au complet
-	draw_full_bitmap_2(100, 30, &chars, chars_data);
-	draw_string(150,30, "!\"\nPHIL");
+	//draw_full_bitmap_2(100, 30, &chars, chars_data);
 
+	// draw_string(150,30, "J'arrive a dessiner des strings a l'ecran, je lis les bitmaps correctement\nmais ya quelque chose\navec la transparence que je fais pas bien.\nJe suis pas mal sur que je vais pouvoir trouver demain.\n    -Phil");
+	//draw_square(0,0,100,(204-124),YELLOW);
+	//draw_partial_bitmap(0,0,124,300,204,400,&pieces,pieces_data);
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
@@ -310,16 +313,24 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	}
 
 
-	if((err = draw_piece(WHITE, ROOK,   A, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, ROOK,   H, R1)) != 0) return err;
-#if 0
-	if((err = draw_piece(WHITE, KNIGHT, B, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, KNIGHT, G, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, BISHOP, C, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, BISHOP, F, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, KING,   E, R1)) != 0) return err;
-	if((err = draw_piece(WHITE, QUEEN,  D, R1)) != 0) return err;
+	if((err = draw_piece(ROOK,   WHITE, A, R1)) != 0) return err;
+	if((err = draw_piece(ROOK,   WHITE, H, R1)) != 0) return err;
+	if((err = draw_piece(KNIGHT, WHITE, B, R1)) != 0) return err;
+	if((err = draw_piece(KNIGHT, WHITE, G, R1)) != 0) return err;
+	if((err = draw_piece(BISHOP, WHITE, C, R1)) != 0) return err;
+	if((err = draw_piece(BISHOP, WHITE, F, R1)) != 0) return err;
+	if((err = draw_piece(KING,   WHITE, E, R1)) != 0) return err;
+	if((err = draw_piece(QUEEN,  WHITE, D, R1)) != 0) return err;
 
+	if((err = draw_piece(ROOK,   BLACK, A, R8)) != 0) return err;
+	if((err = draw_piece(ROOK,   BLACK, H, R8)) != 0) return err;
+	if((err = draw_piece(KNIGHT, BLACK, B, R8)) != 0) return err;
+	if((err = draw_piece(KNIGHT, BLACK, G, R8)) != 0) return err;
+	if((err = draw_piece(BISHOP, BLACK, C, R8)) != 0) return err;
+	if((err = draw_piece(BISHOP, BLACK, F, R8)) != 0) return err;
+	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
+	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
+#if 0
 	if((err = draw_piece(BLACK, ROOK,   A, R8)) != 0) return err;
 	if((err = draw_piece(BLACK, ROOK,   H, R8)) != 0) return err;
 	if((err = draw_piece(BLACK, KNIGHT, B, R8)) != 0) return err;
