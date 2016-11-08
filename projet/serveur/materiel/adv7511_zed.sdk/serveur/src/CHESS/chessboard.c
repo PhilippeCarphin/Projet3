@@ -69,8 +69,8 @@ static void ChessGameInitialisation()
 	clearBoard();
 	
 	// we initialize the pieces of the first players
-	player1Pieces[0] = PieceInitialisation(3,0,king,player1);
-	player1Pieces[1] = PieceInitialisation(4,0,queen,player1);
+	player1Pieces[0] = PieceInitialisation(4,0,king,player1);
+	player1Pieces[1] = PieceInitialisation(3,0,queen,player1);
 	player1Pieces[2] = PieceInitialisation(2,0,bishop,player1);
 	player1Pieces[3] = PieceInitialisation(5,0,bishop,player1);
 	player1Pieces[4] = PieceInitialisation(0,0,rook,player1);
@@ -90,8 +90,8 @@ static void ChessGameInitialisation()
 	setBoard(player1Pieces);
 
 	// we initialize the pieces for the second player
-	player2Pieces[0] = PieceInitialisation(3,7,king,player2);
-	player2Pieces[1] = PieceInitialisation(4,7,queen,player2);
+	player2Pieces[0] = PieceInitialisation(4,7,king,player2);
+	player2Pieces[1] = PieceInitialisation(3,7,queen,player2);
 	player2Pieces[2] = PieceInitialisation(2,7,bishop,player2);
 	player2Pieces[3] = PieceInitialisation(5,7,bishop,player2);
 	player2Pieces[4] = PieceInitialisation(0,7,rook,player2);
@@ -135,6 +135,13 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 
 enum ChessboardRestStatus move_piece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
+
+	// check if it's the player turn
+	if (player != currentTurnInfo.turn)
+	{
+		return deplacementIllegal;
+	}
+
 	// extract positions and pieces
 	int xs = src[0]-'a'; // x of source position
 	int ys = src[1]-'1'; // y of source position
@@ -230,6 +237,7 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 			 // moving like a Bishop
 			if ((xs < xd && ys < yd))
 			{ // meme signe
+
 				int i = (xs < xd ? xs : xd); // min X
 				int j = (ys < yd ? ys : yd); // min Y
 				int dist = (xs > xd ? xs - xd : xd - xs);
@@ -273,22 +281,22 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 		break;
 	case pawn:
 		if(	piece->playerID == player1 ?
-			xs == 1 && xd == 3 && ys == yd && boardGame[2][ys] == 0 :
-			xs == 6 && xd == 4 && ys == yd && boardGame[5][ys] == 0
+			ys == 1 && yd == 3 && xs == xd && boardGame[xs][2] == 0 :
+			ys == 6 && yd == 4 && xs == xd && boardGame[xs][5] == 0
 			) // if first time jump
 			piece->enPassant = true; // TODO: clean this flag on the next turn
-		else if(xd - xs != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
+		else if(yd - ys != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
 		{
 			return deplacementIllegal;
 		}
 		else
 		{
-			if ((ys > yd ? ys - yd : yd - ys) > 1) // abs(diff Y) > 1
+			if ((xs > xd ? xs - xd : xd - xs) > 1) // abs(diff Y) > 1
 				return deplacementIllegal; // moving too much in Y
-			if (ys == yd && boardGame[xd][yd] != 0)
+			if (xs == xd && boardGame[xd][yd] != 0)
 				return deplacementIllegal; // capturing in front
 
-			if((ys > yd ? ys - yd : yd - ys) == 1) // moving diagonnally / capturing
+			if((xs > xd ? xs - xd : xd - xs) == 1) // moving diagonnally / capturing
 			{
 				Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
 				if (enPassant != 0 && // capturing En Passant

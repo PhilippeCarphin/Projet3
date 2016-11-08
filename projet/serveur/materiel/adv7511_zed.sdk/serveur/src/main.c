@@ -28,12 +28,12 @@ int main(){
 
 	//test_http_all();
 
-	test_new_game();
+	//test_new_game();
 	//test_get_board();
-
-	///test_start();
+	//test_start();
 	//test_move();
 	//test_get_board();
+	test_game(); // coup du berger
 
 	while(1){
 		run_HDMI();

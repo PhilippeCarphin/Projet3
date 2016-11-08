@@ -212,8 +212,62 @@ void test_get_board()
  *
  * NOTE: there should be a player 1's pawn/rook/king/queen in a2
  *****************************************************************************/
-void test_move()
+void test_movePlayer1(char* coord)
 {	
+	int result;
+	char src[100];
+	char request[150];
+    strcpy(src,  coord);
+	strcpy(request, "POST /move/1/");
+	strcat(request,src);
+    strcpy(src,  "\r\nHTTP/1.1");
+    strcat(request,src);
+	char response[2048];
+
+	xil_printf("\n******************* TEST MOVE ***********************\n");
+	xil_printf("HTTP Request: \n%s\n\n", request);
+	result = HTTP_dispatchRequest(request, response);
+	xil_printf("Returned code: \n%d\n\n", result);
+	xil_printf("HTTP Response: \n%s\n\n", response);
+	xil_printf("*******************************************************\n");
+}
+
+void test_movePlayer2(char* coord)
+{
+	int result;
+	char src[100];
+	char request[150];
+    strcpy(src,  coord);
+	strcpy(request, "POST /move/2/");
+	strcat(request,src);
+    strcpy(src,  "\r\nHTTP/1.1");
+    strcat(request,src);
+	char response[2048];
+
+	xil_printf("\n******************* TEST MOVE ***********************\n");
+	xil_printf("HTTP Request: \n%s\n\n", request);
+	result = HTTP_dispatchRequest(request, response);
+	xil_printf("Returned code: \n%d\n\n", result);
+	xil_printf("HTTP Response: \n%s\n\n", response);
+	xil_printf("*******************************************************\n");
+}
+
+/******************************************************************************
+ * Request: POST /move/1/a2-a3
+ *			HTTP/1.1
+ *
+ * Expected: HTTP/1.1 200 OK
+ *			 Content-Type : text/plain
+ *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *
+ *			 {
+ *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
+ *			 }
+ *
+ * NOTE: there should be a player 1's pawn/rook/king/queen in a2
+ *****************************************************************************/
+void test_move()
+{
 	int result;
 	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1";
 	char response[2048];
@@ -224,6 +278,44 @@ void test_move()
 	xil_printf("Returned code: \n%d\n\n", result);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
+}
+
+/******************************************************************************
+ * Request: POST /move/1/a2-a3
+ *			HTTP/1.1
+ *
+ * Expected: HTTP/1.1 200 OK
+ *			 Content-Type : text/plain
+ *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *
+ *			 {
+ *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
+ *			 }
+ *
+ * NOTE: there should be a player 1's pawn/rook/king/queen in a2
+ *****************************************************************************/
+void test_game()
+{
+	test_new_game();
+	test_start();
+	test_get_board();
+	test_movePlayer1("e2-e4");
+	test_movePlayer2("e7-e5");
+	test_movePlayer1("d1-h5");
+	test_movePlayer2("b8-c6");
+	test_movePlayer1("f1-c4");
+	test_movePlayer2("g8-f6");
+	test_get_board();
+	test_movePlayer1("h5-f7");
+	test_movePlayer2("d7-d5");
+	test_movePlayer1("e4-d5");
+	test_movePlayer2("e8-f8");
+	/*test_movePlayer1("h2-h3");
+	test_movePlayer2("a8-b8");
+	test_movePlayer1("h1-h2");
+	test_get_board();*/
+
+
 }
 
 /******************************************************************************
