@@ -39,6 +39,7 @@ static BMP pieces;
 static u8 *pieces_data;
 static int piece_width = 133;
 static int piece_height = 204 - WHITE;
+static u32 offsets[6];
 
 #define v_offset 10;
 #define h_offset 10;
@@ -67,6 +68,9 @@ int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat)
 	return 0;
 }
 
+/******************************************************************************
+ * Read bitmap data into memory
+******************************************************************************/
 int BoardDisplay_init()
 {
 	int err;
@@ -79,6 +83,13 @@ int BoardDisplay_init()
 		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
+
+	offsets[PAWN] = 19; //19
+	offsets[ROOK] = 13; //13
+	offsets[QUEEN] = 1;
+	offsets[KNIGHT] = 8;
+	offsets[KING] = 8;
+	offsets[BISHOP] = 6;
 	return 0;
 }
 
@@ -205,7 +216,7 @@ int draw_piece(PieceType type, PieceColor color, int file, int rank)
 	 * at the top of the board on the screen.
 	 */
 	u32 screen_top = bd.top + rank_to_pixel(rank) + v_offset;
-	u32 screen_left = bd.left + file_to_pixel(file) + h_offset;
+	u32 screen_left = bd.left + file_to_pixel(file) + offsets[type];
 
 	/* 
 	 * v_offset and h_offset to make the pieces centered inside their squares
@@ -247,24 +258,6 @@ int clear_square(int file, int rank)
 		color = LIGHT_SQUARE_COLOR;
 
 	return color_square(file, rank, color);
-}
-
-/******************************************************************************
- * Read bitmap data into memory
-******************************************************************************/
-int boardDisplay_loadImages()
-{
-	if(read_bitmap_file_2("pieces_filename", &pieces, pieces_data, PIECE_DATA_SIZE))
-	{
-		xil_printf("%s(): Unable to read pieces bitmap",__FUNCTION__);
-		return -1;
-	}
-	if(read_bitmap_file_2("characters_filename", &chars, chars_data, CHARS_DATA_SIZE))
-	{
-		xil_printf("%s(): Unable to read chars bitmap",__FUNCTION__);
-		return -1;
-	}
-	return 0;
 }
 
 /******************************************************************************
@@ -316,8 +309,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	//draw_square(0,0,100,(204-124),YELLOW);
 	//draw_partial_bitmap(0,0,124,300,204,400,&pieces,pieces_data);
 
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-			"Salut les amis, maintenant, je dessine une string dans l'ecran.  Je peux utiliser des '\\n' mais en plus, la fonction va automatiquement ajouter des sauts de ligne si on depasse le bord de l'ecran.");
+
 	for( file = A; file <= H; file++)
 	{
 		if((err = draw_piece(PAWN, WHITE, file, R2)) != 0) return err;
@@ -342,19 +334,45 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(BISHOP, BLACK, F, R8)) != 0) return err;
 	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
 	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
-#if 0
-	if((err = draw_piece(BLACK, ROOK,   A, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, ROOK,   H, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, KNIGHT, B, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, KNIGHT, G, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, BISHOP, C, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, BISHOP, F, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, KING,   E, R8)) != 0) return err;
-	if((err = draw_piece(BLACK, QUEEN,  D, R8)) != 0) return err;
 
+	struct Move mv;
+	mv.c = WHITE;
+	mv.t = PAWN;
+	mv.o_file = E;
+	mv.o_rank = R2;
+	mv.d_file = E;
+	mv.d_rank = R4;
+
+	BoardDisplay_move_piece(&mv);
+	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4");
+
+
+	mv.c = BLACK;
+	mv.t = PAWN;
+	mv.o_file = E;
+	mv.o_rank = R7;
+	mv.d_file = E;
+	mv.d_rank = R5;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5");
+
+	mv.c = WHITE;
+	mv.t = KNIGHT;
+	mv.o_file = G;
+	mv.o_rank = R1;
+	mv.d_file = F;
+	mv.d_rank = R3;
+
+	BoardDisplay_move_piece(&mv);
+	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
+				"1. e4  e5\n2. Nf3");
+#if 0
 #endif
 	return 0;
-
 }
 
 /******************************************************************************

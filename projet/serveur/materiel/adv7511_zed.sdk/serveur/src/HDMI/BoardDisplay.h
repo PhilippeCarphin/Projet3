@@ -12,6 +12,8 @@ typedef enum PieceType {KING = 0, QUEEN = 140, ROOK = 300, BISHOP = 440, KNIGHT 
 typedef enum PieceColor {WHITE = 124, BLACK = 0} PieceColor;
 
 
+
+
 struct Move{
 	PieceType t;
 	PieceColor c;
