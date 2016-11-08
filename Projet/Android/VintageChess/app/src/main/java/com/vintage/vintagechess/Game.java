@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -180,7 +179,7 @@ public class Game {
         currentPiece = null;
         drawMotionlessPieces();
         drawMovingPiece();
-        new GetRequestTask().execute("http://www.google.com");
+        new RequestTask().execute("http://www.google.com");
     }
 
     public static void handleMove(int xPix, int yPix) {

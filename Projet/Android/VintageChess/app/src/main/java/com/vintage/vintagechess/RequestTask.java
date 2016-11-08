@@ -16,16 +16,16 @@ import java.net.URL;
  * Created by User on 2016-11-03.
  */
 
-class GetRequestTask extends AsyncTask<String, String, String> {
+class RequestTask extends AsyncTask<String, String, String> {
     @Override
-    protected String doInBackground(String... urls) {
+    protected String doInBackground(String... args) {
 
         // params comes from the execute() call: params[0] is the url.
         try {
-            return downloadUrl("http://132.207.89.27/status/board");//urls[0]);
+            return downloadUrl("http://132.207.89.27" + args[0], args[1], args[2]);//urls[0]);
         } catch (IOException e) {
             e.printStackTrace();
-            return "Unable to retrieve web page. URL may be invalid.";
+            return "Unable to retrieve data";
         }
     }
     // onPostExecute displays the results of the AsyncTask.
@@ -42,7 +42,7 @@ class GetRequestTask extends AsyncTask<String, String, String> {
     }
 
 
-    private String downloadUrl(String myurl) throws IOException {
+    private String downloadUrl(String myurl, String method, String body) throws IOException {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
@@ -55,7 +55,7 @@ class GetRequestTask extends AsyncTask<String, String, String> {
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setDoInput(true);
             //conn.setDoOutput(true);
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod(method);
 
             //conn.setRequestProperty("content-length", );
             // Starts the query
