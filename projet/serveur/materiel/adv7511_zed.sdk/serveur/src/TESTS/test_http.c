@@ -309,7 +309,8 @@ void test_game()
 	test_movePlayer1("h5-f7");
 	test_movePlayer2("d7-d5");
 	test_movePlayer1("e4-d5");
-	test_movePlayer2("e8-f8");
+	test_get_board();
+	test_movePlayer2("e8-e7");
 	/*test_movePlayer1("h2-h3");
 	test_movePlayer2("a8-b8");
 	test_movePlayer1("h1-h2");

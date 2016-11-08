@@ -20,10 +20,10 @@ int main(){
 	u8 pieces_data[PIECE_DATA_SIZE];
 
 	// give their addresses to the modules that will use them
-	set_screen_buffer(screen_buf);
-	BoardDisplay_set_image_buffers(chars_data, pieces_data);
+	//set_screen_buffer(screen_buf);
+	//BoardDisplay_set_image_buffers(chars_data, pieces_data);
 
-	init_HDMI();
+	//init_HDMI();
 	init_TCP();
 
 
@@ -36,7 +36,7 @@ int main(){
 	//test_get_board();
 	test_game(); // coup du berger
 	while(1){
-		run_HDMI();
+		//run_HDMI();
 		run_TCP();
 	}
 	close_HDMI();
