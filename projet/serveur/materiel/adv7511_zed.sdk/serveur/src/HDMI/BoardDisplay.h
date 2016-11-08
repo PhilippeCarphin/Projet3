@@ -76,12 +76,9 @@ struct PlayerTimes{
  *    letters.
  *  - Once this is done, BoardDisplay_init will load image data in the buffers
  *    that were set using the previous function.
- *  - set_chess_board_params() is used to specify the position and dimensions
- *    of the chessboard.
 ******************************************************************************/
 int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat);
 int BoardDisplay_init();
-int set_chess_board_params(int top, int left, int square_size, u32 margin);
 
 /******************************************************************************
  * Chessboard drawing functions
