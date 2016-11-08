@@ -79,11 +79,11 @@ int BoardDisplay_init()
 	int err;
 
 	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
-		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
+		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
 	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
-		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
+		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
 
@@ -149,13 +149,13 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 				cursor_top += line_skip;
 			}
 			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
-				WHERE xil_printf("Could not draw char %c\n");
+				WHERE DBG_PRINT("Could not draw char %c\n");
 				return err;
 			} else {
 				cursor_left += char_width;
 			}
 		} else {
-			xil_printf("%s(): Unknown char\n", __FUNCTION__);
+			DBG_PRINT("%s(): Unknown char\n", __FUNCTION__);
 		}
 
 	}

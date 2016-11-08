@@ -97,23 +97,23 @@ int read_bitmap_file(char *path, BMP *bmp, u8 *imgData, int imgDataMax)
 {
 	FIL fil;       /* File object */
 	FRESULT fr;
-	WHERE xil_printf("Path to open = %s\n", path);
+	WHERE DBG_PRINT("Path to open = %s\n", path);
     f_mount(&FatFs, "0:/", 1);
 	/* Open file */
 	fr = f_open(&fil, path, FA_READ);
 
 	if(fr){
-		WHERE xil_printf("Unable to open file %s for reading\n", path);
+		WHERE DBG_PRINT("Unable to open file %s for reading\n", path);
 		return -1;
 	}
 
 	/* Put info in supplied header struct and read data into dataBucket */
 	if(ReadBitmapHeader(bmp,&fil)){
-		WHERE xil_printf("Unable to read header for %s\n", path);
+		WHERE DBG_PRINT("Unable to read header for %s\n", path);
 		return -1;
 	}
 
-	WHERE xil_printf("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
+	WHERE DBG_PRINT("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
 	read_bitmap_data(bmp,&fil,imgData);
 
 	// f_close
