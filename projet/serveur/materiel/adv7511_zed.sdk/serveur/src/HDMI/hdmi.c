@@ -178,67 +178,8 @@ int init_HDMI()
 
 	Xil_ExceptionEnable();
 
-#if 0
-	//ReadBitmapFile("zedboard.bmp");
-	/*
-	 * TEST: Attempt to initialize the screen with the right dimensions.
-	 *
-	 * Use the set the background color to blue,
-	 * draw a purple square near the upper right corner.
-	 */
-	set_screen_dimensions(1280,1024);
-	u32 color = (1 << 24) | (0xFF); // Should be blue
-	set_background_color(0x00000000); // Set the entire screen to blue.
-
-	u32 sq = 100; // side length of square
-	u32 t = 200; // top
-	u32 l = 50; // left
-	u32 m = 20; // margin
-
-	int i,j;
-	// Draw slightly larger square "behind" the chessboard
-	draw_square(t-m,l-m,8*sq + 2*m, 8*sq +2*m,(149 << 16) | (92 << 8) | 62);
-
-	// Draw the chessboard
-	for (i = 0; i < 8; ++i)
-		for(j = 0; j<8; ++j)
-		{
-			if((i+j)%2 == 0)
-				color = 0x00EEEED2;
-			else
-				color = 0x00769656;
-			draw_square(t + i*sq, l + j*sq ,sq ,sq ,color);
-		}
-
-	if(0)
-	{
-		// Tableau pour contenir les donnees
-		struct RGBA imageData[64*64];
-		// Struct pour recevoir le header
-		BMP image;
-
-		// Lecture du bitmap
-		// Note, read_bitmap_file ne fais pas de mount de la carte SD
-		// static FATFS FatFs;   /* Work area (file system object) for logical drive */
-		/* Register work area to the default drive */
-		// f_mount(&FatFs, "", 0);
-		read_bitmap_file("lepath", &image , imageData, 64*64);
-	// Dessiner une partie du bitmap dans l'ecran
-	/* int draw_partial_bitmap(u32 screen_top, u32 screen_left,
-			u32 img_top, u32 img_left, u32 img_bottom, u32 img_right,
-			BMP *bmp, struct RGBA *data);*/
-		draw_partial_bitmap(300,300, 0, 0, 123, 456, &image, imageData);
-	}
-#else
 // This replaces the previous block in the #if 0 part
 	BoardDisplay_init();
-	set_screen_dimensions(1280,1024);
-	set_chess_board_params(200,50,90,10);
-	set_background_color(0x00000000); // Set the entire screen to blue.
-	draw_chess_board();
-
-	xil_printf("MARKER\n");
-#endif
 
 	SetVideoResolution(RESOLUTION_1280x1024);
 

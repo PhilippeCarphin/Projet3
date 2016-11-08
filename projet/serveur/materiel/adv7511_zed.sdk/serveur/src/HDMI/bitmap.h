@@ -31,23 +31,6 @@ typedef struct BMP
 	UINT	ColorsRequired;		/* Number of color indexes that are required for displaying the bitmap */
 }BMP;
 
-typedef struct RGB
-{
-	int Red;
-	int Green;
-	int Blue;
-} RGB;
-
-/*******************************************************************************
- * Structure to hold the data for a 32 bit pixel with transparency.  This will
- * be used namely for drawing the image of chess pieces.
-*******************************************************************************/
-struct RGBA{
-	u8 R;
-	u8 G;
-	u8 B;
-	u8 A;
-};
 
 /*******************************************************************************
  * Interface function.  Client declares
@@ -58,10 +41,13 @@ struct RGBA{
  * NOTE: mounting of the SD card will have to be donne at the initialization of
  * the application the way that it is done in TP3.
 *******************************************************************************/
-int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax);
-int read_bitmap_file_2(char *path, BMP *bmp, u8 *imgData, int imgDataMax);
-u32 RGBA_to_NRGB(struct RGBA rgba);
+int read_bitmap_file(char *path, BMP *bmp, u8 *imgData, int imgDataMax);
 
+/*******************************************************************************
+ * Interface function to get the color of a pixel. Returns a u32 whose bytes
+ * are AARRGGBB
+*******************************************************************************/
+u32 get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData);
 
 int ReadBitmapFile(char* path);
 
