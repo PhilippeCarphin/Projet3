@@ -140,7 +140,8 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 		}
 		else if ( 32 < c && c <= '~' )
 		{
-			if( c >= 'W') c -= 1;
+			if( c > 'W') c -= 1;
+			if( c == 'W') c = 'w';
 			if( cursor_left + char_width + 2 >= screen.w){
 				cursor_left = screen_left;
 				cursor_top += line_skip;
@@ -299,6 +300,7 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 
 
 	// TESTS de la fonction move_piece
+	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
 
 	struct Move mv;
 	mv.c = WHITE;
@@ -309,10 +311,6 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	mv.d_rank = R4;
 
 	BoardDisplay_move_piece(&mv);
-
-
-
-	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4");
 
