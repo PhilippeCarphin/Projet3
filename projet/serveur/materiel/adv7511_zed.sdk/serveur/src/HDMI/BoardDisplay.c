@@ -78,11 +78,11 @@ int BoardDisplay_init()
 {
 	int err;
 
-	if( (err = read_bitmap_file_2("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of Letters.bmp\n");
 		return err;
 	}
-	if( (err = read_bitmap_file_2("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
 		WHERE xil_printf("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
@@ -112,7 +112,7 @@ int draw_char(u32 screen_top, u32 screen_left, char c)
 	u32 bmp_bottom = chars.Height;
 	u32 bmp_right = bmp_left + char_width;
 
-	return draw_partial_bitmap_2( screen_top, screen_left,
+	return draw_partial_bitmap( screen_top, screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&chars, chars_data);
@@ -162,7 +162,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 ******************************************************************************/
 int draw_information(struct GameInfo *gi)
 {
-	int some_top = 0, some_left = 0;
+	//int some_top = 0, some_left = 0;
 	//draw_string(some_top, some_left, gi->player1);
 	//draw_string(some_top, some_left, gi->player2);
 	// ...
@@ -203,7 +203,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32 screen_top = bd.top + rank_to_pixel(rank) + v_offset;
 	u32 screen_left = bd.left + file_to_pixel(file) + offsets[type];
 
-	return draw_partial_bitmap_2( screen_top , screen_left,
+	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
 								bmp_bottom, bmp_right,
 								&pieces, pieces_data);

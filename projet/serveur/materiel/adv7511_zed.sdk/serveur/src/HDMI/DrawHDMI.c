@@ -100,22 +100,6 @@ int set_pixel(int i, int j, u32 color)
 	return 0;
 }
 
-
-
-/******************************************************************************
-* set_pixel function for RGBA pixels.  We deal only with fully transparent
-* pixels (A == 0) or fully opaque pixels (A = 0xFF) so either the pixel is
-* transparent so we don't draw it in the screen, or the pixel is opaque and
-* we replace the current value with a new one.
-******************************************************************************/
-int set_pixel_RGBA(int i, int j,struct RGBA rgba)
-{
-	if( rgba.A > 0 )
-		screen.buffer[i*screen.w + j] = RGBA_to_NRGB(rgba);
-
-	return 0;
-}
-
 int set_pixel_u32(int i, int j, u32 color)
 {
 	//if( (color & 0xFF000000) == 0)
@@ -168,76 +152,7 @@ int draw_square(u32 top, u32 left, u32 w, u32 h, u32 color)
  * (img_bottom, img_left) not included so that to draw the whole image, we can do
  * (0,0) and (bmp->Height, bmp->Width)
 ******************************************************************************/
-int draw_partial_bitmap(u32 screen_top, u32 screen_left,
-						u32 img_top, u32 img_left, u32 img_bottom, u32 img_right,
-						BMP *bmp, struct RGBA *data)
-{
-	/* Error checks */
-	if(screen_top >= screen.h || screen_left >= screen.w)
-	{
-		WHERE xil_printf("invalid position of square w = %d, h = %d, (i,j) = (%d,%d)",
-									 screen.w, screen.h, screen_top,screen_left);
-		return -1;
-	}
-	if(img_top >= bmp->Height    || img_left >= bmp->Width ||
-	   img_bottom > bmp->Height  || img_right > bmp->Width ||
-	   img_top >= img_bottom     || img_left >= img_right)
-	{
-		WHERE xil_printf("invalid coordinates in image: (t,l):(%d,%d),  (b,r):(%d,%d)\n", img_top, img_left, img_bottom, img_right);
-				return -1;
-	}
-
-	int s_i,s_j; // coordinates in the screen
-	int b_i, b_j; // coordinates in the bitmap
-
-	for( s_i = screen_top    , b_i = img_top; s_i < screen.h  && b_i < img_bottom; ++s_i, ++b_i)
-	{
-		for(s_j = screen_left, b_j = img_left; s_j < screen.w  && b_j < img_right ; ++s_j, ++b_j)
-		{
-			/* Image pixel (b_i,b_j) ---> screen pixel (s_i,s_j)*/
-			if(set_pixel_RGBA(s_i,s_j,data[(bmp->Height - b_i - 1) * bmp->Width +(b_j)])) return -1;
-		}
-	}
-
-	WHERE xil_printf("Drew something in the screen\n");
-	return 0;
-}
-
-int draw_full_bitmap(u32 screen_top, u32 screen_left, BMP *bmp, struct RGBA *data)
-{
-	return draw_partial_bitmap(screen_top, screen_left, 0,0,bmp->Height, bmp->Width,bmp, data);
-}
-
-int get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData)
-{
-	u8 *pixel;
-	u32 a=0,r=0,g=0,b=0;
-	u32 color;
-
-	u32 bytes_per_row;
-	u8 bytes_per_pixel;
-
-	bytes_per_pixel = bmp->BitsPerPixel >> 3;
-
-	bytes_per_row = bmp->ImageDataSize / bmp->Height;
-
-	pixel = imgData + ( (bmp->Height - i - 1) * bytes_per_row + j * bytes_per_pixel );
-
-	a = *(pixel + 0);
-	r = *(pixel + 2);
-	g = *(pixel + 1);
-	b = *(pixel + 3);
-
-	a <<= 24;
-	r <<= 16;
-	g <<= 8;
-	b <<= 0;
-
-	color = (a | r | g | b );
-
-	return color;
-}
-int draw_partial_bitmap_2(  u32 screen_top, u32 screen_left,
+int draw_partial_bitmap(  u32 screen_top, u32 screen_left,
 							u32 img_top, u32 img_left, u32 img_bottom, u32 img_right,
 							BMP *bmp, u8 *data)
 {
@@ -271,7 +186,8 @@ int draw_partial_bitmap_2(  u32 screen_top, u32 screen_left,
 	WHERE xil_printf("Drew something in the screen\n");
 	return 0;
 }
-int draw_full_bitmap_2(u32 screen_top, u32 screen_left, BMP *bmp, u8 *data)
+
+int draw_full_bitmap(u32 screen_top, u32 screen_left, BMP *bmp, u8 *data)
 {
-	return draw_partial_bitmap_2(screen_top, screen_left, 0,0,bmp->Height, bmp->Width,bmp, data);
+	return draw_partial_bitmap(screen_top, screen_left, 0,0,bmp->Height, bmp->Width,bmp, data);
 }
