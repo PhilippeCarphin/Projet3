@@ -55,6 +55,11 @@ int move_piece(struct Move *move);
 u32 file_to_pixel(int file);
 u32 rank_to_pixel(int rank);
 
+/******************************************************************************
+ * Used by BoardDisplay_move_piece, reset by
+******************************************************************************/
+static int first_move = 1;
+
 // New stuff
 int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
@@ -226,15 +231,15 @@ int color_square(File file, Rank rank, u32 color)
 }
 
 /******************************************************************************
- *
+ * Set the color of a square to the correct color
 ******************************************************************************/
 int clear_square(File file, Rank rank)
 {
 	u32 color;
 	if( (rank + file) % 2 == 0 )
-		color = DARK_SQUARE_COLOR;
-	else 
 		color = LIGHT_SQUARE_COLOR;
+	else
+		color = DARK_SQUARE_COLOR;
 
 	return color_square(file, rank, color);
 }
@@ -251,17 +256,14 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	return 0;
 }
 
-
 /******************************************************************************
- * Like what I had in the example
- * draw bigger square in the back, then draw the pieces
+ * Draw an empty chessboard with margin, squares and coordinates
 ******************************************************************************/
- int draw_chess_board()
+int draw_empty_board()
 {
 	int file = A;
 	int rank = R1;
 	int err;
-	set_background_color(0x00666666);
 
 	// Dessiner la marge (un carré plus gros en arriere du board).
 	draw_square(bd.top - bd.margin,bd.left - bd.margin,
@@ -273,6 +275,38 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
+	return 0;
+}
+
+/******************************************************************************
+ * Draw coordinates
+******************************************************************************/
+int draw_coordinates()
+{
+	int err;
+	char c;
+	int offset = bd.square_size / 2 - 10;
+	for(c = 'A'; c <= 'H'; ++c)
+	{
+		if((err = draw_char(bd.top + 8*bd.square_size, bd.left + offset + (c-'A')*bd.square_size, c)) != 0) return err;
+		if((err = draw_char(bd.top - 24 , bd.left + offset + (c-'A')*bd.square_size, c)) != 0) return err;
+	}
+
+	for(c = '8'; c >= '1'; --c)
+	{
+		if((err = draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left - 17, c)) != 0) return err;
+		if((err = draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left + 8*bd.square_size +3, c)) != 0) return err;
+	}
+	return 0;
+}
+
+/******************************************************************************
+ * Draw pieces in their initial positions
+******************************************************************************/
+int draw_pieces()
+{
+	int err;
+	File file;
 	// Dessiner les pions.
 	for( file = A; file <= H; file++)
 	{
@@ -300,19 +334,87 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
 	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
 
-	char c;
-	int offset = bd.square_size / 2 - 10;
-	for(c = 'A'; c <= 'H'; ++c)
+	return 0;
+}
+
+/******************************************************************************
+ * Draws the chessboard with pieces in their initial positions
+******************************************************************************/
+int test_move_piece();
+ int draw_chess_board()
+{
+	int err;
+
+	if( (err = set_background_color(0x00666666)) != 0) return err;
+	if( (err = draw_empty_board()) != 0) return err;
+	if( (err = draw_coordinates()) != 0) return err;
+	if( (err = draw_pieces()) != 0) return err;
+
+	first_move = 1;
+
+	test_move_piece();
+	return 0;
+}
+
+/******************************************************************************
+ * Put the preceding functions to use to do what Clement (Badass) Lanteigne
+ * suggested with the coloring of squares
+ * For maximum error reporting, we should do 
+ * if( function() ) return -1;
+******************************************************************************/
+int BoardDisplay_move_piece(struct Move *move)
+{
+	int err;
+	/*
+	 * During the preceding call, we yellowed the origin square,
+	 * and we drew the moved piece on a yellowed square.  So we start 
+	 * by restoring this to normal by clearing both squares and redrawing
+	 * the moved piece on the cleared square
+	 */
+	static struct Move last;
+	if( ! first_move )
 	{
-		draw_char(bd.top + 8*bd.square_size, bd.left + offset + (c-'A')*bd.square_size, c);
-		draw_char(bd.top - 24 , bd.left + offset + (c-'A')*bd.square_size, c);
+		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
+		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
+		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
 	}
 
-	for(c = '8'; c >= '1'; --c)
-	{
-		draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left - 17, c);
-		draw_char(bd.top + offset + ('8'-c) * bd.square_size, bd.left + 8*bd.square_size +3, c);
-	}
+	/*
+	 * Yellow the origin square and the destination square and draw the moved
+	 * piece on it's destination square.
+	 */
+	if((err = color_square(move->o_file, move->o_rank, YELLOW)) != 0) return err;
+	if((err = color_square(move->d_file, move->d_rank, YELLOW)) != 0) return err;
+	if((err = draw_piece(move->t, move->c, move->d_file, move->d_rank)) != 0) return err;
+	
+	/*
+	 * Remember the last move for the next one.
+	 */
+	first_move = 0;
+	last = *move;
+
+	return 0;
+}
+
+
+/******************************************************************************
+ *
+******************************************************************************/
+u32 file_to_pixel(int file)
+{
+	return file * bd.square_size;
+}
+
+/******************************************************************************
+ *
+******************************************************************************/
+u32 rank_to_pixel(int rank)
+{
+	return (7 - rank) * bd.square_size;
+}
+
+int test_move_piece()
+{
 	// TESTS de la fonction move_piece
 	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
 	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
@@ -360,65 +462,5 @@ int set_chess_board_params(int top, int left, int square_size, u32 margin)
 	BoardDisplay_move_piece(&mv);
 	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
 				"1. e4  e5\n2. Nf3 Nc6");
-#if 0
-#endif
 	return 0;
-}
-
-/******************************************************************************
- * Put the preceding functions to use to do what Clement (Badass) Lanteigne
- * suggested with the coloring of squares
- * For maximum error reporting, we should do 
- * if( function() ) return -1;
-******************************************************************************/
-int BoardDisplay_move_piece(struct Move *move)
-{
-	int err;
-	/*
-	 * During the preceding call, we yellowed the origin square,
-	 * and we drew the moved piece on a yellowed square.  So we start 
-	 * by restoring this to normal by clearing both squares and redrawing
-	 * the moved piece on the cleared square
-	 */
-	static int first_move = 1;
-	static struct Move last;
-	if( ! first_move )
-	{
-		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
-		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
-		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
-	}
-
-	/*
-	 * Yellow the origin square and the destination square and draw the moved
-	 * piece on it's destination square.
-	 */
-	if((err = color_square(move->o_file, move->o_rank, YELLOW)) != 0) return err;
-	if((err = color_square(move->d_file, move->d_rank, YELLOW)) != 0) return err;
-	if((err = draw_piece(move->t, move->c, move->d_file, move->d_rank)) != 0) return err;
-	
-	/*
-	 * Remember the last move for the next one.
-	 */
-	first_move = 0;
-	last = *move;
-
-	return 0;
-}
-
-
-/******************************************************************************
- *
-******************************************************************************/
-u32 file_to_pixel(int file)
-{
-	return file * bd.square_size;
-}
-
-/******************************************************************************
- *
-******************************************************************************/
-u32 rank_to_pixel(int rank)
-{
-	return (7 - rank) * bd.square_size;
 }
