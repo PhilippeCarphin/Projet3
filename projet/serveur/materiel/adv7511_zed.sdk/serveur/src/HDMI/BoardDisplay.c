@@ -210,8 +210,8 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32	bmp_bottom = bmp_top + piece_height;
 	u32 bmp_right = MIN(bmp_left + 90,800);
 
-	u32 screen_top = bd.top + rank_to_pixel(rank) + v_offset;
-	u32 screen_left = bd.left + file_to_pixel(file) + offsets[type];
+	u32 screen_top = rank_to_pixel(rank) + v_offset;
+	u32 screen_left = file_to_pixel(file) + offsets[type];
 
 	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
@@ -224,8 +224,8 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 ******************************************************************************/
 int color_square(File file, Rank rank, u32 color)
 {
-	u32 screen_top = bd.top + rank_to_pixel(rank);
-	u32 screen_left = bd.left + file_to_pixel(file);
+	u32 screen_top = rank_to_pixel(rank);
+	u32 screen_left = file_to_pixel(file);
 	return draw_square(screen_top, screen_left, 
 						bd.square_size, bd.square_size, color);
 }
@@ -402,7 +402,7 @@ int BoardDisplay_move_piece(struct Move *move)
 ******************************************************************************/
 u32 file_to_pixel(int file)
 {
-	return file * bd.square_size;
+	return bd.left + file * bd.square_size;
 }
 
 /******************************************************************************
@@ -410,7 +410,7 @@ u32 file_to_pixel(int file)
 ******************************************************************************/
 u32 rank_to_pixel(int rank)
 {
-	return (7 - rank) * bd.square_size;
+	return bd.top + (7 - rank) * bd.square_size;
 }
 
 int test_move_piece()
