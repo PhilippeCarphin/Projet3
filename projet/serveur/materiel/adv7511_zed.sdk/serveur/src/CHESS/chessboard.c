@@ -425,18 +425,22 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	{
 		if (boardPosition->positions[i][0] == 'x')
 		{
-			player2Pieces[i].alive = false;
+			player2Pieces[i-16].alive = false;
 		}
 		else
 		{
-			player2Pieces[i].alive = true;
-			player2Pieces[i].x = boardPosition->positions[i][0] - 'a';
-			player2Pieces[i].y = boardPosition->positions[i][1] - '1';
+			player2Pieces[i-16].alive = true;
+			player2Pieces[i-16].x = boardPosition->positions[i][0] - 'a';
+			player2Pieces[i-16].y = boardPosition->positions[i][1] - '1';
 		}	
 	}
+
+
 	// we set the board
 	setBoard(player1Pieces);
 	setBoard(player2Pieces);
+	currentTurnInfo.turn = boardPosition->turn;
+	currentTurnInfo.move_no = boardPosition->move_no;
 	return OK;
 	
 }
