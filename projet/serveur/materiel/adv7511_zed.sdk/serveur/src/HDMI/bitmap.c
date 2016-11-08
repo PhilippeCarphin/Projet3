@@ -10,10 +10,11 @@
 
 #include <stdio.h>
 #include "xil_io.h"
+#include "debug.h"
 
 const int BMP_HEADER_SIZE = 54;
 
-unsigned char dataBucket[MAX_BMP_DATA_SIZE];
+unsigned char dataBucket[1];
 
 
 static FATFS FatFs;   /* Work area (file system object) for logical drive */
@@ -184,11 +185,10 @@ int process_32bit_pixels(BMP *bmp, struct RGBA *dst, int dstMax)
 	struct RGBA rgba;
 	while ( i < bmp->ImageDataSize)
 	{
-		rgba.A = dataBucket[i++];
 		rgba.B = dataBucket[i++];
 		rgba.G = dataBucket[i++];
 		rgba.R = dataBucket[i++];
-
+		rgba.A = dataBucket[i++];
 		dst[j++] = rgba;
 	}
 	return 0;
@@ -248,22 +248,70 @@ int read_bitmap_file(char *path, BMP *bmp, struct RGBA *imgData, int imgDataMax)
 {
 	//ouvrir fichier
 	FIL fil;       /* File object */
-
-	/* Register work area to the default drive */
-	f_mount(&FatFs, "", 0);
-
+	FRESULT fr;
+	WHERE xil_printf("Path to open = %s\n", path);
+    f_mount(&FatFs, "0:/", 1);
 	/* Open file */
-	if (f_open(&fil, path, FA_READ))
+	fr = f_open(&fil, path, FA_READ);
+
+	if(fr){
+		WHERE xil_printf("Unable to open file %s for reading\n", path);
 		return -1;
+	}
 
 	/* Put info in supplied header struct and read data into dataBucket */
-	if(ReadBitmapHeader(bmp,&fil))
+	if(ReadBitmapHeader(bmp,&fil)){
+		WHERE xil_printf("Unable to read header for %s\n", path);
 		return -1;
+	}
 
+	WHERE xil_printf("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
+	ReadBitMap(bmp,&fil);
 	/* Process data from dataBucket into destination RGBA array */
 	if(bitmap_data_to_RGBA_array(bmp, imgData, imgDataMax))
 		return -1;
 
+	// f_close
 	return 0;
 }
 
+int read_bitmap_data(BMP *bmp, FIL *fil, u8* imgData)
+{
+	int err = 0;
+	unsigned int bytes_read;
+
+	if( (err = f_lseek(fil, bmp->DataOffset)) != 0 ) return err;
+	if( (err = f_read(fil, imgData, bmp->ImageDataSize, &bytes_read)) != 0 ) return err;
+
+	return err;
+
+}
+
+
+int read_bitmap_file_2(char *path, BMP *bmp, u8 *imgData, int imgDataMax)
+{
+	FIL fil;       /* File object */
+	FRESULT fr;
+	WHERE xil_printf("Path to open = %s\n", path);
+    f_mount(&FatFs, "0:/", 1);
+	/* Open file */
+	fr = f_open(&fil, path, FA_READ);
+
+	if(fr){
+		WHERE xil_printf("Unable to open file %s for reading\n", path);
+		return -1;
+	}
+
+	/* Put info in supplied header struct and read data into dataBucket */
+	if(ReadBitmapHeader(bmp,&fil)){
+		WHERE xil_printf("Unable to read header for %s\n", path);
+		return -1;
+	}
+
+	WHERE xil_printf("Header has been read, Height = %d, Width = %d, BitsPerPixel :%d\n", bmp->Height, bmp->Width, bmp->BitsPerPixel);
+	read_bitmap_data(bmp,&fil,imgData);
+
+	// f_close
+	f_close(&fil);
+	return 0;
+}
