@@ -59,6 +59,7 @@
 #define CLAMP(val, min, max)	(val < min ? min : (val > max ? max :val))
 #define ABS(x)					(x < 0 ? -x : x)
 
+static unsigned char current_resolution = RESOLUTION_1280x1024;
 
 static const unsigned long clkgen_filter_table[] =
 {
@@ -168,6 +169,17 @@ void DDRVideoWr(unsigned short horizontalActiveTime,
 		}
 	}
 	Xil_DCacheFlush();
+}
+
+/***************************************************************************//**
+ * @brief Send the hdmi buffer using current resolution parameters.  This function
+ * should be called when a set of modifications to the buffer have been made.
+ * This is why BoardDisplay.
+*******************************************************************************/
+void cf_hdmi_send_buffer()
+{
+	DDRVideoWr(detailedTiming[current_resolution][H_ACTIVE_TIME],
+			   detailedTiming[current_resolution][V_ACTIVE_TIME]);
 }
 
 /***************************************************************************//**
@@ -341,6 +353,7 @@ void InitHdmiVideoPcore(unsigned short horizontalActiveTime,
 *******************************************************************************/
 void SetVideoResolution(unsigned char resolution)
 {
+	current_resolution = resolution;
 	CLKGEN_SetRate(detailedTiming[resolution][PIXEL_CLOCK], 200000000);
 	InitHdmiVideoPcore(detailedTiming[resolution][H_ACTIVE_TIME],
 					   detailedTiming[resolution][H_BLANKING_TIME],

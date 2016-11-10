@@ -4,6 +4,7 @@
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
 #include "debug.h"
+#include "cf_hdmi.h"
 
 #define MIN(x, y)	(x < y ? x : y)
 #define MAX(x, y) 	(x > y ? x : y)
@@ -394,6 +395,8 @@ int BoardDisplay_move_piece(struct Move *move)
 	first_move = 0;
 	last = *move;
 
+	cf_hdmi_send_buffer();
+
 	return 0;
 }
 
@@ -418,7 +421,7 @@ int test_move_piece()
 {
 	// TESTS de la fonction move_piece
 	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
-	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
+	draw_string(100,30, "Francis a un penis de 12 pouces");
 	struct Move mv;
 	mv.c = WHITE;
 	mv.t = PAWN;
