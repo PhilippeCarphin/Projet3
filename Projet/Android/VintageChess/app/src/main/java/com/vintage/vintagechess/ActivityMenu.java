@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class ActivityMenu extends AppCompatActivity {
 
     private Button buttonPlay;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +29,13 @@ public class ActivityMenu extends AppCompatActivity {
                 handleClick(v);
             }
         });
+
+        editText = (EditText) findViewById(R.id.editTextIp);
     }
 
     private void handleClick(View v) {
         try {
-
+            Game.ip = editText.getText().toString();
             boolean existingGame = false;
             //todo: handle http to know if existing game or not. If one already exists and contains
             //two players, throw an exception.

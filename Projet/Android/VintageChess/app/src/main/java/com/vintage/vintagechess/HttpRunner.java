@@ -10,7 +10,7 @@ public class HttpRunner {
 
     private static REST rest;
     private static void runRequest(String suffix, String method, String body, RequestCallback callback) {
-        new RequestTask(callback).execute(suffix, method, body);
+        new RequestTask(callback).execute(Game.ip + suffix, method, body);
     }
 
 

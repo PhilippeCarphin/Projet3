@@ -31,6 +31,7 @@ public class Game {
     private static Piece currentPiece;
     private static Bitmap boardImg;
     public static int leftSpace;
+    public static String ip;
 
     private static ArrayList<Piece> pieces = new ArrayList<>();
     private static LinkedList<Piece> deletedPieces = new LinkedList<Piece>();

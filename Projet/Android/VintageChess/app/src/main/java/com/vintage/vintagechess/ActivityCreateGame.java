@@ -96,19 +96,20 @@ public class ActivityCreateGame extends AppCompatActivity {
         buttonCreateGame = (Button) findViewById(R.id.buttonCreateGame);
         buttonCreateGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                handleClick(v);
+                handleClick();
             }
         });
+        Callbacks.activityCreateGame = this;
 
     }
 
     private void handleRadioChange() {
-            editTextPassword.setEnabled(radioButton2.isChecked());
+        editTextPassword.setEnabled(radioButton2.isChecked());
         editTextPlayer2Name.setEnabled(radioButton1.isChecked());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */
-    private void handleClick(View v) {
+    private void handleClick() {
         try {
             oneTablet = radioButton2.isChecked();
             enPassantOption = enPassant.isChecked();
@@ -134,12 +135,16 @@ public class ActivityCreateGame extends AppCompatActivity {
 
 
 
-            Intent intent = new Intent(v.getContext(), ActivityGame.class);
-            startActivity(intent);
+
         }
         catch (Exception e) {
             Utilities.messageBox("ERROR", e.getMessage(), this);
             e.printStackTrace();
         }
+    }
+
+    public void openGame() {
+        Intent intent = new Intent(buttonCreateGame.getContext(), ActivityGame.class);
+        startActivity(intent);
     }
 }

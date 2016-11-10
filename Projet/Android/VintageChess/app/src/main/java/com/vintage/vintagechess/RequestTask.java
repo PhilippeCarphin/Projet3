@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +32,7 @@ class RequestTask extends AsyncTask<String, String, String> {
         
         // params comes from the execute() call: params[0] is the url.
        try {
-            return downloadUrl("http://132.207.89.29" + args[0], args[1], args[2]);//urls[0]);
+            return downloadUrl("http://132.207.89." + args[0], args[1], args[2]);//urls[0]);
         } catch (IOException e) {
             e.printStackTrace();
             return "Unable to retrieve data";
@@ -41,7 +43,13 @@ class RequestTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         //appeler ce qui doit etre fait avec le resultat
         //Utilities.messageBox("Get result", );
-        callback.runResponse(result);
+
+        try {
+            callback.runResponse(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -49,19 +57,20 @@ class RequestTask extends AsyncTask<String, String, String> {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
-        int len = 500;
+        //int len = 500;
 
         try {
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setReadTimeout(5000 /* milliseconds */);
+            conn.setConnectTimeout(7000 /* milliseconds */);
             conn.setDoInput(true);
             //conn.setDoOutput(true);
             conn.setRequestMethod(method);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write("\r\n\r\n" +"helloworld" + "\r\n\r\n");
             wr.write(body);
             wr.flush();
 
@@ -71,11 +80,17 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.connect();
 
             int response = conn.getResponseCode();
-            Log.d("HTTP GET", "The response is: " + response);
             is = conn.getInputStream();
+            int len = conn.getContentLength();
+            String l = conn.getResponseMessage();
+
+            Log.d("HTTP GET", "The response message is: " + l);
 
             // Convert the InputStream into a string
             String contentAsString = readIt(is, len);
+
+            Log.d("HTTP GET", "The response is: " + contentAsString);
+            conn.disconnect();
             return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is

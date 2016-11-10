@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 public class REST {
 
-    static ActivityCreateGame activityGame = new ActivityCreateGame();
+    static ActivityCreateGame activityGame;// = new ActivityCreateGame();
 
     public static String postGameStart() throws JSONException {
 
@@ -40,7 +40,7 @@ public class REST {
         outerObject.put("player2","TODO");
         outerObject.put("round","TODO");
         outerObject.put("location", activityGame.location);
-        outerObject.put("secret_code",activityGame.password);
+        outerObject.put("secret_code","helloworld");//activityGame.password);
         outerObject.put("twoTablet", activityGame.oneTablet);
         outerObject.put("enPassant", activityGame.enPassantOption);
         outerObject.put("timeFormat", innerObject);
