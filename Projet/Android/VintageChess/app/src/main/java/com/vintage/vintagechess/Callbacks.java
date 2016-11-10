@@ -1,10 +1,18 @@
 package com.vintage.vintagechess;
 
+import android.support.v7.app.AppCompatActivity;
+
+import org.json.JSONException;
+
 /**
  * Created by User on 2016-11-10.
  */
 
 public class Callbacks {
+
+    static REST rest;
+    ActivityGame activiteGame;
+
     public static RequestCallback getPostNewGameCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
@@ -38,7 +46,16 @@ public class Callbacks {
     public static RequestCallback getPostMoveCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response) throws JSONException {
+                try {
+
+                    if (!response.contains("200")) throw new Exception("Response was not 200");
+                   //Game.movingPiece
+
+                }
+                catch (Exception ex) {
+                    Utilities.messageBox("Erreur" + response , "Erreur" + response, (AppCompatActivity) Game.activityGame);
+                }
 
             }
         };
@@ -49,6 +66,17 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
+
+                try {
+
+                    if (!response.contains("200")) throw new Exception("Response was not 200");
+                    //Game.promote
+
+                }
+                catch (Exception ex) {
+                    Utilities.messageBox("Erreur" + response , "Erreur" + response, (AppCompatActivity) Game.activityGame);
+                }
+
 
             }
         };
@@ -69,6 +97,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
+
 
             }
         };

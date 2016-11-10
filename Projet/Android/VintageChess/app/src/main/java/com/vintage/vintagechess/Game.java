@@ -212,9 +212,7 @@ public class Game {
 
     public static void deletePiece(String boardPosition)
     {
-
         //Bug de duplication
-
         int x =  Integer.valueOf(boardPosition.charAt(0)) - 97; // 97 cest le a dans la table ascii
         int y = 8 - Integer.valueOf(boardPosition.charAt(1)) + 48; // 48 cest la 1 dans la table ascii
 

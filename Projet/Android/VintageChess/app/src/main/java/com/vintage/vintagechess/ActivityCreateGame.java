@@ -129,8 +129,8 @@ public class ActivityCreateGame extends AppCompatActivity {
             HttpRunner.runPostNewGame();
 
             /*****REST TEST*****/
-            String newGame = rest.postNewGame();
-            rest.getGameDetails(newGame);
+            //String newGame = rest.postNewGame();
+            //rest.getGameDetails(newGame);
 
 
 
