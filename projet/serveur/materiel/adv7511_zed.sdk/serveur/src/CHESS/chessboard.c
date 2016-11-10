@@ -17,6 +17,14 @@ typedef struct Piece
 	PlayerID playerID;
 }Piece;
 
+enum moveResult{
+	VALID,
+	ILLEGAL,
+	ENPASSANT,
+	CASTLING
+};
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd); // defined at the end of the file but used before then.
+
 static Piece* boardGame[8][8];
 static Piece player1Pieces[16];
 static Piece player2Pieces[16];
@@ -146,6 +154,7 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 	}
 }
 
+
 enum ChessboardRestStatus move_piece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
 
@@ -174,160 +183,26 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	if (piece->playerID != player)
 		return deplacementIllegal; // opponent piece
 
-	switch (piece->pieceType)
+	switch(execute_move(piece, xs, xd, ys, yd))
 	{
-	case king:
-		// TODO: check for Castle/Roque/special move
-		if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
-			return deplacementIllegal; //moving too far
-		// TODO: check for dangerous position
+	case ILLEGAL:
+		return deplacementIllegal;
+
+	case CASTLING:
+		return NOT_IMPLEMENTED;
+
+	case ENPASSANT:
+		boardGame[xd][ys]->alive = false; // special capture using ys instead of yd +/- 1
+		boardGame[xd][ys] = 0; // special cleaning
+		moveInfo->piece_eliminated[0] = xd + 'a';
+		moveInfo->piece_eliminated[1] = ys + '1';
 		break;
 
-	case rook:
-		if (xs != xd)
-		{
-			if(ys!=yd)
-				return deplacementIllegal; // moving in both directions
-			else
-			{ // moving on the x
-				int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
-				for (; i < (xs > xd ? xs : xd); ++i) // i < max
-					if(boardGame[i][ys] != 0)
-						return deplacementIllegal; // passing over a piece
-			}
-		}
-		else
-		{ // moving on the y
-			int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
-			for (; i < (ys > yd ? ys : yd); ++i) // i < max
-				if(boardGame[xs][i] != 0)
-					return deplacementIllegal; // passing over a piece
-		}
-		break;
-
-	case bishop:
-		//if ( (xs > xd ? xs - xd : xd - xs) != (ys > yd ? ys - yd : yd - ys) ) // abs(diff X) != abs(diff Y)
-		if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
-			return deplacementIllegal; // not moving equally in both directions
-
-		if ((xs < xd && ys < yd))
-		{ // meme signe
-			int i = (xs < xd ? xs : xd); // min X
-			int j = (ys < yd ? ys : yd); // min Y
-			int dist = (xs > xd ? xs - xd : xd - xs);
-			int k = 1;
-			for (; k < dist; ++k )
-				if(boardGame[i+k][j+k] != 0)
-					return deplacementIllegal; // passing over a piece
-		}
-		else
-		{ // signe different
-			int i = (xs < xd ? xs : xd); // min X
-			int j = (ys > yd ? ys : yd); // max Y
-			int dist = (xs > xd ? xs - xd : xd - xs);
-			int k = 1;
-			for (; k < dist; ++k )
-				if(boardGame[i+k][j-k] != 0)
-					return deplacementIllegal; // passing over a piece
-		}
-		break;
-
-	case knight:
-		{
-			int x = (xs > xd ? xs - xd : xd - xs); // abs(diff X)
-			int y = (ys > yd ? ys - yd : yd - ys); // abs(diff Y)
-
-			if (x + y != 3 || x == 3 || y == 3)// should move 3 squares but not all in the same direction
-				return deplacementIllegal;
-		}
-		break;
-
-	case queen:
-		if (xs != xd || ys != yd) // not moving like a Rook
-		{
-			if (xs - xd  != ys - yd && xs - xd  != yd - ys) // not moving like a Bishop
-				return deplacementIllegal; // not moving equally in both directions
-			 // moving like a Bishop
-			if ((xs < xd && ys < yd))
-			{ // meme signe
-
-				int i = (xs < xd ? xs : xd); // min X
-				int j = (ys < yd ? ys : yd); // min Y
-				int dist = (xs > xd ? xs - xd : xd - xs);
-				int k = 1;
-				for (; k < dist; ++k )
-					if(boardGame[i+k][j+k] != 0)
-						return deplacementIllegal; // passing over a piece
-			}
-			else
-			{ // signe different
-				int i = (xs < xd ? xs : xd); // min X
-				int j = (ys > yd ? ys : yd); // max Y
-				int dist = (xs > xd ? xs - xd : xd - xs);
-				int k = 1;
-				for (; k < dist; ++k )
-					if(boardGame[i+k][j-k] != 0)
-						return deplacementIllegal; // passing over a piece
-			}
-
-		}
-		else
-		{
-			// moving like a Rook
-			if (xs != xd)
-			{ // moving on the x
-				int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
-				for (; i < (xs > xd ? xs : xd); ++i) // i < max
-					if(boardGame[i][ys] != 0)
-						return deplacementIllegal; // passing over a piece
-
-			}
-			else
-			{ // moving on the y
-				int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
-				for (; i < (ys > yd ? ys : yd); ++i) // i < max
-					if(boardGame[xs][i] != 0)
-						return deplacementIllegal; // passing over a piece
-			}
-
-		}
-		break;
-	case pawn:
-		if(	piece->playerID == player1 ?
-			ys == 1 && yd == 3 && xs == xd && boardGame[xs][2] == 0 :
-			ys == 6 && yd == 4 && xs == xd && boardGame[xs][5] == 0
-			) // if first time jump
-			piece->enPassant = true; // TODO: clean this flag on the next turn
-		else if(yd - ys != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
-		{
-			return deplacementIllegal;
-		}
-		else
-		{
-			if ((xs > xd ? xs - xd : xd - xs) > 1) // abs(diff Y) > 1
-				return deplacementIllegal; // moving too much in Y
-			if (xs == xd && boardGame[xd][yd] != 0)
-				return deplacementIllegal; // capturing in front
-
-			if((xs > xd ? xs - xd : xd - xs) == 1) // moving diagonnally / capturing
-			{
-				Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
-				if (enPassant != 0 && // capturing En Passant
-					enPassant->enPassant == true && // can be captured En Passant
-					enPassant->playerID == player1 ? yd ==  5: yd == 2) // is not your own piece
-				{
-					enPassant->alive = false; // special capture
-					boardGame[xd][ys] = 0; // special cleaning
-				}
-				else if (boardGame[xd][yd] == 0) // not capturing on arrival
-					return deplacementIllegal; // not capturing
-			}
-		}
-		//promote stuff if promote
+	case VALID:
 		break;
 
 	default:
-		return NOT_IMPLEMENTED; // unidentified piece type
+		return NOT_IMPLEMENTED;
 	}
 
 
@@ -338,7 +213,6 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 		boardGame[xd][yd]->alive = false; // capture enemy piece
 		moveInfo->piece_eliminated[0] = xd + 'a';
 		moveInfo->piece_eliminated[1] = yd + '1';
-
 	}
 	else
 	{
@@ -491,5 +365,166 @@ enum ChessboardRestStatus end_game()
 	}
 	gameStarted = false;
 	return OK;
+}
+
+
+enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
+{
+	// TODO: check for Castle/Roque/special move
+	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
+		return ILLEGAL; //moving too far
+	// TODO: check for dangerous position
+	return VALID;
+}
+
+// uses static boardGame
+enum ChessboardRestStatus move_rook(int xs, int xd, int ys, int yd)
+{
+	if (xs != xd)
+	{
+		if(ys!=yd)
+			return ILLEGAL; // moving in both directions
+		else
+		{ // moving on the x
+			int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
+			for (; i < (xs > xd ? xs : xd); ++i) // i < max
+				if(boardGame[i][ys] != 0)
+					return ILLEGAL; // passing over a piece
+		}
+	}
+	else
+	{ // moving on the y
+		int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
+		for (; i < (ys > yd ? ys : yd); ++i) // i < max
+			if(boardGame[xs][i] != 0)
+				return ILLEGAL; // passing over a piece
+	}
+	return VALID;
+}
+
+// uses static boardGame
+enum ChessboardRestStatus move_bishop(int xs, int xd, int ys, int yd)
+{
+	//if ( (xs > xd ? xs - xd : xd - xs) != (ys > yd ? ys - yd : yd - ys) ) // abs(diff X) != abs(diff Y)
+	if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
+		return ILLEGAL; // not moving equally in both directions
+
+	if ((xs < xd && ys < yd))
+	{ // meme signe
+		int i = (xs < xd ? xs : xd); // min X
+		int j = (ys < yd ? ys : yd); // min Y
+		int dist = (xs > xd ? xs - xd : xd - xs);
+		int k = 1;
+		for (; k < dist; ++k )
+			if(boardGame[i+k][j+k] != 0)
+				return ILLEGAL; // passing over a piece
+	}
+	else
+	{ // signe different
+		int i = (xs < xd ? xs : xd); // min X
+		int j = (ys > yd ? ys : yd); // max Y
+		int dist = (xs > xd ? xs - xd : xd - xs);
+		int k = 1;
+		for (; k < dist; ++k )
+			if(boardGame[i+k][j-k] != 0)
+				return ILLEGAL; // passing over a piece
+	}
+	return VALID;
+}
+
+enum ChessboardRestStatus move_knight(int xs, int xd, int ys, int yd)
+{
+	{
+		int x = (xs > xd ? xs - xd : xd - xs); // abs(diff X)
+		int y = (ys > yd ? ys - yd : yd - ys); // abs(diff Y)
+
+		if (x + y != 3 || x == 3 || y == 3)// should move 3 squares but not all in the same direction
+			return ILLEGAL;
+	}
+	return VALID;
+}
+enum ChessboardRestStatus move_queen(int xs, int xd, int ys, int yd)
+{
+	enum ChessboardRestStatus result = move_rook(xs, xd, ys, yd);
+	if (result != OK)
+	{
+		result = move_bishop(xs, xd, ys, yd);
+		if (result != OK)
+			return result;
+	}
+	return VALID;
+}
+
+// uses static boardGame, player1Pieces and player2Pieces and may change their values.
+enum moveResult move_pawn(int xs, int xd, int ys, int yd)
+{
+	Piece *piece = boardGame[xs][ys];
+	if(	piece->playerID == player1 ?
+		ys == 1 && yd == 3 && xs == xd && boardGame[xs][2] == 0 :
+		ys == 6 && yd == 4 && xs == xd && boardGame[xs][5] == 0
+		) // if first time jump
+		piece->enPassant = true; // TODO: clean this flag on the next turn
+	else if(yd - ys != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
+	{
+		return ILLEGAL;
+	}
+	else
+	{
+		if ((xs > xd ? xs - xd : xd - xs) > 1) // abs(diff X) > 1
+			return ILLEGAL; // moving too much in X
+		if (xs == xd && boardGame[xd][yd] != 0)
+			return ILLEGAL; // capturing in front
+
+		if((xs > xd ? xs - xd : xd - xs) == 1) // moving diagonnally / capturing
+		{
+			Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
+			if (currentGameInfo.en_passant != 0 && // En Passant is enabled
+				enPassant != 0 && // capturing En Passant
+				enPassant->enPassant == true && // can be captured En Passant
+				(enPassant->playerID == player1 ? yd ==  5: yd == 2)) // is not your own piece
+			{
+				return ENPASSANT;
+			}
+			else if (boardGame[xd][yd] == 0) // not capturing on arrival
+				return ILLEGAL; // not capturing
+		}
+	}
+	//promote stuff if promote
+	return VALID;
+}
+
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
+{
+	enum moveResult result = ILLEGAL;
+	switch (piece->pieceType)
+	{
+	case king:
+		result = move_king(xs, xd, ys, yd);
+		break;
+
+	case rook:
+		result = move_rook(xs, xd, ys, yd);
+		break;
+
+	case bishop:
+		result = move_bishop(xs, xd, ys, yd);
+		break;
+
+	case knight:
+		result = move_knight(xs, xd, ys, yd);
+		break;
+
+	case queen:
+		result = move_queen(xs, xd, ys, yd);
+		break;
+
+	case pawn:
+		result = move_pawn(xs, xd, ys, yd);
+		break;
+
+	default:
+		result = ILLEGAL; // unidentified piece type
+	}
+	return result;
 }
 
