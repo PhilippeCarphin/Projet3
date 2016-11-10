@@ -32,6 +32,8 @@ void test_get_time();
 
 /* More precise testing */
 void test_game();
+void test_pawns();
+void test_knight();
 void test_movePlayer1(char* coord);
 void test_movePlayer2(char* coord);
 

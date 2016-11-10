@@ -303,6 +303,79 @@ void test_game()
 }
 
 /******************************************************************************
+ *
+ *****************************************************************************/
+void test_pawns()
+{
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* out of bounds */
+	test_movePlayer1("h2-i2");
+	test_get_board();
+
+	/* ennemy piece */
+	test_movePlayer1("h7-h5");
+	test_get_board();
+
+	/* invalid move */
+	test_movePlayer1("e2-f4");
+	test_get_board();
+
+	/* not a move */
+	test_movePlayer1("e2-e2");
+	test_get_board();
+
+	/* valid move (1) */
+	test_movePlayer1("e2-e3");
+	test_get_board();
+
+	/* valid move (2) */
+	test_movePlayer2("e7-e5");
+	test_get_board();
+
+	/* capture nothing */
+	test_movePlayer1("d2-c3");
+	test_get_board();
+
+	/* capture ennemy piece */
+	test_movePlayer1("d2-d4");
+	test_movePlayer2("e5-d4");
+	test_get_board();
+
+	/* capture own piece */
+	test_movePlayer1("f2-e3");
+	test_get_board();
+
+	test_end();
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_knight()
+{
+
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* out of bounds */
+	/* ennemy piece */
+	/* invalid move */
+	/* not a move */
+	/* valid move */
+	/* capture ennemy piece */
+	/* capture own piece */
+
+	test_end();
+}
+
+
+/******************************************************************************
  * Request: POST /promote/1/queen
  *			HTTP/1.1
  *
