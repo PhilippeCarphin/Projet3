@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 public class REST {
 
-    static ActivityCreateGame activityGame = new ActivityCreateGame();
+    static ActivityCreateGame activityGame;// = new ActivityCreateGame();
 
     public static String postGameStart() throws JSONException {
 
