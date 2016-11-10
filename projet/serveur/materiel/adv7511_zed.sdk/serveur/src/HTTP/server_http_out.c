@@ -56,7 +56,7 @@ const char *build_header(int code, char *content_type, int content_length)
 	static char header[MAX_LENGTH], message[MSG_LEN];
 	
 	get_http_message(code, message);
-	sprintf(header, "HTTP/1.1 %s\r\nContent-Type : %s\r\nContent-Length : %d\r\n\r\n",
+	sprintf(header, "HTTP/1.1 %s\r\nContent-Type : %s\r\nContent-Length : %d\r\nConnection: Closed\r\n\r\n",
 			 message, content_type, content_length);
 	return (const char *)header;
 }
@@ -72,6 +72,8 @@ void get_http_message(int code, char *msg)
 		m = "200 OK";
 	else if (code == HTTP_BAD_REQUEST)
 		m = "400 Bad Request";
+	else if (code == HTTP_UNAUTHORIZED)
+		m = "401 Unauthorized";
 	else if (code == HTTP_FORBIDDEN)
 		m = "403 Forbidden";
 	else if (code == HTTP_NOT_FOUND)

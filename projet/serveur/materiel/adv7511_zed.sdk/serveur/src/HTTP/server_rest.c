@@ -3,6 +3,7 @@
 #include "json_to_struct.h"
 #include "macros.h"
 #include "chessboard.h"
+#include "debug.h"
 
 #include <stdio.h>
 
@@ -20,8 +21,14 @@ int end_request(const char *data, char *REST_response);
 /******************************************************************************
  * Uses a big switch-case block to send data to the right handling function.
  *****************************************************************************/
-int REST_handle_request(enum request_type type, const char *data, char *REST_response)
+int REST_handle_request(enum request_type type, const char *data, const char *pswd, char *REST_response)
 {
+	FBEGIN
+	if (validate_password(pswd) == unathorized)
+	{
+		return unathorized;
+	}
+
 	switch (type)
 	{
 	case NEW_GAME:
@@ -48,6 +55,7 @@ int REST_handle_request(enum request_type type, const char *data, char *REST_res
 	default:
 		return -1;
 	}
+	FEND
 }
 
 /******************************************************************************

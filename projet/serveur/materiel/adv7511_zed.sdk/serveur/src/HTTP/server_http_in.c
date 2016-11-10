@@ -14,8 +14,8 @@
 void *get_header(const char *request, char *header);
 int validate_request(const char *header);
 int get_body_length(const char *header);
-void *get_body(const char *request, char *body, int len);
-enum request_type get_type(const char *header);
+void *get_body(const char *request, char *body, char *pswd, int len);
+enum request_type get_type(const char *header, int *need_header);
 
 /******************************************************************************
  * Strips the header of a received request and sends the REST part off to the
@@ -25,7 +25,8 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 {
 	static char header[MAX_LENGTH];	/* header part of request */
 	static char body[MAX_LENGTH];	/* body part of request */
-	int len, err;
+	static char pswd[MAX_LENGTH];	/* body part of request */
+	int len, err, need_header;
 		
 	/* get header */
 	get_header(request, header);	
@@ -38,11 +39,11 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	/* get body */
 	if ((len = get_body_length(header)) > 0)
 	{
-		get_body(request, body, len);	/* There is a body */
+		get_body(request, body, pswd, len);	/* There is a body */
 	}
 	
 	/* get type */
-	enum request_type type = get_type(header);
+	enum request_type type = get_type(header, &need_header);
 	if (type == ERROR)	/* could not identify type */
 	{
 		HTTP_build_from_code(HTTP_BAD_REQUEST, HTTP_response);
@@ -51,10 +52,10 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 
 	/* send request to REST module */
 	char REST_response[MAX_LENGTH];
-	if (len > 0) /* request BODY is the important part */
-		err = REST_handle_request(type, body, REST_response);
+	if (need_header == 0) /* request BODY is the important part */
+		err = REST_handle_request(type, body, pswd, REST_response);
 	else		/* request HEADER is the important part */
-		err = REST_handle_request(type, header, REST_response);
+		err = REST_handle_request(type, header, pswd, REST_response);
 
 	if(err == OK)	/* REST module responded OK */
 	{
@@ -137,15 +138,18 @@ int get_body_length(const char *header)
  * Gets the body of a received request
  * Caller needs to know the body length in advance
  *****************************************************************************/
-void *get_body(const char *request, char *body, int len)
+void *get_body(const char *request, char *body, char *pswd, int len)
 {
-	char *p;
+	char *p, *q;
 	
 	/* find beginning of body */
 	p = strstr(request, "\r\n\r\n") + 4;
+	sscanf(p, "%s\r\n\r\n", pswd);
+
+	q = strstr(p, "\r\n\r\n") + 4;
 	
 	/* copy into body and null-terminate it */
-	memcpy(body, p, len);
+	memcpy(body, q, len - strlen(pswd));
 	body[len] = 0;
 	return body;
 }
@@ -153,28 +157,58 @@ void *get_body(const char *request, char *body, int len)
 /******************************************************************************
  * Gets a request type from its header
  *****************************************************************************/
-enum request_type get_type(const char *header)
+enum request_type get_type(const char *header, int *need_header)
 {
 	if (strstr(header, "POST /new_game"))
+	{
+		*need_header = 0;
 		return NEW_GAME;
+	}
 	if (strstr(header, "POST /move"))
+	{
+		*need_header = 1;
 		return MOVE;
+	}
 	if (strstr(header, "POST /promote"))
+	{
+		*need_header = 1;
 		return PROMOTE;
+	}
 	if (strstr(header, "GET /time"))
+	{
+		*need_header = 1;
 		return GET_TIME;
+	}
 	if (strstr(header, "GET /status/summary"))
+	{
+		*need_header = 0;
 		return GET_SUMMARY;
+	}
 	if (strstr(header, "GET /status/board"))
+	{
+		*need_header = 0;
 		return GET_BOARD;
+	}
 	if (strstr(header, "POST /status/board"))
+	{
+		*need_header = 0;
 		return POST_BOARD;
+	}
 	if (strstr(header, "GET /game_details"))
+	{
+		*need_header = 0;
 		return GET_DETAILS;
+	}
 	if (strstr(header, "POST /game_start"))
+	{
+		*need_header = 0;
 		return START;
+	}
 	if (strstr(header, "POST /game_end"))
+	{
+		*need_header = 0;
 		return END;
+	}
 	
 	return ERROR;
 }

@@ -31,10 +31,11 @@ int main(){
 
 	//test_game(); // coup du berger
 
-	/*test_new_game();
+	test_new_game();
 	test_start();
 
 	test_get_board();
+	test_get_details();
 	test_movePlayer1("d2-d4");
 	test_get_board();
 	test_movePlayer2("d7-d5");
@@ -42,7 +43,7 @@ int main(){
 	test_movePlayer1("d2-d4");
 	test_get_board();
 
-	test_end();*/
+	test_end();
 
 	while(1){
 		run_HDMI();

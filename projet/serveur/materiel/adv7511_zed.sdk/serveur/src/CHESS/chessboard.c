@@ -1,4 +1,7 @@
 #include "chessboard.h"
+#include <string.h>
+#include "xil_io.h"
+#include "debug.h"
 //player1 pieces
 
 typedef enum {pawn, knight, rook, bishop, queen, king }PieceType;
@@ -39,6 +42,16 @@ static bool player1Turn = true;
 
 static GameInfo currentGameInfo;
 static TurnInfo currentTurnInfo;
+
+enum ChessboardRestStatus validate_password(const char *pswd)
+{
+	if (gameStarted && strcmp(currentGameInfo.secret_code, pswd) != 0)
+	{
+		return unathorized;
+	}
+
+	return OK;
+}
 
 void setBoard(Piece* playerPieces)
 {

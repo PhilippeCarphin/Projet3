@@ -16,5 +16,6 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition);			/* return 2
 enum ChessboardRestStatus get_game_info(GameInfo *gameInfo);
 enum ChessboardRestStatus start_game();										/* return 200 if ok */
 enum ChessboardRestStatus end_game();	
+enum ChessboardRestStatus validate_password(const char *pswd);
 
 #endif /* CHESSBOARD_H_ */

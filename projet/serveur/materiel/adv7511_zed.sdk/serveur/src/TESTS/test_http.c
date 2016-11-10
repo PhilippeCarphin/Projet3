@@ -134,7 +134,7 @@ void test_bad_request()
 void test_new_game()
 {
 	int result;
-	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 229\r\n\r\n{\"player1\": Francis,\"player2\": J.RandomUser,\"round\": 1,\"location\": Polymtl,\"secret_code\": motdepasse,\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
+	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 247\r\n\r\nmotdepasse\r\n\r\n{\"player1\": Francis,\"player2\": J.RandomUser,\"round\": 1,\"location\": Polymtl,\"secret_code\": motdepasse,\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
 	char response[2048];
 
 	xil_printf("\n******************* TEST NEW GAME *******************\n");
@@ -161,7 +161,7 @@ void test_new_game()
 void test_start()
 {
 	int result;
-	char request[] = "POST /game_start\r\nHost: 192.168.145.114\r\nConection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 0";
+	char request[] = "POST /game_start\r\nHost: 192.168.145.114\r\nConection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST START **********************\n");
@@ -187,7 +187,7 @@ void test_start()
 void test_get_board()
 {
 	int result;
-	char request[] = "GET /status/board\r\nHTTP/1.1";
+	char request[] = "GET /status/board\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET BOARD *******************\n");
@@ -211,6 +211,7 @@ void test_movePlayer1(char* coord)
 	strcat(request,src);
     strcpy(src,  "\r\nHTTP/1.1");
     strcat(request,src);
+    strcat(request, "\r\n\r\nmotdepasse");
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
@@ -232,8 +233,9 @@ void test_movePlayer2(char* coord)
     strcpy(src,  coord);
 	strcpy(request, "POST /move/2/");
 	strcat(request,src);
-    strcpy(src,  "\r\nHTTP/1.1");
+    strcpy(src,  "\r\nHTTP/1.1\r\nContent-Length: 10");
     strcat(request,src);
+    strcat(request, "\r\n\r\nmotdepasse");
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
@@ -261,7 +263,7 @@ void test_movePlayer2(char* coord)
 void test_move()
 {
 	int result;
-	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1";
+	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
@@ -313,7 +315,7 @@ void test_game()
 void test_promote()
 {
 	int result;
-	char request[] = "POST /promote/1/queen\r\nHTTP/1.1";
+	char request[] = "POST /promote/1/queen\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST PROMOTE ********************\n");
@@ -340,7 +342,7 @@ void test_promote()
 void test_get_time()
 {
 	int result;
-	char request[] = "GET /time/1\r\nHTTP/1.1";
+	char request[] = "GET /time/1\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET TIME *******************\n");
@@ -367,7 +369,7 @@ void test_get_time()
 void test_get_summary()
 {
 	int result;
-	char request[] = "GET /status/summary\r\nHTTP/1.1";
+	char request[] = "GET /status/summary\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET SUMMARY ****************\n");
@@ -394,7 +396,7 @@ void test_get_summary()
 void test_get_details()
 {
 	int result;
-	char request[] = "GET /game_details\r\nHTTP/1.1";
+	char request[] = "GET /game_details\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET DETAILS ****************\n");
@@ -440,7 +442,7 @@ void test_get_details()
 void test_post_board()
 {
 	int result;
-	char request[] = "POST /status/board\r\nHTTP/1.1\r\nContent-Length: 334\r\n\r\n{\"turn\": 1,\"move_no\": 2,\"king1\": a1,\"queen1\": a2,\"bishop1A\": a3,\"bishop1B\": a4,\"rook1A\": a5,\"rook1B\": a6,\"knight1A\": a7,\"knight1B\": a8,\"pawn1\": [ b1, b2, b3, b4, b5, b6, b7, b8 ],\"king2\": c1,\"queen2\": c2,\"bishop2A\": c3,\"bishop2B\": c4,\"rook2A\": c5,\"rook2B\": c6,\"knight2A\": c7,\"knight2B\": c8,\"pawn2\": [ d1, d2, d3, d4, d5, d6, d7, d8 ]}";
+	char request[] = "POST /status/board\r\nHTTP/1.1\r\nContent-Length: 352\r\n\r\nmotdepasse\r\n\r\n{\"turn\": 1,\"move_no\": 2,\"king1\": a1,\"queen1\": a2,\"bishop1A\": a3,\"bishop1B\": a4,\"rook1A\": a5,\"rook1B\": a6,\"knight1A\": a7,\"knight1B\": a8,\"pawn1\": [ b1, b2, b3, b4, b5, b6, b7, b8 ],\"king2\": c1,\"queen2\": c2,\"bishop2A\": c3,\"bishop2B\": c4,\"rook2A\": c5,\"rook2B\": c6,\"knight2A\": c7,\"knight2B\": c8,\"pawn2\": [ d1, d2, d3, d4, d5, d6, d7, d8 ]}";
 	char response[2048];
 
 	xil_printf("\n******************* TEST POST BOARD *****************\n");
@@ -467,7 +469,7 @@ void test_post_board()
 void test_end()
 {
 	int result;
-	char request[] = "POST /game_end\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+	char request[] = "POST /game_end\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse\r\n\r\n";
 	char response[2048];
 
 	xil_printf("\n******************* TEST END ************************\n");

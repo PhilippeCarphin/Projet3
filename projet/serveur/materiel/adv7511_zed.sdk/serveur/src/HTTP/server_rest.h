@@ -23,6 +23,6 @@ enum request_type
 	ERROR
 };
 
-int REST_handle_request(enum request_type type, const char *data, char *REST_response);
+int REST_handle_request(enum request_type type, const char *data, const char *pswd, char *REST_response);
 
 #endif /* SERVER_HTTP_IN_H_ */
