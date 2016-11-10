@@ -1,5 +1,6 @@
 package com.vintage.vintagechess;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -23,7 +24,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     private RadioGroup radioSelect;
     private RadioButton radioButton1, radioButton2;
 
-    private EditText editTextLocation, editTextPassword, editTextPlayerName;
+    private EditText editTextLocation, editTextPassword, editTextPlayer1Name, editTextPlayer2Name;
 
     private TimePicker timePickerMain,timePickerOverTime;
     private Switch enPassant;
@@ -50,6 +51,8 @@ public class ActivityCreateGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
+        Utilities.hideKeyPad(this);
+
         radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
         radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
@@ -63,7 +66,10 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextPassword.setEnabled(false);
-        editTextPlayerName = (EditText) findViewById(R.id.editTextNamePlayer1);
+        editTextPlayer1Name = (EditText) findViewById(R.id.editTextNamePlayer1);
+
+        editTextPlayer2Name = (EditText) findViewById(R.id.editTextNamePlayer2);
+        editTextPlayer2Name.setEnabled(false);
 
         timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
         timePickerOverTime = (TimePicker) findViewById(R.id.timePickerOverTime);
@@ -100,6 +106,7 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     private void handleRadioChange() {
             editTextPassword.setEnabled(radioButton2.isChecked());
+        editTextPlayer2Name.setEnabled(radioButton2.isChecked());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */
@@ -108,7 +115,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             oneTablet = radioButton2.isChecked();
             enPassantOption = enPassant.isChecked();
             location = editTextLocation.getText().toString();
-            playerName1 = editTextPlayerName.getText().toString();
+            playerName1 = editTextPlayer1Name.getText().toString();
             password = editTextPassword.getText().toString();
             normalTime = Utilities.getTimePickerString(timePickerMain);
             timePerPlay = Integer.valueOf(numberPickerTimePerPlay.getValue()).toString();

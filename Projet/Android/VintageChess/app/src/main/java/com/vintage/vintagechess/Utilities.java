@@ -1,10 +1,12 @@
 package com.vintage.vintagechess;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
@@ -36,5 +38,12 @@ public class Utilities {
         numberPicker.setMinValue(minValue);
         numberPicker.setMaxValue(maxValue);
         numberPicker.setValue(currentValue);
+    }
+
+    public static void hideKeyPad(Activity act)
+    {
+        act.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
     }
 }

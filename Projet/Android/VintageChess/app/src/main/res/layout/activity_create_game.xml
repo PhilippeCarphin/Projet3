@@ -104,30 +104,56 @@
             </RadioGroup>
         </LinearLayout>
 
-    <!-- PICKING THE NAME OF THE PALYER-->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="12">
+        <!-- PICKING THE NAME OF THE PALYER1-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12">
 
-        <TextView
-            android:text="Name player1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/textNamePlayer1"
-            android:layout_gravity="center|left"
-            android:gravity="center|left"/>
+            <TextView
+                android:text="Name player1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/textNamePlayer1"
+                android:layout_gravity="center|left"
+                android:gravity="center|left"/>
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:ems="5"
-            android:id="@+id/editTextNamePlayer1"
-            android:layout_gravity="center|left"
-            android:layout_weight="1" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:ems="5"
+                android:id="@+id/editTextNamePlayer1"
+                android:layout_gravity="center|left"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <!-- PICKING THE NAME OF THE PALYER2-->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12">
+
+            <TextView
+                android:text="Name player2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/textNamePlayer2"
+                android:layout_gravity="center|left"
+                android:gravity="center|left"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:ems="5"
+                android:id="@+id/editTextNamePlayer2"
+                android:layout_gravity="center|left"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <!-- PICKING THE GAME PASSWORD -->

@@ -22,14 +22,6 @@ import java.util.ArrayList;
 
 public class ActivityGame extends AppCompatActivity {
 
-    private final int INVALID_INDEX = -1;
-    private ArrayList<Piece> pieces = new ArrayList<Piece>();
-    private ArrayList<Piece> activePiece = new ArrayList<Piece>();
-    private ArrayList<Point> mActiveDragPoints= new ArrayList<Point>();
-
-    int boardId_;
-
-    private static int a = 0;
     ImageView board;
     ImageView motionlessPieces;
     ImageView movingPiece;

@@ -1,33 +1,37 @@
 package com.vintage.vintagechess;
 
+import org.json.JSONException;
+
 /**
  * Created by User on 2016-11-08.
  */
 
 public class HttpRunner {
+
+    private static REST rest;
     private static void runRequest(String suffix, String method, String body) {
         new RequestTask().execute(suffix, method, body);
     }
 
-    public static void runPostNewGame() {
+    public static void runPostNewGame() throws JSONException {
         //TODO
         String suffix = "/new_game";
         String method = "POST";
-        String body = ""; //aller chercher le json
+        String body = rest.postNewGame(); //aller chercher le json
         runRequest(suffix, method, body);
     }
 
-    public static void runPostGameStart() {
+    public static void runPostGameStart() throws JSONException {
         //TODO
-        String suffix = "/game_start";
+        String suffix = rest.postGameStart();
         String method = "POST";
         String body = ""; //aller chercher le json
         runRequest(suffix, method, body);
     }
 
-    public static void runPostGameEnd() {
+    public static void runPostGameEnd() throws JSONException {
         //TODO
-        String suffix = "/game_end";
+        String suffix = rest.postGameEnd();
         String method = "POST";
         String body = ""; //aller chercher le json
         runRequest(suffix, method, body);
@@ -42,6 +46,7 @@ public class HttpRunner {
         runRequest(suffix, method, body);
     }
 
+    /*ME SEMBLE CEST UN GET*/
     public static void runPostPromote() {
         //TODO
         String suffix = "/promote/"; //pas fini
