@@ -85,36 +85,40 @@ void ReadBitmapHeader(BMP *bmp, FIL *fil)
 
 void ReadBitMap(BMP *bmp, FIL *fil)
 {
-	//bmp->data = (char *) malloc(bmp->ImageDataSize);
 	unsigned int bytesRead = 0;
 	f_read(fil,dataBucket,bmp->ImageDataSize,&bytesRead);
 	xil_printf("%u bytes read:",bytesRead);
 }
-
+// if using 1080p
 void BitmapToRGB(BMP *bmp, u32* rawHDMIData)
 {
 	int rgbIndex =0;
-	int bitMapIndex = 0;
-
-	while (bitMapIndex < bmp->ImageDataSize)
+	int i = 0;
+	int j = 0;
+	int widthSkipCounter = 0;
+	int heightSkipCounter = 0;
+	// we do pixel skipping
+	for (i = 0; i < bmp->Height; i++)
 	{
-		// RGB Color
-		//if ((bitMapIndex)%8 != 6)
-
+		if (++heightSkipCounter == 127)
 		{
+			heightSkipCounter = 0;
+			i+=7;
+		}
+		for (j = 0; j < bmp->Width; j++)
+		{
+			if (++widthSkipCounter == 2)
+			{
+				widthSkipCounter = 0;
+				j+=1;
+			}
 			RGB rgb;
-			rgb.Blue = dataBucket[bitMapIndex++];
-			rgb.Green = dataBucket[bitMapIndex++];
-			rgb.Red = dataBucket[bitMapIndex++];
+			rgb.Blue = dataBucket[(1920*1080*3)-((i*1920+j)*3)];
+			rgb.Green = dataBucket[(1920*1080*3)-((i*1920+j)*3)+1];
+			rgb.Red = dataBucket[(1920*1080*3)-((i*1920+j)*3)+2];
 			rawHDMIData[rgbIndex] = RGBToNRGB(rgb);
-			//rawHDMIData[rgbIndex] = 0x01FF0000;
 			++rgbIndex;
 		}
-		//Padding
-		/*else
-		{
-			bitMapIndex+=2;
-		}*/
 	}
 	xil_printf("%d",rgbIndex);
 }
@@ -143,13 +147,10 @@ void ReadBitmapFile(char* path)
 	if (fr) return (int)fr;
 	BMP bmp;
 	ReadBitmapHeader(&bmp,&fil);
-	//bmp.data = malloc ((bmp.FileSize-bmp.HeaderSize) * sizeof(*bmp.data));
 	ReadBitMap(&bmp,&fil);
 	SetHdmiImageLenght(bmp.Width * bmp.Height);
 	xil_printf("%d", bmp.Width);
 	BitmapToRGB(&bmp,GetHdmiImagePointer());
-	// Make nrgb array from rgbarray
-	//store the image file somewhere
 
 
 

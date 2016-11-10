@@ -1,6 +1,25 @@
-19:05:17 **** Incremental Build of configuration Debug for project tp2 ****
+15:46:58 **** Auto Build of configuration Debug for project tp2 ****
 make all 
-make: Rien à faire pour « all ».
+Building file: ../src/bitmap.c
+Invoking: ARM gcc compiler
+arm-xilinx-eabi-gcc -Wall -O0 -g3 -I"C:\TEMP\inf3995-02\tp\tp2\adv7511_zed.sdk\tp2\inc" -I"C:\TEMP\inf3995-02\tp\tp2\adv7511_zed.sdk\tp2\lib" -c -fmessage-length=0 -MT"src/bitmap.o" -I../../tp2_bsp/ps7_cortexa9_0/include -MMD -MP -MF"src/bitmap.d" -MT"src/bitmap.d" -o "src/bitmap.o" "../src/bitmap.c"
+../src/bitmap.c: In function 'ReadBitmapFile':
+../src/bitmap.c:147:10: warning: 'return' with a value, in function returning void
+  if (fr) return (int)fr;
+          ^
+Finished building: ../src/bitmap.c
+ 
+Building target: tp2.elf
+Invoking: ARM gcc linker
+arm-xilinx-eabi-gcc -L"C:\TEMP\inf3995-02\tp\tp2\adv7511_zed.sdk\tp2\lib" -Wl,-T -Wl,../src/lscript.ld -L../../tp2_bsp/ps7_cortexa9_0/lib -o "tp2.elf"  ./src/bitmap.o ./src/cf_hdmi.o ./src/main.o ./src/transmitter.o   -lHDMI_ZedboardLib -Wl,--start-group,-lxil,-lgcc,-lc,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group -Wl,--start-group,-lxil,-llwip4,-lgcc,-lc,--end-group
+Finished building target: tp2.elf
+ 
+Invoking: ARM Print Size
+arm-xilinx-eabi-size tp2.elf  |tee "tp2.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+ 126408	   1972	307721632	307850012	12596b1c	tp2.elf
+Finished building: tp2.elf.size
+ 
 
-19:05:17 Build Finished (took 156ms)
+15:46:59 Build Finished (took 734ms)
 

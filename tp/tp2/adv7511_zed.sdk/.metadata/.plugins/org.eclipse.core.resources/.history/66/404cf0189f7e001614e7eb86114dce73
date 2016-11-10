@@ -1,3 +1,0 @@
-
-#define MAX_IMAGE_SIZE 2100000// a bit more than 1080*1920
-#define MAX_BMP_DATA_SIZE 4000000;
