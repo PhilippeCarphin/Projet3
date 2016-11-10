@@ -199,18 +199,7 @@ void test_get_board()
 }
 
 /******************************************************************************
- * Request: POST /move/1/a2-a3
- *			HTTP/1.1
  *
- * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
- *
- *			 {
- *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
- *			 }
- *
- * NOTE: there should be a player 1's pawn/rook/king/queen in a2
  *****************************************************************************/
 void test_movePlayer1(char* coord)
 {	
@@ -232,6 +221,9 @@ void test_movePlayer1(char* coord)
 	xil_printf("*******************************************************\n");
 }
 
+/******************************************************************************
+ *
+ *****************************************************************************/
 void test_movePlayer2(char* coord)
 {
 	int result;
@@ -281,18 +273,7 @@ void test_move()
 }
 
 /******************************************************************************
- * Request: POST /move/1/a2-a3
- *			HTTP/1.1
  *
- * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
- *
- *			 {
- *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
- *			 }
- *
- * NOTE: there should be a player 1's pawn/rook/king/queen in a2
  *****************************************************************************/
 void test_game()
 {

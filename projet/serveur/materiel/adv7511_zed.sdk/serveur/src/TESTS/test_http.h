@@ -30,4 +30,9 @@ void test_move();
 void test_promote();
 void test_get_time();
 
+/* More precise testing */
+void test_game();
+void test_movePlayer1(char* coord);
+void test_movePlayer2(char* coord);
+
 #endif /* TEST_HTTP_H_ */

@@ -61,7 +61,7 @@ int init_TCP()
 	{ 0x00, 0x18, 0x3e, 0x00, 0x00, 0x27 };
 
 	/* initlize IP addresses to be used */
-	IP4_ADDR(&ipaddr,  132, 207, 89, 27);
+	IP4_ADDR(&ipaddr,  132, 207, 89, 29);
 	IP4_ADDR(&netmask, 255, 255, 255,  0);
 	IP4_ADDR(&gw,      132, 207, 89,  1);
 

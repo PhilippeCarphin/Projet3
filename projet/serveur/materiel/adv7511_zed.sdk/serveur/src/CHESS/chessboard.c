@@ -113,7 +113,7 @@ static void ChessGameInitialisation()
 	currentTurnInfo.game_status = NORMAL;
 	currentTurnInfo.last_move[0] = 'x';
 	currentTurnInfo.last_move[1] = 'x';
-	currentTurnInfo.move_no = 0;
+	currentTurnInfo.move_no = 1;
 	currentTurnInfo.turn = player1;
 }
 
@@ -139,7 +139,7 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	// check if it's the player turn
 	if (player != currentTurnInfo.turn)
 	{
-		return deplacementIllegal;
+		return notYourTurn;
 	}
 
 	// extract positions and pieces

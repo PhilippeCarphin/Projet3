@@ -14,29 +14,38 @@
 
 int main(){
 
+#if 1
 	// Declare huge buffers on the stack
 	u32 screen_buf[1280*1024];
 	u8 chars_data[CHARS_DATA_SIZE];
 	u8 pieces_data[PIECE_DATA_SIZE];
 
 	// give their addresses to the modules that will use them
-	//set_screen_buffer(screen_buf);
-	//BoardDisplay_set_image_buffers(chars_data, pieces_data);
+	set_screen_buffer(screen_buf);
+	BoardDisplay_set_image_buffers(chars_data, pieces_data);
 
-	//init_HDMI();
+	init_HDMI();
+#endif
+
 	init_TCP();
 
+	//test_game(); // coup du berger
 
-	//test_http_all();
+	/*test_new_game();
+	test_start();
 
-	//test_new_game();
-	//test_get_board();
-	//test_start();
-	//test_move();
-	//test_get_board();
-	test_game(); // coup du berger
+	test_get_board();
+	test_movePlayer1("d2-d4");
+	test_get_board();
+	test_movePlayer2("d7-d5");
+	test_get_board();
+	test_movePlayer1("d2-d4");
+	test_get_board();
+
+	test_end();*/
+
 	while(1){
-		//run_HDMI();
+		run_HDMI();
 		run_TCP();
 	}
 	close_HDMI();

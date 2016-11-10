@@ -82,6 +82,9 @@ int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat)
 int BoardDisplay_init()
 {
 	int err;
+	set_screen_dimensions(1280,1024);
+	set_chess_board_params(200,50,90,25);
+	set_background_color(0x00000000); // Set the entire screen to blue.
 
 	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
 		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
@@ -99,9 +102,7 @@ int BoardDisplay_init()
 	offsets[KING] = 8;
 	offsets[BISHOP] = 6;
 
-	set_screen_dimensions(1280,1024);
-	set_chess_board_params(200,50,90,25);
-	set_background_color(0x00000000); // Set the entire screen to blue.
+
 	draw_chess_board();
 	return 0;
 }
