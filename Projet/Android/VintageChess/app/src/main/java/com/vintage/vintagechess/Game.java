@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -31,7 +32,8 @@ public class Game {
     private static Bitmap boardImg;
     public static int leftSpace;
 
-    private static LinkedList<Piece> pieces = new LinkedList<Piece>();
+    private static ArrayList<Piece> pieces = new ArrayList<>();
+    private static LinkedList<Piece> deletedPieces = new LinkedList<Piece>();
 
 
     public static void initializeGame() {
@@ -43,7 +45,6 @@ public class Game {
     }
 
     private static void initializePieces() {
-        pieces = new LinkedList<Piece>();
         int [] verticals = {0, 1, 6, 7};
         for  (int x = 0 ; x < 8 ; x++) {
             for (int y : verticals) {
@@ -208,6 +209,29 @@ public class Game {
         boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
     }
 
+    public static void deletePiece(String boardPosition)
+    {
+
+        //Bug de duplication
+
+        int x =  Integer.valueOf(boardPosition.charAt(0)) - 97; // 97 cest le a dans la table ascii
+        int y = 8 - Integer.valueOf(boardPosition.charAt(1)) + 48; // 48 cest la 1 dans la table ascii
+
+        Point point = new Point(x,y);
+
+        for(int i = 0; i <pieces.size(); i++)  // Par tres optimal pour chercher la piece O(n)
+        {
+            if(pieces.get(i).p_.equals(point))
+            {
+                deletedPieces.add(pieces.get(i));
+                pieces.remove(pieces.get(i));
+            }
+        }
+
+        for(Piece p : deletedPieces) {
+            Log.d(" DeletedPieces ", p.type_);
+        }
+    }
 
 
 }

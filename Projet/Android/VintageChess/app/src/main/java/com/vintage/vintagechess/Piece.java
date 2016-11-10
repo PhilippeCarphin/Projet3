@@ -13,6 +13,7 @@ public class Piece {
     public Point p_;
     public boolean isWhite_;
     public String type_;
+
     public Piece(String type, int x, int y, boolean isWhite) {
         p_ = new Point(x,y);
         isWhite_ = isWhite;

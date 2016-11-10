@@ -19,17 +19,14 @@ import java.net.URL;
 class RequestTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... args) {
-
-        //ATTENTION J'AI COMMENTÉ CA PARCE CA CRACH SANS LE SERVEUR
-
+        
         // params comes from the execute() call: params[0] is the url.
-       /* try {
+       try {
             return downloadUrl("http://132.207.89.27" + args[0], args[1], args[2]);//urls[0]);
         } catch (IOException e) {
             e.printStackTrace();
             return "Unable to retrieve data";
-        }*/
-        return "";
+        }
     }
     // onPostExecute displays the results of the AsyncTask.
     @Override

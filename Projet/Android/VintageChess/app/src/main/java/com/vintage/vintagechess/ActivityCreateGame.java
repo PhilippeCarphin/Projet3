@@ -69,7 +69,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextPlayer1Name = (EditText) findViewById(R.id.editTextNamePlayer1);
 
         editTextPlayer2Name = (EditText) findViewById(R.id.editTextNamePlayer2);
-        editTextPlayer2Name.setEnabled(false);
+        //editTextPlayer2Name.setEnabled(true);
 
         timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
         timePickerOverTime = (TimePicker) findViewById(R.id.timePickerOverTime);
@@ -102,11 +102,9 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     }
 
-
-
     private void handleRadioChange() {
             editTextPassword.setEnabled(radioButton2.isChecked());
-        editTextPlayer2Name.setEnabled(radioButton2.isChecked());
+        editTextPlayer2Name.setEnabled(radioButton1.isChecked());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */

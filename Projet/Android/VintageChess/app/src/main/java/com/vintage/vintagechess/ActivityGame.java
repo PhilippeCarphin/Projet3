@@ -67,6 +67,8 @@ public class ActivityGame extends AppCompatActivity {
         Game.motionlessPieces = motionlessPieces;
         Game.movingPiece = movingPiece;
         Game.activityGame = this;
+
+
     }
 
     @Override
@@ -108,6 +110,10 @@ public class ActivityGame extends AppCompatActivity {
                 Game.handleFingerUp();
                 break;
         }
+
+        // TEST DELETE PIECE
+        //Game.deletePiece("a1");
+        //Game.deletePiece("5e");
     }
 
     private void handleRadioChange() {
