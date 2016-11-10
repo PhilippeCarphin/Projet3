@@ -14,7 +14,7 @@ public class Callbacks {
             @Override
             public void runResponse(String response) {
                 try {
-                    Log.d("response", "\n\n\n\n" +response +"\n\n\n\n");
+                    Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
                     if (!response.contains("200")) throw new Exception("Failed to create new game");
                     activityCreateGame.openGame();
                 }
