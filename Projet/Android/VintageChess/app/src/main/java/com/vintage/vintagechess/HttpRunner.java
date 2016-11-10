@@ -9,32 +9,36 @@ import org.json.JSONException;
 public class HttpRunner {
 
     private static REST rest;
-    private static void runRequest(String suffix, String method, String body) {
-        new RequestTask().execute(suffix, method, body);
+    private static void runRequest(String suffix, String method, String body, RequestCallback callback) {
+        new RequestTask(callback).execute(suffix, method, body);
     }
+
 
     public static void runPostNewGame() throws JSONException {
         //TODO
         String suffix = "/new_game";
         String method = "POST";
         String body = rest.postNewGame(); //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getPostNewGameCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runPostGameStart() throws JSONException {
         //TODO
-        String suffix = rest.postGameStart();
+        String suffix = "/game_start";
         String method = "POST";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getPostGameStartCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runPostGameEnd() throws JSONException {
         //TODO
-        String suffix = rest.postGameEnd();
+        String suffix = "/game_end";
         String method = "POST";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getPostGameEndCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runPostMove(boolean isWhite, int x1, int y1, int x2, int y2) {
@@ -43,16 +47,17 @@ public class HttpRunner {
                 "-" + (char)(x2+97) +Integer.valueOf(y2).toString();
         String method = "POST";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getPostMoveCallback();
+        runRequest(suffix, method, body, callback);
     }
 
-    /*ME SEMBLE CEST UN GET*/
     public static void runPostPromote() {
         //TODO
         String suffix = "/promote/"; //pas fini
         String method = "GET";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getPostPromoteCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runGetTime(boolean isWhite) {
@@ -60,7 +65,8 @@ public class HttpRunner {
         String suffix = "/time/" + (isWhite ? "1" : "2");
         String method = "GET";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getGetTimeCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runGetStatusSummary() {
@@ -68,7 +74,8 @@ public class HttpRunner {
         String suffix = "/status/summary";
         String method = "GET";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getGetStatusSummaryCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runGetStatusBoard() {
@@ -76,7 +83,8 @@ public class HttpRunner {
         String suffix = "/status/board";
         String method = "GET";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getGetStatusBoardCallback();
+        runRequest(suffix, method, body, callback);
     }
 
     public static void runGetGameDetails() {
@@ -84,7 +92,8 @@ public class HttpRunner {
         String suffix = "/game_details";
         String method = "GET";
         String body = ""; //aller chercher le json
-        runRequest(suffix, method, body);
+        RequestCallback callback = Callbacks.getGetGameDetailsCallback();
+        runRequest(suffix, method, body, callback);
     }
 
 

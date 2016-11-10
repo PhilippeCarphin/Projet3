@@ -45,6 +45,7 @@ public class Game {
     }
 
     private static void initializePieces() {
+        pieces.clear();
         int [] verticals = {0, 1, 6, 7};
         for  (int x = 0 ; x < 8 ; x++) {
             for (int y : verticals) {
@@ -180,7 +181,7 @@ public class Game {
         currentPiece = null;
         drawMotionlessPieces();
         drawMovingPiece();
-        new RequestTask().execute("http://www.google.com");
+        //new RequestTask().execute("http://www.google.com");
     }
 
     public static void handleMove(int xPix, int yPix) {
@@ -219,7 +220,7 @@ public class Game {
 
         Point point = new Point(x,y);
 
-        for(int i = 0; i <pieces.size(); i++)  // Par tres optimal pour chercher la piece O(n)
+        for(int i = 0; i < pieces.size(); i++)  // Par tres optimal pour chercher la piece O(n)
         {
             if(pieces.get(i).p_.equals(point))
             {

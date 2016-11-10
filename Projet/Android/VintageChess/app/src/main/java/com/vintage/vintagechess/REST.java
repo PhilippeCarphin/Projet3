@@ -27,7 +27,7 @@ public class REST {
     public static String postNewGame() throws JSONException {
 
 
-               JSONObject outerObject = new JSONObject();
+        JSONObject outerObject = new JSONObject();
         JSONObject innerObject = new JSONObject();
 
         innerObject.put("time",activityGame.normalTime);

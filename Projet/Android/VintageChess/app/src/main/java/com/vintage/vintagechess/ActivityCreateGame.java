@@ -126,6 +126,8 @@ public class ActivityCreateGame extends AppCompatActivity {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
 
+            HttpRunner.runPostNewGame();
+
             /*****REST TEST*****/
             String newGame = rest.postNewGame();
             rest.getGameDetails(newGame);

@@ -112,8 +112,8 @@ public class ActivityGame extends AppCompatActivity {
         }
 
         // TEST DELETE PIECE
-        //Game.deletePiece("a1");
-        //Game.deletePiece("5e");
+        Game.deletePiece("a1");
+        Game.deletePiece("e5");
     }
 
     private void handleRadioChange() {

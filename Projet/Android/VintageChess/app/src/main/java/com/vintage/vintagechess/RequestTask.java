@@ -1,5 +1,6 @@
 package com.vintage.vintagechess;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -17,12 +19,18 @@ import java.net.URL;
  */
 
 class RequestTask extends AsyncTask<String, String, String> {
+
+    private RequestCallback callback;
+    public RequestTask(RequestCallback callback) {
+        super();
+        this.callback = callback;
+    }
     @Override
     protected String doInBackground(String... args) {
         
         // params comes from the execute() call: params[0] is the url.
        try {
-            return downloadUrl("http://132.207.89.27" + args[0], args[1], args[2]);//urls[0]);
+            return downloadUrl("http://132.207.89.29" + args[0], args[1], args[2]);//urls[0]);
         } catch (IOException e) {
             e.printStackTrace();
             return "Unable to retrieve data";
@@ -33,12 +41,7 @@ class RequestTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         //appeler ce qui doit etre fait avec le resultat
         //Utilities.messageBox("Get result", );
-        String ret = "";
-        for (int i = 0 ; i< result.length() ; i++ ) {
-            if (result.charAt(i) == '\0') break;
-            ret = ret + result.charAt(i);
-        }
-        Log.d("Get result", ret);
+        callback.runResponse(result);
     }
 
 
@@ -56,6 +59,12 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.setDoInput(true);
             //conn.setDoOutput(true);
             conn.setRequestMethod(method);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(body);
+            wr.flush();
+
 
             //conn.setRequestProperty("content-length", );
             // Starts the query
