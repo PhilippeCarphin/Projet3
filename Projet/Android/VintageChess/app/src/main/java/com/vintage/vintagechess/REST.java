@@ -40,11 +40,8 @@ public class REST {
         return String.valueOf(outerObject);
     }
 
-
     public static void handleMoveResponse(String response)
             throws JSONException {
-
-        Log.d("Response", response);
         JSONObject jsonObject = new JSONObject(response);
         String pieceEleminated = jsonObject.getString("pieceEliminated");
         String promotion = jsonObject.getString("promotion");

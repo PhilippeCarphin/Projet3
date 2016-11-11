@@ -43,6 +43,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     public static int overTimeIncr;
     public static boolean enPassantOption;
 
+    public static REST rest;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -132,6 +133,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             if (radioButton2.isChecked()) {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
+
 
             HttpRunner.runPostNewGame();
 
