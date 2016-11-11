@@ -100,6 +100,20 @@ public class Game {
         //finishMove();
     }
 
+    public static void handleMove(int xPix, int yPix) {
+        //lastPos = getboardCoordinates(xPix, yPix);
+        if (downPos == null || currentPiece == null ) {
+            return;
+        }
+        Point p = Display.getboardCoordinates(xPix, yPix);
+        if (!p.equals(lastPos)) {
+            lastPos = p;
+            currentPiece.p_ = lastPos;
+            Display.drawMovingPiece();
+        }
+        //drawBoard();
+    }
+
     public static void handleMoveOk(String pieceEleminated, String promotion, String state) {
         if (currentPiece != null) {
             if (!pieceEleminated.equals("xx")) {
@@ -130,19 +144,11 @@ public class Game {
         Display.drawMovingPiece();
     }
 
-    public static void handleMove(int xPix, int yPix) {
-        //lastPos = getboardCoordinates(xPix, yPix);
-        if (downPos == null || currentPiece == null ) {
-            return;
-        }
-        Point p = Display.getboardCoordinates(xPix, yPix);
-        if (!p.equals(lastPos)) {
-            lastPos = p;
-            currentPiece.p_ = lastPos;
-            Display.drawMovingPiece();
-        }
-        //drawBoard();
+    public static void recoverFromError() {
+        handleMoveNotOk();
     }
+
+
 
 
 
