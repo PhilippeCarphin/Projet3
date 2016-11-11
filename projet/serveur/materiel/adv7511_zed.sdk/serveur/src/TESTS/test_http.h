@@ -34,6 +34,10 @@ void test_get_time();
 void test_game();
 void test_pawns();
 void test_knight();
+void test_bishop();
+void test_rook();
+void test_queen();
+void test_king();
 void test_movePlayer1(char* coord);
 void test_movePlayer2(char* coord);
 

@@ -357,11 +357,205 @@ void test_pawns()
  *****************************************************************************/
 void test_knight()
 {
-
 	test_new_game();
 	test_get_details();
 	test_start();
 	test_get_board();
+
+	/* out of bounds */
+	test_movePlayer1("g1-i2");
+	test_get_board();
+
+	/* ennemy piece */
+	test_movePlayer1("g8-f6");
+	test_get_board();
+
+	/* invalid move */
+	test_movePlayer1("g1-g3");
+	test_get_board();
+
+	/* not a move */
+	test_movePlayer1("g1-g1");
+	test_get_board();
+
+	/* valid move */
+	test_movePlayer1("g1-f3");
+	test_get_board();
+
+	/* capture ennemy piece */
+	test_movePlayer2("b8-c6");
+	test_movePlayer1("f3-e5");
+	test_movePlayer2("c6-e5");
+	test_get_board();
+
+	/* capture own piece */
+	test_movePlayer1("b1-d2");
+	test_get_board();
+
+	test_end();
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_bishop()
+{
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* out of bounds */
+	test_movePlayer1("d2-d3");
+	test_movePlayer2("d7-d5");
+	test_movePlayer1("c1-i7");
+	test_get_board();
+
+	/* ennemy piece */
+	test_movePlayer1("c8-f5");
+	test_get_board();
+
+	/* invalid move */
+	test_movePlayer1("c1-b3");
+	test_get_board();
+
+	/* piece in the way */
+	test_movePlayer1("c1-a3");
+	test_get_board();
+
+	/* not a move */
+	test_movePlayer1("c1-c1");
+	test_get_board();
+
+	/* valid move */
+	test_movePlayer1("c1-f4");
+	test_get_board();
+
+	/* capture ennemy piece */
+	test_movePlayer2("c8-f5");
+	test_movePlayer1("f4-c7");
+	test_get_board();
+
+	/* capture own piece */
+	test_movePlayer2("f5-h7");
+	test_get_board();
+
+	test_end();
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_rook()
+{
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* set board for proper testing */
+	test_movePlayer1("h2-h4");
+	test_movePlayer2("h7-h5");
+	test_movePlayer1("g2-g4");
+	test_movePlayer2("g7-g5");
+	test_movePlayer1("h4-g5");
+	test_movePlayer2("h5-g4");
+	test_get_board();
+
+	/* out of bounds */
+	test_movePlayer1("h1-k1");
+	test_get_board();
+
+	/* ennemy piece */
+	test_movePlayer1("h8-h1");
+	test_get_board();
+
+	/* invalid move */
+	test_movePlayer1("h1-g3");
+	test_get_board();
+
+	/* not a move */
+	test_movePlayer1("h1-h1");
+	test_get_board();
+
+	/* valid move */
+	test_movePlayer1("h1-h7");
+	test_get_board();
+
+	/* capture ennemy piece */
+	test_movePlayer2("b8-c6");
+	test_movePlayer1("h7-f7");
+	test_get_board();
+
+	/* capture own piece */
+	test_movePlayer2("h8-g8");
+	test_get_board();
+
+	test_end();
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_queen()
+{
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* set board for proper testing */
+	test_movePlayer1("e2-e3");
+	test_movePlayer2("e7-e5");
+	test_get_board();
+
+	/* out of bounds */
+	test_movePlayer1("d1-i6");
+	test_get_board();
+
+	/* ennemy piece */
+	test_movePlayer1("d8-g5");
+	test_get_board();
+
+	/* invalid move */
+	test_movePlayer1("d1-c3");
+	test_get_board();
+
+	/* not a move */
+	test_movePlayer1("d1-d1");
+	test_get_board();
+
+	/* valid move (1) */
+	test_movePlayer1("d1-g4");
+	test_movePlayer2("d8-h4");
+	test_get_board();
+
+	/* valid move (2) */
+	test_movePlayer1("g4-c4");
+	test_get_board();
+
+	/* capture ennemy piece */
+	test_movePlayer2("h4-f2");
+	test_get_board();
+
+	/* capture own piece */
+	test_movePlayer1("c4-c2");
+	test_get_board();
+
+	test_end();
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_king()
+{
+	test_new_game();
+	test_get_details();
+	test_start();
+	test_get_board();
+
+	/* set board for proper testing */
 
 	/* out of bounds */
 	/* ennemy piece */
@@ -373,7 +567,6 @@ void test_knight()
 
 	test_end();
 }
-
 
 /******************************************************************************
  * Request: POST /promote/1/queen

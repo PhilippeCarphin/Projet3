@@ -29,7 +29,7 @@ int main(){
 
 	init_TCP();
 
-	test_pawns();
+	test_queen();
 
 	while(1){
 		run_HDMI();

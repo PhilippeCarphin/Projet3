@@ -445,11 +445,11 @@ enum ChessboardRestStatus move_knight(int xs, int xd, int ys, int yd)
 }
 enum ChessboardRestStatus move_queen(int xs, int xd, int ys, int yd)
 {
-	enum ChessboardRestStatus result = move_rook(xs, xd, ys, yd);
-	if (result != OK)
+	enum moveResult result = move_rook(xs, xd, ys, yd);
+	if (result != VALID)
 	{
 		result = move_bishop(xs, xd, ys, yd);
-		if (result != OK)
+		if (result != VALID)
 			return result;
 	}
 	return VALID;
