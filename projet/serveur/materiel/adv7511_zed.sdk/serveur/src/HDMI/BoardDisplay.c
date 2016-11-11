@@ -137,6 +137,8 @@ u32 getPieceOffset(PieceType p)
 		return 6;
 	case KNIGHT:
 		return 8;
+	case ROOK:
+		return 13;
 	default:
 		return 0;
 	}
@@ -511,13 +513,13 @@ int test_move_piece();
 	int err;
 	if( mv->castling)
 	{
-		File rook_file = (mv->d_file == C ? D : G);
 		// Redraw the king on a non-yellow square
 		if((err = clear_square(mv->d_file,mv-> d_rank)) != 0) return err;
 		if((err = draw_piece(KING, mv->c, mv->d_file,mv->d_rank)) != 0) return err;
 		// Redraw the rook on a non-yellow square
-		if((err = clear_square(rook_file, mv->d_rank)) != 0) return err;
-		if((err = draw_piece(ROOK, mv->c, rook_file ,mv->d_rank)) != 0) return err;
+		// File rook_file = (mv->d_file == C ? D : F);
+		// if((err = clear_square(rook_file, mv->d_rank)) != 0) return err;
+		// if((err = draw_piece(ROOK, mv->c, rook_file ,mv->d_rank)) != 0) return err;
 	}
 	else
 	{
@@ -721,6 +723,32 @@ int test_move_piece()
 		mv.d_file = C;
 		mv.d_rank = R6;
 		mv.capture = 1;
+		break;
+	case 10:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = D;
+		mv.o_rank = R7;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		mv.capture = 1;
+		break;
+	case 11:
+		mv.c = WHITE;
+		mv.t = KING;
+		mv.o_file = E;
+		mv.o_rank = R1;
+		mv.d_file = G;
+		mv.d_rank = R1;
+		mv.capture = 0;
+		break;
+	case 12:
+		mv.c = BLACK;
+		mv.t = KNIGHT;
+		mv.o_file = G;
+		mv.o_rank = R8;
+		mv.d_file = F;
+		mv.d_rank = R6;
 		break;
 	default:
 		draw_string(bd.top + 8 * bd.square_size + 100, bd.left, "Marie-Eve est super cute!");
