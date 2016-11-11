@@ -31,6 +31,12 @@ public class ActivityGame extends AppCompatActivity {
     RadioGroup selectStyle;
 
     @Override
+    protected  void onResume() {
+        super.onResume();
+        Utilities.currentActivity = this;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         gameStarted = false;
 
@@ -64,10 +70,9 @@ public class ActivityGame extends AppCompatActivity {
         });
 
 
-        Game.board = board;
-        Game.motionlessPieces = motionlessPieces;
-        Game.movingPiece = movingPiece;
-        Game.activityGame = this;
+        Display.board = board;
+        Display.motionlessPieces = motionlessPieces;
+        Display.movingPiece = movingPiece;
 
 
     }
@@ -77,7 +82,7 @@ public class ActivityGame extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
         Game.initializeGame();
-        Game.drawFullBoard();
+        Display.drawFullBoard();
         Game.leftSpace = leftSpace.getWidth();
 
         handleRadioChange();
@@ -121,7 +126,6 @@ public class ActivityGame extends AppCompatActivity {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Utilities.messageBox("Error with finger move", e.getMessage(), this);
         }
         // TEST DELETE PIECE
         //Game.deletePiece("a1");
@@ -131,8 +135,8 @@ public class ActivityGame extends AppCompatActivity {
     private void handleRadioChange() {
         applyFilter();
         changeStyle();
-        Game.setBoardImg();
-        Game.drawFullBoard();
+        Display.setBoardImg();
+        Display.drawFullBoard();
     }
 
     private void applyFilter() {
@@ -159,13 +163,13 @@ public class ActivityGame extends AppCompatActivity {
             Game.style = "2";
         }
         if (index / 2 == 0) {
-            Game.board_style = "red";
+            Display.board_style = "red";
         }
         else if (index / 2 == 1) {
-            Game.board_style = "blue";
+            Display.board_style = "blue";
         }
         else {
-            Game.board_style = "wood";
+            Display.board_style = "wood";
         }
     }
 

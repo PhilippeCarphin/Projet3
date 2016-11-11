@@ -47,6 +47,12 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
+    protected  void onResume() {
+        super.onResume();
+        Utilities.currentActivity = this;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
@@ -96,7 +102,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         buttonCreateGame = (Button) findViewById(R.id.buttonCreateGame);
         buttonCreateGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                handleClick();
+                handleButtonClick();
             }
         });
 
@@ -109,7 +115,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */
-    private void handleClick() {
+    private void handleButtonClick() {
         try {
             oneTablet = radioButton2.isChecked();
             enPassantOption = enPassant.isChecked();
@@ -138,7 +144,6 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         }
         catch (Exception e) {
-            Utilities.messageBox("ERROR", e.getMessage(), this);
             e.printStackTrace();
         }
     }

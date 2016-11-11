@@ -17,6 +17,12 @@ public class ActivityMenu extends AppCompatActivity {
     private EditText editText;
 
     @Override
+    protected  void onResume() {
+        super.onResume();
+        Utilities.currentActivity = this;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
@@ -45,7 +51,7 @@ public class ActivityMenu extends AppCompatActivity {
             startActivity(intent);
         }
         catch(Exception e) {
-            Utilities.messageBox("ERROR", e.getMessage(), this);
+            Utilities.messageBox("ERROR", e.getMessage());
             e.printStackTrace();
         }
     }
