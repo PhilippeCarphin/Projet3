@@ -16,6 +16,10 @@ struct BoardData{
 	int top;
 	int left;
 	int square_size;
+	int notation_top;
+	int notation_left;
+	int notation_width;
+	int notation_height;
 	u32 margin;
 };
 static struct BoardData bd;
@@ -26,6 +30,8 @@ enum Colors { 	BACKGROUND = 0xFF000000,
 				YELLOW = 0xFFFFFF00,
 				MARGIN_COLOR = 0xFF955C3E
 };
+
+
 extern struct Screen screen;
 /******************************************************************************
  * Stuff pertaining to bitmaps of characters and pieces
@@ -33,7 +39,7 @@ extern struct Screen screen;
 static BMP chars;
 static u8 *chars_data;
 static int char_width = 15;
-static int line_skip = 28; // line_skip should be more than the height of a letter;
+static int line_skip = 22; // line_skip should be more than the height of a letter;
 
 static BMP pieces;
 static u8 *pieces_data;
@@ -66,7 +72,21 @@ int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
 // int update_times(struct Player_times);
 
-
+/******************************************************************************
+ * Set parameters in chessboard data.
+******************************************************************************/
+int set_chess_board_params(int top, int left, int square_size, u32 margin)
+{
+	bd.top = 50;
+	bd.left = 50;
+	bd.square_size = square_size;
+	bd.margin = margin;
+	bd.notation_left = bd.left + 8*bd.square_size + bd.margin + 10;
+	bd.notation_top = bd.top - bd.margin;
+	bd.notation_width = 15 * char_width;
+	bd.notation_height = 40 * line_skip;
+	return 0;
+}
 /******************************************************************************
  * Set buffer addresses from stack-declared buffers in main().
 ******************************************************************************/
@@ -247,18 +267,6 @@ int clear_square(File file, Rank rank)
 }
 
 /******************************************************************************
- * Set parameters in chessboard data.
-******************************************************************************/
-int set_chess_board_params(int top, int left, int square_size, u32 margin)
-{
-	bd.top = top;
-	bd.left = left;
-	bd.square_size = square_size;
-	bd.margin = margin;
-	return 0;
-}
-
-/******************************************************************************
  * Draw an empty chessboard with margin, squares and coordinates
 ******************************************************************************/
 int draw_empty_board()
@@ -276,6 +284,9 @@ int draw_empty_board()
 	for( file = A; file <= H; file++)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
+
+	// Dessiner le rectangle pour la zone de notation
+	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, bd.notation_height, 0x00000000);
 
 	return 0;
 }
@@ -354,9 +365,81 @@ int test_move_piece();
 
 	first_move = 1;
 
-	test_move_piece();
+	// test_move_piece();
 	return 0;
 }
+
+ /******************************************************************************
+  * Gets the char associated with a piece
+ ******************************************************************************/
+ char getPieceChar(PieceType t)
+ {
+ 	switch(t){
+ 	case KNIGHT:
+ 		return 'N';
+ 	case KING:
+ 		return 'K';
+ 	case BISHOP:
+ 		return 'B';
+ 	case ROOK:
+ 		return 'R';
+ 	default:
+ 		return ' ';
+ 	}
+ }
+
+ /******************************************************************************
+  * Draws the move notation of a move
+ ******************************************************************************/
+ int draw_move_notation(struct Move *mv)
+ {
+ 	int move_number = (mv->turn_number-1)/2;
+ 	u32 cursor_top = bd.notation_top + move_number * line_skip;
+ 	u32 cursor_left = bd.notation_left;
+
+ 	/*
+ 	 * For a white move, draw the move number on the complete left and a dot.
+ 	 */
+ 	if( mv->c == WHITE)
+ 	{
+ 		draw_char(cursor_top,cursor_left,'0' + move_number + 1);
+ 		cursor_left += char_width;
+ 		draw_char(cursor_top,cursor_left, '.');
+ 		cursor_left += 2*char_width;
+ 	}
+ 	else
+ 	{
+ 		cursor_left += 9 * char_width;
+ 	}
+
+
+ 	/*
+ 	 * When
+ 	 */
+ 	if(mv->t != PAWN)
+ 	{
+ 		draw_char(cursor_top, cursor_left, getPieceChar(mv->t));
+ 		cursor_left += char_width;
+ 	} else if (mv->capture){
+ 		draw_char(cursor_top, cursor_left, 'a' + mv->o_file);
+ 		cursor_left += char_width;
+ 	}
+
+	if( mv->capture )
+	{
+		draw_char(cursor_top, cursor_left, 'x'); cursor_left += char_width;
+	}
+
+
+
+ 	char f = 'a' + mv->d_file;
+ 	char r = '1' + mv->d_rank;
+
+ 	draw_char(cursor_top, cursor_left, f); cursor_left += char_width;
+ 	draw_char(cursor_top, cursor_left, r); cursor_left += char_width;
+
+ 	return 0;
+ }
 
 /******************************************************************************
  * Put the preceding functions to use to do what Clement (Badass) Lanteigne
@@ -388,18 +471,20 @@ int BoardDisplay_move_piece(struct Move *move)
 	if((err = color_square(move->o_file, move->o_rank, YELLOW)) != 0) return err;
 	if((err = color_square(move->d_file, move->d_rank, YELLOW)) != 0) return err;
 	if((err = draw_piece(move->t, move->c, move->d_file, move->d_rank)) != 0) return err;
+	draw_move_notation(move);
 	
 	/*
 	 * Remember the last move for the next one.
 	 */
 	first_move = 0;
+
+
 	last = *move;
 
 	cf_hdmi_send_buffer();
 
 	return 0;
 }
-
 
 /******************************************************************************
  *
@@ -419,52 +504,93 @@ u32 rank_to_pixel(int rank)
 
 int test_move_piece()
 {
-	// TESTS de la fonction move_piece
-	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
-	draw_string(100,30, "Francis a un penis de 12 pouces");
-	struct Move mv;
-	mv.c = WHITE;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R2;
-	mv.d_file = E;
-	mv.d_rank = R4;
-
+	static int t = 1;
+	static struct Move mv;
+	switch(t){
+	case 1:
+		mv.c = WHITE;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R2;
+		mv.d_file = E;
+		mv.d_rank = R4;
+		mv.turn_number = 1;
+		mv.capture = 0;
+		break;
+	case 2:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R7;
+		mv.d_file = E;
+		mv.d_rank = R5;
+		break;
+	case 3:
+		mv.c = WHITE;
+		mv.t = KNIGHT;
+		mv.o_file = G;
+		mv.o_rank = R1;
+		mv.d_file = F;
+		mv.d_rank = R3;
+		break;
+	case 4:
+		mv.c = BLACK;
+		mv.t = KNIGHT;
+		mv.o_file = B;
+		mv.o_rank = R8;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		break;
+	case 5:
+		mv.c = WHITE;
+		mv.t = PAWN;
+		mv.o_file = D;
+		mv.o_rank = R2;
+		mv.d_file = D;
+		mv.d_rank = R4;
+		mv.capture = 0;
+		break;
+	case 6:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R5;
+		mv.d_file = D;
+		mv.d_rank = R4;
+		mv.capture = 1;
+		break;
+	case 7:
+		mv.c = WHITE;
+		mv.t = BISHOP;
+		mv.o_file = F;
+		mv.o_rank = R1;
+		mv.d_file = B;
+		mv.d_rank = R5;
+		mv.capture = 0;
+		break;
+	case 8:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = A;
+		mv.o_rank = R7;
+		mv.d_file = A;
+		mv.d_rank = R6;
+		mv.capture = 0;
+		break;
+	case 9:
+		mv.c = WHITE;
+		mv.t = BISHOP;
+		mv.o_file = B;
+		mv.o_rank = R5;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		mv.capture = 1;
+		break;
+	default:
+		draw_string(bd.top + 8 * bd.square_size + 100, bd.left, "Marie-Eve est super cute!");
+	}
 	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4");
+	mv.turn_number = ++t;
 
-	mv.c = BLACK;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R7;
-	mv.d_file = E;
-	mv.d_rank = R5;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5");
-
-	mv.c = WHITE;
-	mv.t = KNIGHT;
-	mv.o_file = G;
-	mv.o_rank = R1;
-	mv.d_file = F;
-	mv.d_rank = R3;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5\n2. Nf3");
-
-	mv.c = BLACK;
-	mv.t = KNIGHT;
-	mv.o_file = B;
-	mv.o_rank = R8;
-	mv.d_file = C;
-	mv.d_rank = R6;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5\n2. Nf3 Nc6");
 	return 0;
 }

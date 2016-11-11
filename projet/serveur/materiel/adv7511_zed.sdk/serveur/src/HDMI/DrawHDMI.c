@@ -84,7 +84,7 @@ int set_screen_dimensions(u32 width, u32 height)
 * We're not doing run-length-encoding, so the position of the pixel in the
 * buffer corresponds exactly to a pixel in the screen.
 ******************************************************************************/
-int set_pixel(int i, int j, u32 color)
+int set_pixel(u32 i, u32 j, u32 color)
 {
 	// if the screen is 3 pixels wide, i can be 0,1,2 but not 3 so ">="
 	if( j >= screen.w || i >= screen.h)
@@ -107,7 +107,7 @@ int set_pixel(int i, int j, u32 color)
 * it's highest byte equal to 1.
 * It is important that all entries in the screen have this
 ******************************************************************************/
-int set_pixel_rgba(int i, int j, u32 color)
+int set_pixel_rgba(u32 i, u32 j, u32 color)
 {
 	if( j >= screen.w || i >= screen.h)
 	{

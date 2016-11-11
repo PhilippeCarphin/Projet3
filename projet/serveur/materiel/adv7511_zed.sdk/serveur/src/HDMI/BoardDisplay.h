@@ -60,6 +60,8 @@ struct Move{
 	Rank o_rank;
 	File d_file;
 	Rank d_rank;
+	int turn_number;
+	int capture;
 };
 
 
