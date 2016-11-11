@@ -1,4 +1,5 @@
 package com.vintage.vintagechess;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -6,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Space;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -81,6 +84,18 @@ public class ActivityGame extends AppCompatActivity {
         Game.leftSpace = leftSpace.getWidth();
 
         handleRadioChange();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        // END GAME
+        
+        Intent setIntent = new Intent(this,ActivityCreateGame.class);
+        startActivity(setIntent);
+
+
     }
 
     public String positionToSymbol(int x, int y)
