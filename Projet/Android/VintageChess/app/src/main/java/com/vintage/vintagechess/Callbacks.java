@@ -24,7 +24,6 @@ public class Callbacks {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    Utilities.messageBox("Error while creating a new game", e.getMessage(), activityCreateGame);
 
                 }
             }
@@ -57,13 +56,12 @@ public class Callbacks {
             @Override
             public void runResponse(String response) throws JSONException {
                 try {
-
-                    Game.handleMoveOk();
-
+                    Log.d("Response", response);
+                    REST.handleMoveResponse(response);
+                    //Game.handleMoveOk("", "", "");
                 }
                 catch (Exception ex) {
                     Game.handleMoveNotOk();
-                    Utilities.messageBox("Erreur" + response , "Erreur" + response, (AppCompatActivity) Game.activityGame);
                 }
 
             }
@@ -82,7 +80,6 @@ public class Callbacks {
 
                 }
                 catch (Exception ex) {
-                    Utilities.messageBox("Erreur" + response , "Erreur" + response, (AppCompatActivity) Game.activityGame);
                 }
 
 

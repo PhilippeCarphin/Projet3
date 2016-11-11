@@ -8,8 +8,8 @@ import org.json.JSONException;
 
 public class HttpRunner {
 
-    private static void runRequest(String suffix, String method, String body, RequestCallback callback) {
-        new RequestTask(callback).execute(Game.ip + suffix, method, body);
+    private static void runRequest(String suffix, String method, String body, RequestCallback callback, boolean receiveJSON) {
+        new RequestTask(callback, receiveJSON).execute(Game.ip + suffix, method, body);
     }
 
 
@@ -19,7 +19,7 @@ public class HttpRunner {
         String method = "POST";
         String body = REST.postNewGame(); //aller chercher le json
         RequestCallback callback = Callbacks.getPostNewGameCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runPostGameStart() throws JSONException {
@@ -28,7 +28,7 @@ public class HttpRunner {
         String method = "POST";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getPostGameStartCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runPostGameEnd() throws JSONException {
@@ -37,7 +37,7 @@ public class HttpRunner {
         String method = "POST";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getPostGameEndCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runPostMove(boolean isWhite, int x1, int y1, int x2, int y2) {
@@ -47,7 +47,7 @@ public class HttpRunner {
         String method = "POST";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getPostMoveCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, true);
     }
 
     public static void runPostPromote() {
@@ -56,7 +56,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getPostPromoteCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runGetTime(boolean isWhite) {
@@ -65,7 +65,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetTimeCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runGetStatusSummary() {
@@ -74,7 +74,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetStatusSummaryCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runGetStatusBoard() {
@@ -83,7 +83,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetStatusBoardCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, false);
     }
 
     public static void runGetGameDetails() {
@@ -92,7 +92,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetGameDetailsCallback();
-        runRequest(suffix, method, body, callback);
+        runRequest(suffix, method, body, callback, true);
     }
 
 
