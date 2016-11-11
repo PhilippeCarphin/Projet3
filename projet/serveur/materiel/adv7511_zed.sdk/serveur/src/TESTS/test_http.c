@@ -542,6 +542,7 @@ void test_queen()
 	test_movePlayer1("c4-c2");
 	test_get_board();
 
+	test_get_summary();
 	test_end();
 }
 

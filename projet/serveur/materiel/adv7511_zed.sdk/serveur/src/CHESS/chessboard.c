@@ -232,6 +232,8 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	//check for path, checkmate,
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
+	currentTurnInfo.last_move[0] = xd + 'a';
+	currentTurnInfo.last_move[1] = yd + '1';
 	currentTurnInfo.game_status = NORMAL; // FOR NOW
 	moveInfo->promotion = false;
 	// not implemented
@@ -361,7 +363,7 @@ enum ChessboardRestStatus end_game()
 {
 	if (!gameStarted)
 	{
-		return NOT_IMPLEMENTED;
+		return unathorized;
 	}
 	gameStarted = false;
 	return OK;

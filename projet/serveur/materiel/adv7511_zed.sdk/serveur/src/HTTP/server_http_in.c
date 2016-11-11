@@ -144,7 +144,7 @@ void *get_body(const char *request, char *body, char *pswd, int len)
 	
 	/* find beginning of body */
 	p = strstr(request, "\r\n\r\n") + 4;
-	sscanf(p, "%[^\t\n]\r\n\r\n", pswd);
+	sscanf(p, "%[^\t\r\n]\r\n\r\n", pswd);
 
 	q = strstr(p, "\r\n\r\n") + 4;
 	
