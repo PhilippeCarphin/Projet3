@@ -8,7 +8,6 @@ import org.json.JSONException;
 
 public class HttpRunner {
 
-    private static REST rest;
     private static void runRequest(String suffix, String method, String body, RequestCallback callback) {
         new RequestTask(callback).execute(Game.ip + suffix, method, body);
     }
@@ -18,7 +17,7 @@ public class HttpRunner {
         //TODO
         String suffix = "/new_game";
         String method = "POST";
-        String body = rest.postNewGame(); //aller chercher le json
+        String body = REST.postNewGame(); //aller chercher le json
         RequestCallback callback = Callbacks.getPostNewGameCallback();
         runRequest(suffix, method, body, callback);
     }
@@ -43,8 +42,8 @@ public class HttpRunner {
 
     public static void runPostMove(boolean isWhite, int x1, int y1, int x2, int y2) {
         //TODO
-        String suffix = "/move/" + (isWhite ? "1" : "2") + (char)(x1+97) +Integer.valueOf(y1).toString() +
-                "-" + (char)(x2+97) +Integer.valueOf(y2).toString();
+        String suffix = "/move/" + (isWhite ? "1" : "2") + "/" + (char)(x1+97) +Integer.valueOf(y1+1).toString() +
+                "-" + (char)(x2+97) +Integer.valueOf(y2+1).toString();
         String method = "POST";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getPostMoveCallback();

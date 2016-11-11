@@ -33,7 +33,7 @@ class RequestTask extends AsyncTask<String, String, String> {
         // params comes from the execute() call: params[0] is the url.
        try {
             return downloadUrl("http://132.207.89." + args[0], args[1], args[2]);//urls[0]);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "Unable to retrieve data";
         }
@@ -53,7 +53,7 @@ class RequestTask extends AsyncTask<String, String, String> {
     }
 
 
-    private String downloadUrl(String myurl, String method, String body) throws IOException {
+    private String downloadUrl(String myurl, String method, String body) throws Exception {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
@@ -67,30 +67,42 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.setDoInput(true);
             //conn.setDoOutput(true);
             conn.setRequestMethod(method);
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept", "application/json");
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write("\r\n\r\n" +"helloworld" + "\r\n\r\n");
-            wr.write(body);
-            wr.flush();
+            if (!body.equals("")) {
+
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write("helloworld" + "\r\n\r\n");
+                wr.write(body);
+                wr.flush();
+            }
+            else {
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write("helloworld" + "\r\n\r\n");
+                wr.flush();
+            }
 
 
             //conn.setRequestProperty("content-length", );
             // Starts the query
             conn.connect();
 
-            int response = conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
             is = conn.getInputStream();
             int len = conn.getContentLength();
-            String l = conn.getResponseMessage();
+            String responseMessage = conn.getResponseMessage();
+            Log.d("content length", ""+len);
+            Log.d("Response message",  responseMessage);
+            String contentAsString;
+            if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
+            if (len > 0) {
+                // Convert the InputStream into a string
+                contentAsString = readIt(is, len);
 
-            Log.d("HTTP GET", "The response message is: " + l);
-
-            // Convert the InputStream into a string
-            String contentAsString = readIt(is, len);
-
-            Log.d("HTTP GET", "The response is: " + contentAsString);
+                Log.d("HTTP GET", "The response is: " + contentAsString);
+            }
             conn.disconnect();
+            contentAsString = "";
             return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is

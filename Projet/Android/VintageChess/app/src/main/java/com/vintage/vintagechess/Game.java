@@ -32,6 +32,7 @@ public class Game {
     private static Bitmap boardImg;
     public static int leftSpace;
     public static String ip;
+    private static boolean isWhiteTurn = true;
 
     private static ArrayList<Piece> pieces = new ArrayList<>();
     private static LinkedList<Piece> deletedPieces = new LinkedList<Piece>();
@@ -100,8 +101,8 @@ public class Game {
         for(Piece p : pieces) {
             Bitmap imageBitmap = p.getBitmap();
             Point position = p.p_;
-            int xPos =  getPosition(position.x);
-            int yPos =  getPosition(position.y);
+            int xPos =  getPixelPosition(position.x);
+            int yPos =  getPixelPosition(7-position.y);
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
         }
 
@@ -116,8 +117,8 @@ public class Game {
             Canvas tempCanvas = new Canvas(imageAndroid);
             Bitmap imageBitmap = currentPiece.getBitmap();
             Point position = currentPiece.p_;
-            int xPos =  getPosition(position.x);
-            int yPos =  getPosition(position.y);
+            int xPos =  getPixelPosition(position.x);
+            int yPos =  getPixelPosition(7-position.y);
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
         }
@@ -133,7 +134,7 @@ public class Game {
         return (int)(board.getHeight() * offset);
     }
 
-    public static int getPosition(int d) {
+    public static int getPixelPosition(int d) {
         return getBoardOffset() + d*getSquareWidth();
     }
 
@@ -146,12 +147,15 @@ public class Game {
 
     public static void handleFingerDown(int xPix, int yPix) {
         downPos = getboardCoordinates(xPix, yPix);
+        Log.d("down", downPos.x+" "+downPos.y);
         if (downPos != null) {
             currentPiece = getPieceOnCell(downPos);
         }
         if (currentPiece != null) {
             pieces.remove(currentPiece);
+            Log.d("Selected piece", currentPiece.type_);
             drawMotionlessPieces();
+            drawMovingPiece();
         }
     }
 
@@ -170,35 +174,58 @@ public class Game {
         float insideWidth = board.getHeight()-getBoardOffset()*2;
         x = (int)(8*(((float)(xView - getBoardOffset()))/insideWidth));
         y = (int)(8*(((float)(yView - getBoardOffset()))/insideWidth));
-        return new Point(x, y);
+        return new Point(x, 7-y);
     }
 
     public static void handleFingerUp() {
+        Log.d("up", lastPos.x+" "+lastPos.y);
+        if (currentPiece != null && !downPos.equals(lastPos)) {
+            HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y);
+        }
+
+        //new RequestTask().execute("http://www.google.com");
+        //finishMove();
+    }
+
+    public static void handleMoveOk() {
         if (currentPiece != null) {
+            Piece pieceToDelete = getPieceOnCell(lastPos);
+            if (pieceToDelete != null) {
+                pieces.remove(pieceToDelete);
+            }
+            pieces.add(currentPiece);
+            isWhiteTurn = !isWhiteTurn;
+        }
+        finishMove();
+    }
+
+    public static void handleMoveNotOk() {
+        if (currentPiece != null) {
+            currentPiece.p_ = downPos;
             pieces.add(currentPiece);
         }
+        finishMove();
+    }
+
+    private static void finishMove() {
+
+
         downPos = null;
         lastPos = null;
         currentPiece = null;
         drawMotionlessPieces();
         drawMovingPiece();
-        //new RequestTask().execute("http://www.google.com");
     }
 
     public static void handleMove(int xPix, int yPix) {
+        //lastPos = getboardCoordinates(xPix, yPix);
         if (downPos == null || currentPiece == null ) {
-            handleFingerUp();
             return;
         }
         Point p = getboardCoordinates(xPix, yPix);
-        if (lastPos == null) {
+        if (!p.equals(lastPos)) {
             lastPos = p;
-            currentPiece.p_.set(lastPos.x, lastPos.y);
-            drawMovingPiece();
-        }
-        else if (!p.equals(lastPos.x, lastPos.y)) {
-            //Log.d("changed position", "");
-            currentPiece.p_.set(p.x, p.y);
+            currentPiece.p_ = lastPos;
             drawMovingPiece();
         }
         //drawBoard();

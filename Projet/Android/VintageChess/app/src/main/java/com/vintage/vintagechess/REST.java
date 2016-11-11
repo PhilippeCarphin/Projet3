@@ -12,17 +12,7 @@ import org.json.JSONObject;
 
 public class REST {
 
-    static ActivityCreateGame activityGame;// = new ActivityCreateGame();
-
-    public static String postGameStart() throws JSONException {
-
-        return "/game_start";
-    }
-
-    public static String postGameEnd() throws JSONException {
-
-        return "/game_end";
-    }
+    private static ActivityCreateGame activityGame;// = new ActivityCreateGame();
 
     public static String postNewGame() throws JSONException {
 
@@ -43,23 +33,18 @@ public class REST {
         outerObject.put("secret_code","helloworld");//activityGame.password);
         outerObject.put("twoTablet", activityGame.oneTablet);
         outerObject.put("enPassant", activityGame.enPassantOption);
-        outerObject.put("timeFormat", innerObject);
+        outerObject.put("timerFormat", innerObject);
 
-        Log.d("NewGame : ", String.valueOf(outerObject));
+        //Log.d("NewGame : ", String.valueOf(outerObject));
 
         return String.valueOf(outerObject);
     }
 
-    public static String postMove(String player, String initPosition, String destPosition){
 
-        String moving = "/move/" + player +"/"+ initPosition +"-"+ destPosition ;
-        return moving;
-    }
-
-    public static Piece getEliminatedPiece(String eliminatedPiece)
+    public static Piece getEliminatedPiece(String response)
             throws JSONException {
 
-        JSONObject jsonObject = new JSONObject(eliminatedPiece);
+        JSONObject jsonObject = new JSONObject(response);
         String pieceEleminated = jsonObject.getString("pieceEleminated");
         String promotion = jsonObject.getString("promotion");
         String state = jsonObject.getString("state");

@@ -10,7 +10,6 @@ import android.util.Log;
 
 public class Callbacks {
 
-    static REST rest;
 
     public static ActivityCreateGame activityCreateGame;
 
@@ -21,7 +20,6 @@ public class Callbacks {
             public void runResponse(String response) {
                 try {
                     Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
-                    if (!response.contains("200")) throw new Exception("Failed to create new game");
                     activityCreateGame.openGame();
                 }
                 catch (Exception e) {
@@ -60,11 +58,11 @@ public class Callbacks {
             public void runResponse(String response) throws JSONException {
                 try {
 
-                    if (!response.contains("200")) throw new Exception("Response was not 200");
-                   //Game.movingPiece
+                    Game.handleMoveOk();
 
                 }
                 catch (Exception ex) {
+                    Game.handleMoveNotOk();
                     Utilities.messageBox("Erreur" + response , "Erreur" + response, (AppCompatActivity) Game.activityGame);
                 }
 

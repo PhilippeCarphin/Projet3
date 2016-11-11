@@ -26,12 +26,13 @@ public class ActivityGame extends AppCompatActivity {
     ImageView motionlessPieces;
     ImageView movingPiece;
     Space leftSpace;
+    private static boolean gameStarted = false;
 
     RadioGroup selectStyle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        gameStarted = false;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
@@ -97,23 +98,34 @@ public class ActivityGame extends AppCompatActivity {
     }
 
     private void handleTouch(MotionEvent event) {
-        int action = event.getAction();
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                Game.handleFingerDown((int)event.getX(), (int)event.getY());
-                break;
-            case MotionEvent.ACTION_MOVE:
-                Game.handleMove((int)event.getX(), (int)event.getY());
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL :
-                Game.handleFingerUp();
-                break;
-        }
+        try {
 
+            int action = event.getAction();
+            if (!gameStarted) {
+                HttpRunner.runPostGameStart();
+                gameStarted = true;
+            }
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    Game.handleFingerDown((int)event.getX(), (int)event.getY());
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    Game.handleMove((int)event.getX(), (int)event.getY());
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL :
+                    Game.handleFingerUp();
+                    break;
+            }
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageBox("Error with finger move", e.getMessage(), this);
+        }
         // TEST DELETE PIECE
-        Game.deletePiece("a1");
-        Game.deletePiece("e5");
+        //Game.deletePiece("a1");
+        //Game.deletePiece("e5");
     }
 
     private void handleRadioChange() {

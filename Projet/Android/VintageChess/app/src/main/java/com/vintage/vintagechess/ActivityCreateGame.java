@@ -36,14 +36,14 @@ public class ActivityCreateGame extends AppCompatActivity {
     public static boolean oneTablet;
     public static String password;
     public static String playerName1;
-    public static String normalTime;
-    public static String overTime;
-    public static String allowedTurns;
-    public static String timePerPlay;
-    public static String overTimeIncr;
+    public static int normalTime;
+    public static int overTime;
+    public static int allowedTurns;
+    public static int timePerPlay;
+    public static int overTimeIncr;
     public static boolean enPassantOption;
 
-    static REST rest;
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -99,8 +99,8 @@ public class ActivityCreateGame extends AppCompatActivity {
                 handleClick();
             }
         });
-        Callbacks.activityCreateGame = this;
 
+        Callbacks.activityCreateGame = this;
     }
 
     private void handleRadioChange() {
@@ -116,11 +116,11 @@ public class ActivityCreateGame extends AppCompatActivity {
             location = editTextLocation.getText().toString();
             playerName1 = editTextPlayer1Name.getText().toString();
             password = editTextPassword.getText().toString();
-            normalTime = Utilities.getTimePickerString(timePickerMain);
-            timePerPlay = Integer.valueOf(numberPickerTimePerPlay.getValue()).toString();
-            overTime = Utilities.getTimePickerString(timePickerOverTime);
-            overTimeIncr = Integer.valueOf(numberPickerTimePerPlay.getValue()).toString();
-            allowedTurns = Integer.valueOf(numberPickerTurnsBeforedraw.getValue()).toString();
+            normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
+            timePerPlay = numberPickerTimePerPlay.getValue();
+            overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
+            overTimeIncr = numberPickerTimePerPlay.getValue();
+            allowedTurns = numberPickerTurnsBeforedraw.getValue();
 
             //handle errors in entries
             if (radioButton2.isChecked()) {
