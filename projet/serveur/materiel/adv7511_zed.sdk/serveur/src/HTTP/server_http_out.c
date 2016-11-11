@@ -56,7 +56,7 @@ const char *build_header(int code, char *content_type, int content_length)
 	static char header[MAX_LENGTH], message[MSG_LEN];
 	
 	get_http_message(code, message);
-	sprintf(header, "HTTP/1.1 %s\r\nContent-Type : %s\r\nContent-Length : %d\r\nConnection : Closed\r\n\r\n",
+	sprintf(header, "HTTP/1.1 %s\r\nContent-Type: %s\r\nContent-Length: %d\r\nConnection: Closed\r\n\r\n",
 			 message, content_type, content_length);
 	return (const char *)header;
 }
