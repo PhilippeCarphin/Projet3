@@ -419,7 +419,8 @@ enum ChessboardRestStatus move_bishop(int xs, int xd, int ys, int yd)
 	if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
 		return ILLEGAL; // not moving equally in both directions
 
-	if ((xs < xd && ys < yd))
+	// Francis was here j'ai rajouter : || (xs > xd && ys > yd) a : 	if ((xs < xd && ys < yd) || (xs > xd && ys > yd))
+	if ((xs < xd && ys < yd) || (xs > xd && ys > yd))
 	{ // meme signe
 		int i = (xs < xd ? xs : xd); // min X
 		int j = (ys < yd ? ys : yd); // min Y
