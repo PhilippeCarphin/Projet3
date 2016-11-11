@@ -84,8 +84,8 @@ int set_chess_board_params()
 {
 	bd.top = 50;
 	bd.left = 50;
-	bd.square_size = square_size;
-	bd.margin = margin;
+	bd.square_size = 100;
+	bd.margin = 30;
 	bd.notation_left = bd.left + 8*bd.square_size + bd.margin + 10;
 	bd.notation_top = bd.top - bd.margin;
 	bd.notation_width = 15 * char_width;
@@ -148,13 +148,13 @@ u32 getPieceOffset(PieceType p)
 ******************************************************************************/
 int BoardDisplay_init()
 {
-	int err;
+	int err = 0;
 	set_screen_dimensions(1280,1024);
 	set_chess_board_params();
 	set_background_color(0x00000000); 
 	load_bitmap_files();
 	draw_chess_board();
-	return 0;
+	return err;
 }
 
 
@@ -262,7 +262,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32 bmp_right = MIN(bmp_left + 90,800);
 
 	u32 screen_top = rank_to_pixel(rank) + v_offset;
-	u32 screen_left = file_to_pixel(file) + getPieceOffset();
+	u32 screen_left = file_to_pixel(file) + getPieceOffset(type);
 
 	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
@@ -464,7 +464,7 @@ int test_move_piece();
  		else
  			draw_string(cursor_top, cursor_left, "O-O-O");
 
- 		return;
+ 		return 0;
  	}
 
  	/*
@@ -511,21 +511,21 @@ int test_move_piece();
 	int err;
 	if( mv->castling)
 	{
-		File rook_file = (d_file == C ? D : G);
+		File rook_file = (mv->d_file == C ? D : G);
 		// Redraw the king on a non-yellow square
-		if((err = clear_square(d_file, d_rank)) != 0) return err;
-		if((err = draw_piece(KING, mv->c, d_file,d_rank)) != 0) return err;
+		if((err = clear_square(mv->d_file,mv-> d_rank)) != 0) return err;
+		if((err = draw_piece(KING, mv->c, mv->d_file,mv->d_rank)) != 0) return err;
 		// Redraw the rook on a non-yellow square
-		if((err = clear_square(rook_file, d_rank)) != 0) return err;
-		if((err = draw_piece(ROOK, mv->c, rook_file ,d_rank)) != 0) return err;
+		if((err = clear_square(rook_file, mv->d_rank)) != 0) return err;
+		if((err = draw_piece(ROOK, mv->c, rook_file ,mv->d_rank)) != 0) return err;
 	}
 	else
 	{
 		// Clear last origin square,
-		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
+		if((err = clear_square(mv->o_file, mv->o_rank)) != 0) return err;
 		// Redraw the piece on a non-yellow square.
-		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
-		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
+		if((err = clear_square(mv->d_file, mv->d_rank)) != 0) return err;
+		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;
 	}
 	return 0;
 }
@@ -571,8 +571,8 @@ int do_move(struct Move *mv)
 			 * the same file as the destination square but it is one rank below if white made the
 			 * en-passant capture, and one rank below if black made the en-passant capture.
 			 */
-			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1)
-			if((err = clear_square(mv->d_file, r)) != 0) return err;;
+			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1);
+			if((err = clear_square(mv->d_file, r)) != 0) return err;
 		}
 		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
 		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
@@ -589,8 +589,8 @@ int BoardDisplay_move_piece(struct Move *move)
 	int err;
 
 	move->castling = (move->t == KING 
-						&& mv->o_file == E 
-						&& (mv->d_file == G || mv->d_file == C));
+						&& move->o_file == E
+						&& (move->d_file == G || move->d_file == C));
 	/*
 	 * During the preceding call, we yellowed the origin square,
 	 * and we drew the moved piece on a yellowed square.  So we start 
