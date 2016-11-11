@@ -86,6 +86,24 @@ int set_chess_board_params()
 	bd.notation_height = 40 * line_skip;
 	return 0;
 }
+
+/******************************************************************************
+ * Load the images and their data into our memory buffers
+******************************************************************************/
+int load_bitmap_files()
+{
+	int err = 0;
+	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
+		return err;
+	}
+	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
+		return err;
+	}
+	return 0;
+}
+
 /******************************************************************************
  * Set buffer addresses from stack-declared buffers in main().
 ******************************************************************************/
@@ -118,6 +136,7 @@ u32 getPieceOffset(PieceType p)
 	}
 }
 
+
 /******************************************************************************
  * Read bitmap data into memory, initialize offsets
 ******************************************************************************/
@@ -126,16 +145,8 @@ int BoardDisplay_init()
 	int err;
 	set_screen_dimensions(1280,1024);
 	set_chess_board_params();
-	set_background_color(0x00000000); // Set the entire screen to blue.
-
-	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
-		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
-		return err;
-	}
-	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
-		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
-		return err;
-	}
+	set_background_color(0x00000000); 
+	load_bitmap_files();
 	draw_chess_board();
 	return 0;
 }
