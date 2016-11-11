@@ -3,6 +3,7 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
+#define DEBUG
 #include "debug.h"
 #include "cf_hdmi.h"
 
@@ -318,7 +319,7 @@ int draw_empty_board()
 
 	// Dessiner le rectangle pour la zone de notation
 	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, bd.notation_height, 0x00000000);
-
+	draw_coordinates();
 	return 0;
 }
 
@@ -386,8 +387,9 @@ int draw_pieces()
 ******************************************************************************/
 int draw_pieces_custom(Piece* player1, Piece* player2)
 {
+	FBEGIN;
+	draw_empty_board();
 	int err;
-
 	int i = 0;
 	for (i = 0; i < 16; ++i)
 	{
@@ -397,10 +399,12 @@ int draw_pieces_custom(Piece* player1, Piece* player2)
 		}
 		if (player2[i].x != 'x')
 		{
-			if((err = draw_piece(player2[i].pieceType, WHITE,player2[i].x,player2[i].y)) != 0) return err;
+			if((err = draw_piece(player2[i].pieceType, BLACK,player2[i].x,player2[i].y)) != 0) return err;
 		}
 
 	}
+	cf_hdmi_send_buffer();
+	FEND;
 	return 0;
 }
 
@@ -414,11 +418,10 @@ int test_move_piece();
 
 	if( (err = set_background_color(0x00666666)) != 0) return err;
 	if( (err = draw_empty_board()) != 0) return err;
-	if( (err = draw_coordinates()) != 0) return err;
 	if( (err = draw_pieces()) != 0) return err;
 
 	first_move = 1;
-
+	cf_hdmi_send_buffer();
 	// test_move_piece();
 	return 0;
 }
