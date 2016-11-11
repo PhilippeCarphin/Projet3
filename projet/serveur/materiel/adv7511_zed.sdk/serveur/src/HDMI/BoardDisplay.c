@@ -55,7 +55,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank);
 int color_square(File file, Rank rank, u32 color);
 int clear_square(File file, Rank rank);
 int BoardDisplay_init();
-int set_chess_board_params(int top, int left, int square_size, u32 margin);
+int set_chess_board_params();
 int draw_chess_board();
 int move_piece(struct Move *move);
 u32 file_to_pixel(int file);
@@ -74,7 +74,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str);
 /******************************************************************************
  * Set parameters in chessboard data.
 ******************************************************************************/
-int set_chess_board_params(int top, int left, int square_size, u32 margin)
+int set_chess_board_params()
 {
 	bd.top = 50;
 	bd.left = 50;
@@ -125,7 +125,7 @@ int BoardDisplay_init()
 {
 	int err;
 	set_screen_dimensions(1280,1024);
-	set_chess_board_params(200,50,90,25);
+	set_chess_board_params();
 	set_background_color(0x00000000); // Set the entire screen to blue.
 
 	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
