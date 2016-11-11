@@ -44,11 +44,10 @@ static TurnInfo currentTurnInfo;
 
 enum ChessboardRestStatus validate_password(const char *pswd)
 {
-	if (gameStarted && strcmp(currentGameInfo.secret_code, pswd) != 0)
+	if (strcmp(currentGameInfo.secret_code, pswd) != 0)
 	{
 		return unathorized;
 	}
-
 	return OK;
 }
 

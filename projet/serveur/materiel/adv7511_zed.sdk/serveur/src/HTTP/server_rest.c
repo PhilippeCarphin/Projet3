@@ -33,7 +33,7 @@ int REST_handle_request(enum request_type type, const char *data, const char *ps
 	char pswd_b64[MAX_lEN];
 	
 	ascii_to_base64(pswd, strlen(pswd), pswd_b64);
-	if (validate_password(pswd_b64) == unathorized)
+	if (type != NEW_GAME && validate_password(pswd_b64) == unathorized)
 	{
 		return unathorized;
 	}
