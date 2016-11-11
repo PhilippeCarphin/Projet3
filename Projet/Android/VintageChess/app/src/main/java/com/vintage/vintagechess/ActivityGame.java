@@ -41,6 +41,7 @@ public class ActivityGame extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Utilities.currentActivity = this;
         gameStarted = false;
 
         super.onCreate(savedInstanceState);
@@ -84,7 +85,9 @@ public class ActivityGame extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
-        Game.initializeGame();
+        if (!gameStarted) {
+            Game.initializeGame();
+        }
         Display.drawFullBoard();
         Game.leftSpace = leftSpace.getWidth();
 
@@ -146,17 +149,23 @@ public class ActivityGame extends AppCompatActivity {
         }
         catch (Exception e) {
             e.printStackTrace();
+            Game.recoverFromError();
+            Utilities.messageBox("Error with view touch event", e.getMessage());
         }
-        // TEST DELETE PIECE
-        //Game.deletePiece("a1");
-        //Game.deletePiece("e5");
+
     }
 
     private void handleRadioChange() {
-        applyFilter();
-        changeStyle();
-        Display.setBoardImg();
-        Display.drawFullBoard();
+        try {
+            applyFilter();
+            changeStyle();
+            Display.setBoardImg();
+            Display.drawFullBoard();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageBox("Error with radio change", e.getMessage());
+        }
     }
 
     private void applyFilter() {
