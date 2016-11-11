@@ -78,7 +78,6 @@ public class Callbacks {
 
                 try {
 
-                    if (!response.contains("200")) throw new Exception("Response was not 200");
                     //Game.promote
 
                 }
