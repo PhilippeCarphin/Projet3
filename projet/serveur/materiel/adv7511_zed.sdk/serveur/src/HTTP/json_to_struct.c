@@ -47,6 +47,7 @@ int parse_game_info(const char *data, GameInfo *gameinfo)
 		else if (jsoneq(data, &tokens[i], "round") == 0)
 		{			
 			status = token_to_string(info.round, data, &tokens[i+1]);
+			xil_printf("info.round : %s\n", info.round);
 		}
 		else if (jsoneq(data, &tokens[i], "location") == 0)
 		{

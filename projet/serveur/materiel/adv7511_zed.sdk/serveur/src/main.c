@@ -29,9 +29,6 @@ int main(){
 
 	init_TCP();
 
-	test_queen();
-	//test_new_game();
-
 	while(1){
 		run_HDMI();
 		run_TCP();

@@ -34,7 +34,7 @@ int token_to_bool(int *dst, const char *data, const jsmntok_t *token)
 	
 	if (strcmp(boolean, "yes") == 0)
 		*dst = 1;
-	else if (strcmp(boolean, "no") == 0)
+	else
 		*dst = 0;
 	
 	return len;

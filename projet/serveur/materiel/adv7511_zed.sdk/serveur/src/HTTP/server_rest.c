@@ -245,7 +245,7 @@ int getBoard_request(char *REST_response)
 	}
 	/* send status code to client */
 
-#if 1
+#if 0
 
 	/*
 	 * The HDMI is updated in BoardDisplay_move_piece().  This causes the screen

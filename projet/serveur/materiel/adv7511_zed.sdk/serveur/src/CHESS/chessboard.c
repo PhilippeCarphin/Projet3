@@ -1,10 +1,11 @@
 #include "chessboard.h"
+#include "BoardDisplay.h"
 #include <string.h>
 #include "xil_io.h"
 #include "debug.h"
 //player1 pieces
 
-typedef enum {pawn, knight, rook, bishop, queen, king }PieceType;
+//typedef enum {pawn, knight, rook, bishop, queen, king }PieceType;
 typedef enum { false = 0 , true = 1 } bool;
 typedef struct Piece
 {
@@ -90,43 +91,43 @@ static void ChessGameInitialisation()
 	clearBoard();
 	
 	// we initialize the pieces of the first players
-	player1Pieces[0] = PieceInitialisation(4,0,king,player1);
-	player1Pieces[1] = PieceInitialisation(3,0,queen,player1);
-	player1Pieces[2] = PieceInitialisation(2,0,bishop,player1);
-	player1Pieces[3] = PieceInitialisation(5,0,bishop,player1);
-	player1Pieces[4] = PieceInitialisation(0,0,rook,player1);
-	player1Pieces[5] = PieceInitialisation(7,0,rook,player1);
-	player1Pieces[6] = PieceInitialisation(1,0,knight,player1);
-	player1Pieces[7] = PieceInitialisation(6,0,knight,player1);
-	player1Pieces[8] = PieceInitialisation(0,1,pawn,player1);
-	player1Pieces[9] = PieceInitialisation(1,1,pawn,player1);
-	player1Pieces[10] = PieceInitialisation(2,1,pawn,player1);
-	player1Pieces[11] = PieceInitialisation(3,1,pawn,player1);
-	player1Pieces[12] = PieceInitialisation(4,1,pawn,player1);
-	player1Pieces[13] = PieceInitialisation(5,1,pawn,player1);
-	player1Pieces[14] = PieceInitialisation(6,1,pawn,player1);
-	player1Pieces[15] = PieceInitialisation(7,1,pawn,player1);
+	player1Pieces[0] = PieceInitialisation(4,0,KING,player1);
+	player1Pieces[1] = PieceInitialisation(3,0,QUEEN,player1);
+	player1Pieces[2] = PieceInitialisation(2,0,BISHOP,player1);
+	player1Pieces[3] = PieceInitialisation(5,0,BISHOP,player1);
+	player1Pieces[4] = PieceInitialisation(0,0,ROOK,player1);
+	player1Pieces[5] = PieceInitialisation(7,0,ROOK,player1);
+	player1Pieces[6] = PieceInitialisation(1,0,KNIGHT,player1);
+	player1Pieces[7] = PieceInitialisation(6,0,KNIGHT,player1);
+	player1Pieces[8] = PieceInitialisation(0,1,PAWN,player1);
+	player1Pieces[9] = PieceInitialisation(1,1,PAWN,player1);
+	player1Pieces[10] = PieceInitialisation(2,1,PAWN,player1);
+	player1Pieces[11] = PieceInitialisation(3,1,PAWN,player1);
+	player1Pieces[12] = PieceInitialisation(4,1,PAWN,player1);
+	player1Pieces[13] = PieceInitialisation(5,1,PAWN,player1);
+	player1Pieces[14] = PieceInitialisation(6,1,PAWN,player1);
+	player1Pieces[15] = PieceInitialisation(7,1,PAWN,player1);
 	
 	// place P1 pieces on the board
 	setBoard(player1Pieces);
 
 	// we initialize the pieces for the second player
-	player2Pieces[0] = PieceInitialisation(4,7,king,player2);
-	player2Pieces[1] = PieceInitialisation(3,7,queen,player2);
-	player2Pieces[2] = PieceInitialisation(2,7,bishop,player2);
-	player2Pieces[3] = PieceInitialisation(5,7,bishop,player2);
-	player2Pieces[4] = PieceInitialisation(0,7,rook,player2);
-	player2Pieces[5] = PieceInitialisation(7,7,rook,player2);
-	player2Pieces[6] = PieceInitialisation(1,7,knight,player2);
-	player2Pieces[7] = PieceInitialisation(6,7,knight,player2);
-	player2Pieces[8] = PieceInitialisation(0,6,pawn,player2);
-	player2Pieces[9] = PieceInitialisation(1,6,pawn,player2);
-	player2Pieces[10] = PieceInitialisation(2,6,pawn,player2);
-	player2Pieces[11] = PieceInitialisation(3,6,pawn,player2);
-	player2Pieces[12] = PieceInitialisation(4,6,pawn,player2);
-	player2Pieces[13] = PieceInitialisation(5,6,pawn,player2);
-	player2Pieces[14] = PieceInitialisation(6,6,pawn,player2);
-	player2Pieces[15] = PieceInitialisation(7,6,pawn,player2);
+	player2Pieces[0] = PieceInitialisation(4,7,KING,player2);
+	player2Pieces[1] = PieceInitialisation(3,7,QUEEN,player2);
+	player2Pieces[2] = PieceInitialisation(2,7,BISHOP,player2);
+	player2Pieces[3] = PieceInitialisation(5,7,BISHOP,player2);
+	player2Pieces[4] = PieceInitialisation(0,7,ROOK,player2);
+	player2Pieces[5] = PieceInitialisation(7,7,ROOK,player2);
+	player2Pieces[6] = PieceInitialisation(1,7,KNIGHT,player2);
+	player2Pieces[7] = PieceInitialisation(6,7,KNIGHT,player2);
+	player2Pieces[8] = PieceInitialisation(0,6,PAWN,player2);
+	player2Pieces[9] = PieceInitialisation(1,6,PAWN,player2);
+	player2Pieces[10] = PieceInitialisation(2,6,PAWN,player2);
+	player2Pieces[11] = PieceInitialisation(3,6,PAWN,player2);
+	player2Pieces[12] = PieceInitialisation(4,6,PAWN,player2);
+	player2Pieces[13] = PieceInitialisation(5,6,PAWN,player2);
+	player2Pieces[14] = PieceInitialisation(6,6,PAWN,player2);
+	player2Pieces[15] = PieceInitialisation(7,6,PAWN,player2);
 	
 	// place P2 pieces on the board
 	setBoard(player2Pieces);
@@ -221,23 +222,40 @@ enum ChessboardRestStatus move_piece(int player, const char *src, const char *ds
 	}
 	// we dont check for promotion right now
 
+	//setboard position
+
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
 	boardGame[xd][yd]->x = xd;
 	boardGame[xd][yd]->y = yd;
 
 	// increment turn, change player turn, time stuff
-	//call HDMI draw functions
-	//setboard position
-	//check for path, checkmate,
+
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
 	currentTurnInfo.game_status = NORMAL; // FOR NOW
-	moveInfo->promotion = false;
-	// not implemented
 	moveInfo->game_status = NORMAL;
+	moveInfo->promotion = false;
+
+	//call HDMI draw functions
+
+	struct Move mv;
+	mv.t = boardGame[xd][yd]->pieceType;
+	mv.c = (boardGame[xd][yd]->playerID == player1) ? WHITE : BLACK;
+	mv.o_file = xs;
+	mv.o_rank = ys;
+	mv.d_file = xd;
+	mv.d_rank = yd;
+	mv.enPassant = boardGame[xd][yd]->enPassant;
+	mv.turn_number = currentTurnInfo.move_no - 1;
+	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
+	BoardDisplay_move_piece(&mv);
+
+	//check for stalemate, checkmate,
+	// not implemented
+
 	return OK;
 }
 
@@ -500,27 +518,27 @@ enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
 	enum moveResult result = ILLEGAL;
 	switch (piece->pieceType)
 	{
-	case king:
+	case KING:
 		result = move_king(xs, xd, ys, yd);
 		break;
 
-	case rook:
+	case ROOK:
 		result = move_rook(xs, xd, ys, yd);
 		break;
 
-	case bishop:
+	case BISHOP:
 		result = move_bishop(xs, xd, ys, yd);
 		break;
 
-	case knight:
+	case KNIGHT:
 		result = move_knight(xs, xd, ys, yd);
 		break;
 
-	case queen:
+	case QUEEN:
 		result = move_queen(xs, xd, ys, yd);
 		break;
 
-	case pawn:
+	case PAWN:
 		result = move_pawn(xs, xd, ys, yd);
 		break;
 

@@ -12,22 +12,59 @@
 /* Note: the Host field need not be accurate for tests to succeed */
 
 /******************************************************************************
+ *
+ *****************************************************************************/
+static void assert_test(const char *test_name, const char *actual, const char *expected)
+{
+	if (strcmp(expected, actual) == 0)
+		xil_printf("\n%s test : %s\n\n", test_name, "PASSED");
+	else
+		xil_printf("\n%s test : %s\n\n", test_name, "FAILED");
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_http(const char *test_name, const char *request, const char *expected, int show_details)
+{
+	char response[2048];
+
+	if (show_details)
+	{
+		xil_printf("\n\n******************* %s *******************\n", test_name);
+		xil_printf("HTTP Request: \n%s", request);
+	}
+
+	HTTP_dispatchRequest(request, response);
+	assert_test(test_name, response, expected);
+
+	if (show_details)
+	{
+		xil_printf("HTTP Response: \n%s", response);
+		xil_printf("****************************************************\n");
+	}
+}
+
+/******************************************************************************
  * Runs all HTTP test in this file, one after the other.
  *****************************************************************************/
 void test_http_all()
 {
-	test_empty();
-	test_invalid_version();
-	test_bad_request();
-	test_new_game();
-	test_get_board();
-	test_start();
-	test_move();
-	test_promote();
-	test_get_time();
-	test_get_summary();
-	test_post_board();
+	/* Invalid requests */
+	test_empty(0);
+	test_invalid_version(0);
+	test_bad_request(0);
+
+	/* Complete features */
+	test_new_game(0);
+	test_start(0);
 	test_get_details();
+	test_get_summary();
+	test_get_board();
+	test_move();
+	//test_promote();	/* not yet implemented */
+	//test_get_time();  /* not yet implemented */
+	test_post_board();
 	test_end();
 }
 
@@ -37,18 +74,13 @@ void test_http_all()
  *			 Content-Type : text/plain
  *			 Content-Length : 0
  *****************************************************************************/
-void test_empty()
+void test_empty(int details)
 {
-	int result;
+	char test_name[] = "Empty request";
 	char request[] = "";
-	char response[2048];
+	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
 
-	xil_printf("\n******************* TEST EMPTY *******************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
-	xil_printf("****************************************************\n");
+	test_http(test_name, request, expected, details);
 }
 
 /******************************************************************************
@@ -62,18 +94,13 @@ void test_empty()
  *			 Content-Type : text/plain
  *			 Content-Length : 0
  *****************************************************************************/
-void test_invalid_version()
+void test_invalid_version(int details)
 {
-	int result;
+	char test_name[] = "Invalid version";
 	char request[] = "GET /status/board\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.0\r\nContent-Length: 0\r\n\r\n";
-	char response[2048];
+	char expected[] = "HTTP/1.1 505 HTTP Version Not Supported\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
 
-	xil_printf("\n******************* TEST INVALID VERSION *******************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
-	xil_printf("**************************************************************\n");
+	test_http(test_name, request, expected, details);
 }
 
 /******************************************************************************
@@ -87,19 +114,13 @@ void test_invalid_version()
  *			 Content-Type : text/plain
  *			 Content-Length : 0 
  *****************************************************************************/
-void test_bad_request()
+void test_bad_request(int details)
 {
-	int result;
-	//char request[] = "SALUT /board\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 0\r\n\r\n";
+	char test_name[] = "Bad request";
 	char request[] = "GET /fdsddsa";
-	char response[2048];
+	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
 
-	xil_printf("\n******************* TEST BAD REQUEST *******************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
-	xil_printf("**********************************************************\n");
+	test_http(test_name, request, expected, details);
 }
 
 /******************************************************************************
@@ -131,18 +152,14 @@ void test_bad_request()
  *			 Content-Type : text/plain
  *			 Content-Length : 0
  *****************************************************************************/
-void test_new_game()
+void test_new_game(int details)
 {
-	int result;
+	char test_name[] = "New game";
 	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 265\r\n\r\nmotdepasse\r\n\r\n{\"player1\": \"Francis Ouellet\",\"player2\": \"J.RandomUser\",\"round\": \"1\",\"location\": \"Polymtl\",\"secret_code\": \"motdepasse\",\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
-	char response[2048];
+	//char request[] = "POST /new_game HTTP/1.1\r\nContent-Type: application/json\r\nAccept: application/json\r\nUser-Agent: Dalvik/2.1.0 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)\r\nHost: 132.207.89.21\r\nConnection: Keep-Alive\r\nAccept-Encoding: gzip\r\nContent-Length: 243\r\n\r\nhelloworld\r\n\r\n{\"player1\":\"haha\",\"player2\":\"TODO\",\"round\":\"TODO\",\"location\":\"\",\"secret_code\":\"helloworld\",\"twoTablet\":false,\"enPassant\":false,\"timerFormat\":{\"time\": 90,\"increment\": 30,\"limit\": 40,\"overtime\": 40,\"overtimeIncrement\": 40}}";
+	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
 
-	xil_printf("\n******************* TEST NEW GAME *******************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
-	xil_printf("*******************************************************\n");
+	test_http(test_name, request, expected, details);
 }
 
 /******************************************************************************
@@ -158,18 +175,13 @@ void test_new_game()
  * 
  * NOTE: new_game should be called before this
  *****************************************************************************/
-void test_start()
+void test_start(int details)
 {
-	int result;
+	char test_name[] = "Start game";
 	char request[] = "POST /game_start\r\nHost: 192.168.145.114\r\nConection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
-	char response[2048];
+	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
 
-	xil_printf("\n******************* TEST START **********************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
-	xil_printf("*******************************************************\n");
+	test_http(test_name, request, expected, details);
 }
 
 /******************************************************************************
@@ -186,15 +198,13 @@ void test_start()
  *****************************************************************************/
 void test_get_board()
 {
-	int result;
 	char request[] = "GET /status/board\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
-	xil_printf("\n******************* TEST GET BOARD *******************\n");
-	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
-	xil_printf("HTTP Response: \n%s\n\n", response);
+	xil_printf("\n\n******************* Get board test *******************\n");
+	xil_printf("HTTP Request: \n%s", request);
+	HTTP_dispatchRequest(request, response);
+	xil_printf("HTTP Response: \n%s", response);
 	xil_printf("******************************************************\n");
 }
 
@@ -203,7 +213,7 @@ void test_get_board()
  *****************************************************************************/
 void test_movePlayer1(char* coord)
 {	
-	int result;
+
 	char src[100];
 	char request[150];
     strcpy(src,  coord);
@@ -216,8 +226,7 @@ void test_movePlayer1(char* coord)
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -227,7 +236,7 @@ void test_movePlayer1(char* coord)
  *****************************************************************************/
 void test_movePlayer2(char* coord)
 {
-	int result;
+
 	char src[100];
 	char request[150];
     strcpy(src,  coord);
@@ -240,8 +249,7 @@ void test_movePlayer2(char* coord)
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -262,14 +270,13 @@ void test_movePlayer2(char* coord)
  *****************************************************************************/
 void test_move()
 {
-	int result;
+
 	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -279,8 +286,8 @@ void test_move()
  *****************************************************************************/
 void test_game()
 {
-	test_new_game();
-	test_start();
+	test_new_game(0);
+	test_start(0);
 	test_get_board();
 	test_movePlayer1("e2-e4");
 	test_movePlayer2("e7-e5");
@@ -307,9 +314,9 @@ void test_game()
  *****************************************************************************/
 void test_pawns()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* out of bounds */
@@ -357,9 +364,9 @@ void test_pawns()
  *****************************************************************************/
 void test_knight()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* out of bounds */
@@ -400,9 +407,9 @@ void test_knight()
  *****************************************************************************/
 void test_bishop()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* out of bounds */
@@ -448,9 +455,9 @@ void test_bishop()
  *****************************************************************************/
 void test_rook()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* set board for proper testing */
@@ -499,9 +506,9 @@ void test_rook()
  *****************************************************************************/
 void test_queen()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* set board for proper testing */
@@ -551,9 +558,9 @@ void test_queen()
  *****************************************************************************/
 void test_king()
 {
-	test_new_game();
+	test_new_game(0);
 	test_get_details();
-	test_start();
+	test_start(0);
 	test_get_board();
 
 	/* set board for proper testing */
@@ -581,14 +588,13 @@ void test_king()
  *****************************************************************************/
 void test_promote()
 {
-	int result;
+
 	char request[] = "POST /promote/1/queen\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST PROMOTE ********************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -608,14 +614,13 @@ void test_promote()
  *****************************************************************************/
 void test_get_time()
 {
-	int result;
+
 	char request[] = "GET /time/1\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET TIME *******************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -635,14 +640,13 @@ void test_get_time()
  *****************************************************************************/
 void test_get_summary()
 {
-	int result;
+
 	char request[] = "GET /status/summary\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET SUMMARY ****************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -662,14 +666,13 @@ void test_get_summary()
  *****************************************************************************/
 void test_get_details()
 {
-	int result;
-	char request[] = "GET /game_details\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
+
+	char request[] = "GET /game_details\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nhelloworld";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET DETAILS ****************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -708,14 +711,13 @@ void test_get_details()
  *****************************************************************************/
 void test_post_board()
 {
-	int result;
+
 	char request[] = "POST /status/board\r\nHTTP/1.1\r\nContent-Length: 352\r\n\r\nmotdepasse\r\n\r\n{\"turn\": 1,\"move_no\": 2,\"king1\": a1,\"queen1\": a2,\"bishop1A\": a3,\"bishop1B\": a4,\"rook1A\": a5,\"rook1B\": a6,\"knight1A\": a7,\"knight1B\": a8,\"pawn1\": [ b1, b2, b3, b4, b5, b6, b7, b8 ],\"king2\": c1,\"queen2\": c2,\"bishop2A\": c3,\"bishop2B\": c4,\"rook2A\": c5,\"rook2B\": c6,\"knight2A\": c7,\"knight2B\": c8,\"pawn2\": [ d1, d2, d3, d4, d5, d6, d7, d8 ]}";
 	char response[2048];
 
 	xil_printf("\n******************* TEST POST BOARD *****************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }
@@ -735,14 +737,13 @@ void test_post_board()
  *****************************************************************************/
 void test_end()
 {
-	int result;
+
 	char request[] = "POST /game_end\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST END ************************\n");
 	xil_printf("HTTP Request: \n%s\n\n", request);
-	result = HTTP_dispatchRequest(request, response);
-	xil_printf("Returned code: \n%d\n\n", result);
+	HTTP_dispatchRequest(request, response);
 	xil_printf("HTTP Response: \n%s\n\n", response);
 	xil_printf("*******************************************************\n");
 }

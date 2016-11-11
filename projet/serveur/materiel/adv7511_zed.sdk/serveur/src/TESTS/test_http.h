@@ -8,25 +8,28 @@
 #ifndef TEST_HTTP_H_
 #define TEST_HTTP_H_
 
+/* Function used by all others; could be used in main for more control over testing */
+void test_http(const char *test_name, const char *request, const char *expected, int show_details);
+
 /* One function to run them all */
 void test_http_all();
 
 /* Invalid requests */
-void test_empty();
-void test_invalid_version();
-void test_bad_request();
+void test_empty(int details);
+void test_invalid_version(int details);
+void test_bad_request(int details);
 
 /* Complete features */
-void test_new_game();
-void test_start();
+void test_new_game(int details);
+void test_start(int details);
 void test_get_board();
 void test_get_summary();
 void test_get_details();
+void test_move();
 void test_post_board();
 void test_end();
 
 /* Not yet complete */
-void test_move();
 void test_promote();
 void test_get_time();
 
