@@ -6,6 +6,8 @@ import android.util.Log;
 
 import org.json.JSONException;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +25,11 @@ import java.net.URL;
 class RequestTask extends AsyncTask<String, String, String> {
 
     private RequestCallback callback;
-    public RequestTask(RequestCallback callback) {
+    private boolean receiveJSON;
+    public RequestTask(RequestCallback callback, boolean receiveJSON) {
         super();
         this.callback = callback;
+        this.receiveJSON = receiveJSON;
     }
     @Override
     protected String doInBackground(String... args) {
@@ -58,10 +62,9 @@ class RequestTask extends AsyncTask<String, String, String> {
         // Only display the first 500 characters of the retrieved
         // web page content.
         //int len = 500;
-
+        URL url = new URL(myurl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         try {
-            URL url = new URL(myurl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(5000 /* milliseconds */);
             conn.setConnectTimeout(7000 /* milliseconds */);
             conn.setDoInput(true);
@@ -93,21 +96,25 @@ class RequestTask extends AsyncTask<String, String, String> {
             String responseMessage = conn.getResponseMessage();
             Log.d("content length", ""+len);
             Log.d("Response message",  responseMessage);
-            String contentAsString;
+            String contentAsString = "";
             if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
-            if (len > 0) {
+            if (receiveJSON) {
                 // Convert the InputStream into a string
-                contentAsString = readIt(is, len);
-
+                contentAsString = readIt(is, len);//readInputStreamToString(conn);
                 Log.d("HTTP GET", "The response is: " + contentAsString);
             }
+
             conn.disconnect();
-            contentAsString = "";
             return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
-        } finally {
+        }
+        catch (Exception e) {
+            Utilities.handleBadHttp(conn.getResponseCode(), conn.getResponseMessage());
+            throw e;
+        }
+        finally {
             if (is != null) {
                 is.close();
             }
@@ -122,5 +129,34 @@ class RequestTask extends AsyncTask<String, String, String> {
         char[] buffer = new char[len];
         reader.read(buffer);
         return new String(buffer);
+    }
+    private String readInputStreamToString(HttpURLConnection connection) {
+        String result = null;
+        StringBuffer sb = new StringBuffer();
+        InputStream is = null;
+
+        try {
+            is = new BufferedInputStream(connection.getInputStream());
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String inputLine = "";
+            while ((inputLine = br.readLine()) != null) {
+                sb.append(inputLine);
+            }
+            result = sb.toString();
+        }
+        catch (Exception e) {
+            result = null;
+        }
+        finally {
+            if (is != null) {
+                try {
+                    is.close();
+                }
+                catch (IOException e) {
+                }
+            }
+        }
+
+        return result;
     }
 }
