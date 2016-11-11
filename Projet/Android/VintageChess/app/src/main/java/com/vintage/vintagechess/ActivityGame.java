@@ -90,11 +90,16 @@ public class ActivityGame extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        // END GAME
-        
+        try {
+            HttpRunner.runPostGameEnd();
+            // reste?
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         Intent setIntent = new Intent(this,ActivityCreateGame.class);
         startActivity(setIntent);
-
 
     }
 

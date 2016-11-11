@@ -40,9 +40,9 @@ public class REST {
         return String.valueOf(outerObject);
     }
 
-
     public static Piece getEliminatedPiece(String response)
             throws JSONException {
+
 
         JSONObject jsonObject = new JSONObject(response);
         String pieceEleminated = jsonObject.getString("pieceEleminated");
