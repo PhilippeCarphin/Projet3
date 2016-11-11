@@ -141,10 +141,10 @@ int draw_square(u32 top, u32 left, u32 w, u32 h, u32 color)
 									 screen.w, screen.h, top,left);
 		return -1;
 	}
-	int bottom = MIN(top + h, screen.h);
-	int right = MIN(left + w, screen.w);
+	u32 bottom = MIN(top + h, screen.h);
+	u32 right = MIN(left + w, screen.w);
 
-	int i,j;
+	u32 i,j;
 	for(i = top; i < bottom; ++i)
 	{
 		for(j = left; j < right; ++j)
@@ -187,8 +187,8 @@ int draw_partial_bitmap(  u32 screen_top, u32 screen_left,
 	/*
 	 * Drawing in the screen
 	 */
-	int s_i,s_j; // coordinates in the screen
-	int b_i, b_j; // coordinates in the bitmap
+	u32 s_i,s_j; // coordinates in the screen
+	u32 b_i, b_j; // coordinates in the bitmap
 	for( s_i = screen_top    , b_i = img_top; s_i < screen.h  && b_i < img_bottom; ++s_i, ++b_i)
 	{
 		for(s_j = screen_left, b_j = img_left; s_j < screen.w  && b_j < img_right ; ++s_j, ++b_j)
