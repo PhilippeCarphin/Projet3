@@ -3,6 +3,7 @@ package com.vintage.vintagechess;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,11 @@ import android.widget.TimePicker;
  */
 
 public class Utilities {
-    public static void messageBox(String title, String content, AppCompatActivity activity) {
-        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(activity);
+    public static AppCompatActivity currentActivity;
+
+    public static void messageBox(String title, String content) {
+
+        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(currentActivity);
         dlgAlert.setMessage(content);
         dlgAlert.setTitle(title);
         dlgAlert.setPositiveButton("Ok",
@@ -45,5 +49,33 @@ public class Utilities {
         act.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
+    }
+
+    public static void handleBadHttp(int code, String message) {
+        String title = "Erreur " + code;
+        messageBox(title, message);
+    }
+
+    public static Point getGridCoordinates(String boardCoordinates) {
+        int x = boardCoordinates.charAt(0) - 97;
+        int y = boardCoordinates.charAt(1) - 48;
+        return new Point(x, y);
+    }
+
+    public static String getBoardCoordinates(Point p) {
+        return (char)(p.x+97) +Integer.valueOf(p.y+1).toString();
+    }
+
+    public static Piece[][] getEmptyGrid() {
+        return new Piece[][] {
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null},
+                {null,null,null,null,null,null,null,null}
+        };
     }
 }
