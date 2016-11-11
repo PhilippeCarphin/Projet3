@@ -6,6 +6,9 @@
 #include "base64_converter.h"
 #include "debug.h"
 
+//PHIL TEMP
+#include "BoardDisplay.h"
+
 #include <stdio.h>
 
 static const int MAX_lEN = 128;
@@ -241,6 +244,23 @@ int getBoard_request(char *REST_response)
 		board_position_to_json(board, REST_response);
 	}
 	/* send status code to client */
+
+#if 1
+
+	/*
+	 * The HDMI is updated in BoardDisplay_move_piece().  This causes the screen
+	 * buffer, which is modified in BoardDisplay_move_piece(), to be sent to
+	 * the screen by the cf_hdmi module.
+	 *
+	 * The ChessBoard_move_piece() function, after validating that the move is
+	 * legal, will declare a struct Move mv, populate it's fields with the
+	 * information of the move needed by BoardDisplay, and call BoardDisplay_move_piece()
+	 * and with &mv to tell it where the move information is stored.
+	 */
+	test_move_piece();
+
+#endif
+
 	return status;
 }
 

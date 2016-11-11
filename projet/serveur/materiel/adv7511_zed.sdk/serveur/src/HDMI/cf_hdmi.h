@@ -151,8 +151,7 @@ void AudioClick(void);
 int CLKGEN_SetRate(unsigned long rate,
 				   unsigned long parent_rate);
 unsigned long CLKGEN_GetRate(unsigned long parent_rate);
+// Function to have the buffer be updated.
+void cf_hdmi_send_buffer();
 
-void SetHdmiImageLenght(u32 length);
-
-u32* GetHdmiImagePointer();
 #endif /* CF_HDMI_H_ */

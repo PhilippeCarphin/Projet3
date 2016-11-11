@@ -4,17 +4,28 @@
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
 #include "debug.h"
+#include "cf_hdmi.h"
 
 #define MIN(x, y)	(x < y ? x : y)
 #define MAX(x, y) 	(x > y ? x : y)
 
 /*****************************************************************************
- *
+ * Struct containing info on the board, 
+ * - (top,left) decide where to place the by specifying the position of it's top
+ *   left corner in the screen
+ * - margin specifies the width of the margin around the board.
+ * - square_size determines the width and height of the squares in pixels
+ * - the notation zone is a black rectangle where game notation will be displayed
+ *   and we specify it's top,left corner as well as the width and height.
 ******************************************************************************/
 struct BoardData{
-	int top;
-	int left;
-	int square_size;
+	u32 top;
+	u32 left;
+	u32 square_size;
+	u32 notation_top;
+	u32 notation_left;
+	u32 notation_width;
+	u32 notation_height;
 	u32 margin;
 };
 static struct BoardData bd;
@@ -25,6 +36,8 @@ enum Colors { 	BACKGROUND = 0xFF000000,
 				YELLOW = 0xFFFFFF00,
 				MARGIN_COLOR = 0xFF955C3E
 };
+
+
 extern struct Screen screen;
 /******************************************************************************
  * Stuff pertaining to bitmaps of characters and pieces
@@ -32,12 +45,11 @@ extern struct Screen screen;
 static BMP chars;
 static u8 *chars_data;
 static int char_width = 15;
-static int line_skip = 28; // line_skip should be more than the height of a letter;
+static int line_skip = 22; // line_skip should be more than the height of a letter;
 
 static BMP pieces;
 static u8 *pieces_data;
 static int piece_height = 204 - WHITE;
-static u32 offsets[6];
 
 #define v_offset 10;
 #define h_offset 10;
@@ -49,7 +61,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank);
 int color_square(File file, Rank rank, u32 color);
 int clear_square(File file, Rank rank);
 int BoardDisplay_init();
-int set_chess_board_params(int top, int left, int square_size, u32 margin);
+int set_chess_board_params();
 int draw_chess_board();
 int move_piece(struct Move *move);
 u32 file_to_pixel(int file);
@@ -65,6 +77,38 @@ int draw_char(u32 screen_top, u32 screen_left, char c);
 int draw_string(u32 screen_top, u32 screen_left, char *str);
 // int update_times(struct Player_times);
 
+/******************************************************************************
+ * Set parameters in chessboard data.
+******************************************************************************/
+int set_chess_board_params()
+{
+	bd.top = 50;
+	bd.left = 50;
+	bd.square_size = 100;
+	bd.margin = 30;
+	bd.notation_left = bd.left + 8*bd.square_size + bd.margin + 10;
+	bd.notation_top = bd.top - bd.margin;
+	bd.notation_width = 15 * char_width;
+	bd.notation_height = 40 * line_skip;
+	return 0;
+}
+
+/******************************************************************************
+ * Load the images and their data into our memory buffers
+******************************************************************************/
+int load_bitmap_files()
+{
+	int err = 0;
+	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
+		return err;
+	}
+	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
+		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
+		return err;
+	}
+	return 0;
+}
 
 /******************************************************************************
  * Set buffer addresses from stack-declared buffers in main().
@@ -77,34 +121,42 @@ int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat)
 }
 
 /******************************************************************************
+ * Get the offset associated with the piece type.
+******************************************************************************/
+u32 getPieceOffset(PieceType p)
+{
+	switch(p)
+	{
+	case KING:
+		return 8;
+	case PAWN:
+		return 19;
+	case QUEEN:
+		return 1;
+	case BISHOP:
+		return 6;
+	case KNIGHT:
+		return 8;
+	case ROOK:
+		return 13;
+	default:
+		return 0;
+	}
+}
+
+
+/******************************************************************************
  * Read bitmap data into memory, initialize offsets
 ******************************************************************************/
 int BoardDisplay_init()
 {
-	int err;
+	int err = 0;
 	set_screen_dimensions(1280,1024);
-	set_chess_board_params(200,50,90,25);
-	set_background_color(0x00000000); // Set the entire screen to blue.
-
-	if( (err = read_bitmap_file("LTT.bmp", &chars, chars_data, CHARS_DATA_SIZE)) != 0){
-		WHERE DBG_PRINT("Unsuccessful load of Letters.bmp\n");
-		return err;
-	}
-	if( (err = read_bitmap_file("CP2.bmp", &pieces, pieces_data, PIECE_DATA_SIZE)) != 0){
-		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
-		return err;
-	}
-
-	offsets[PAWN] = 19; //19
-	offsets[ROOK] = 13; //13
-	offsets[QUEEN] = 1;
-	offsets[KNIGHT] = 8;
-	offsets[KING] = 8;
-	offsets[BISHOP] = 6;
-
-
+	set_chess_board_params();
+	set_background_color(0x00000000); 
+	load_bitmap_files();
 	draw_chess_board();
-	return 0;
+	return err;
 }
 
 
@@ -212,7 +264,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32 bmp_right = MIN(bmp_left + 90,800);
 
 	u32 screen_top = rank_to_pixel(rank) + v_offset;
-	u32 screen_left = file_to_pixel(file) + offsets[type];
+	u32 screen_left = file_to_pixel(file) + getPieceOffset(type);
 
 	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
@@ -246,18 +298,6 @@ int clear_square(File file, Rank rank)
 }
 
 /******************************************************************************
- * Set parameters in chessboard data.
-******************************************************************************/
-int set_chess_board_params(int top, int left, int square_size, u32 margin)
-{
-	bd.top = top;
-	bd.left = left;
-	bd.square_size = square_size;
-	bd.margin = margin;
-	return 0;
-}
-
-/******************************************************************************
  * Draw an empty chessboard with margin, squares and coordinates
 ******************************************************************************/
 int draw_empty_board()
@@ -275,6 +315,9 @@ int draw_empty_board()
 	for( file = A; file <= H; file++)
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
+
+	// Dessiner le rectangle pour la zone de notation
+	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, bd.notation_height, 0x00000000);
 
 	return 0;
 }
@@ -353,19 +396,203 @@ int test_move_piece();
 
 	first_move = 1;
 
-	test_move_piece();
+	// test_move_piece();
+	return 0;
+}
+
+ /******************************************************************************
+  * Gets the char associated with a piece
+ ******************************************************************************/
+ char getPieceChar(PieceType t)
+ {
+ 	switch(t){
+ 	case KNIGHT:
+ 		return 'N';
+ 	case KING:
+ 		return 'K';
+ 	case BISHOP:
+ 		return 'B';
+ 	case ROOK:
+ 		return 'R';
+ 	default:
+ 		return ' ';
+ 	}
+ }
+
+ /******************************************************************************
+  * Draws the move notation of a move.
+  * Standard chess notation works by specifying the least amount of information.
+  * So we say the piece that moved, and the destination of that piece.  
+  * For pawn moves that are not captures, there is no ambiguity in simply
+  * specifying the destination square.
+  * NOTE: One thing that is not taken into account here is the case when there
+  * is more than one piece of a given type that can go to a square, for example,
+  * if there are white rooks on a4 and h4, with nothing between them, in that 
+  * case the move Re4 is ambiguous and we need to write Rae4 to specify that
+  * the rook on a4 moved to e4 and the one on h4.
+  * One way to deal with this is to adop the slighly less standard notation of
+  * always specifying the origin square.
+  * The other alternative is to have the chessboard module prepare the string
+  * representing the move.  In any case, writing chess notation to the screen
+  * was easy for Phil to do and that's the only reason it is there.
+ ******************************************************************************/
+ int draw_move_notation(struct Move *mv)
+ {
+ 	int move_number = (mv->turn_number-1)/2;
+ 	u32 cursor_top = bd.notation_top + move_number * line_skip;
+ 	u32 cursor_left = bd.notation_left;
+
+ 	/*
+ 	 * For a white move, draw the move number on the complete left and a dot.
+ 	 * Otherwise, move the cursor 9 positions to the right to draw the black
+ 	 * move.
+ 	 */
+ 	if( mv->c == WHITE)
+ 	{
+ 		draw_char(cursor_top,cursor_left,'0' + move_number + 1);
+ 		cursor_left += char_width;
+ 		draw_char(cursor_top,cursor_left, '.');
+ 		cursor_left += 2*char_width;
+ 	}
+ 	else
+ 	{
+ 		cursor_left += 9 * char_width;
+ 	}
+
+ 	if( mv->castling)
+ 	{
+ 		if(mv->d_file == G)
+ 			draw_string(cursor_top, cursor_left, "O-O");
+ 		else
+ 			draw_string(cursor_top, cursor_left, "O-O-O");
+
+ 		return 0;
+ 	}
+
+ 	/*
+ 	 * We draw the char identifying the piece (K,N,B,R) and nothing for pawns,
+ 	 * except if the move is a capturing move, in which case, we identify the
+ 	 * moved pawn by it's origin file (dx4e meaning the pawn on 'd' takes on
+ 	 * e4)
+ 	 */
+ 	if(mv->t != PAWN)
+ 	{
+ 		draw_char(cursor_top, cursor_left, getPieceChar(mv->t));
+ 		cursor_left += char_width;
+ 	} else if (mv->capture){
+ 		draw_char(cursor_top, cursor_left, 'a' + mv->o_file);
+ 		cursor_left += char_width;
+ 	}
+
+ 	/*
+ 	 * If the move is a capture, we draw an 'x' between the char identifying
+ 	 * the piece and the destination square.
+ 	 */
+	if( mv->capture )
+	{
+		draw_char(cursor_top, cursor_left, 'x'); cursor_left += char_width;
+	}
+
+	/*
+	 * And we end by drawing the destination square
+	 */
+ 	char f = 'a' + mv->d_file;
+ 	char r = '1' + mv->d_rank;
+ 	draw_char(cursor_top, cursor_left, f); cursor_left += char_width;
+ 	draw_char(cursor_top, cursor_left, r); cursor_left += char_width;
+
+ 	return 0;
+ }
+
+/******************************************************************************
+ * Used to remove the yellow squares of the move parameter.  This is used on 
+ * the previous move that BoardDisplay_move_piece remembers.
+******************************************************************************/
+ int un_yellow(struct Move *mv)
+{
+	int err;
+	if( mv->castling)
+	{
+		// Redraw the king on a non-yellow square
+		if((err = clear_square(mv->d_file,mv-> d_rank)) != 0) return err;
+		if((err = draw_piece(KING, mv->c, mv->d_file,mv->d_rank)) != 0) return err;
+		// Redraw the rook on a non-yellow square
+		// File rook_file = (mv->d_file == C ? D : F);
+		// if((err = clear_square(rook_file, mv->d_rank)) != 0) return err;
+		// if((err = draw_piece(ROOK, mv->c, rook_file ,mv->d_rank)) != 0) return err;
+	}
+	else
+	{
+		// Clear last origin square,
+		if((err = clear_square(mv->o_file, mv->o_rank)) != 0) return err;
+		// Redraw the piece on a non-yellow square.
+		if((err = clear_square(mv->d_file, mv->d_rank)) != 0) return err;
+		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;
+	}
 	return 0;
 }
 
 /******************************************************************************
- * Put the preceding functions to use to do what Clement (Badass) Lanteigne
- * suggested with the coloring of squares
- * For maximum error reporting, we should do 
- * if( function() ) return -1;
+ * Used to move implicated in the move.  This checks if the move is a castling
+ * move, or an en-passant capture and does things appropiately.  Otherwise, it
+ * will simply clear the destination and origin squares with yellow, then draw
+ * the piece on the destination square.
+ * NOTE: the previous move is remembered and the un_yellow() function is used
+ * to restore the right color under the pieces that were moved when the next
+ * move is played.
+******************************************************************************/
+int do_move(struct Move *mv)
+{
+	int err;
+	if( mv->castling )
+	{
+		// clear origin
+		if((err = clear_square(mv->o_file, mv->o_rank)) != 0) return err;;
+		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;;
+		// yellow king square
+		// draw king
+		if((err = draw_piece(KING, mv->c, mv->d_file, mv->d_rank)) != 0) return err;;
+
+		if( mv->d_file == G )
+		{
+			if((err = clear_square(H, mv->o_rank)) != 0) return err;
+			if((err = draw_piece(ROOK, mv->c, F, mv->o_rank)) != 0) return err;
+		}
+		else
+		{
+			if((err = clear_square(A, mv->o_rank)) != 0) return err;
+			if((err = draw_piece(ROOK, mv->c, D, mv->o_rank)) != 0) return err;
+		}
+	}
+	else
+	{
+		if(mv->enPassant)
+		{
+			/*
+			 * we have to clear a different square then the destination square, the square is on 
+			 * the same file as the destination square but it is one rank below if white made the
+			 * en-passant capture, and one rank below if black made the en-passant capture.
+			 */
+			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1);
+			if((err = clear_square(mv->d_file, r)) != 0) return err;
+		}
+		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
+		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
+		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;
+	}
+	return 0;
+}
+
+/******************************************************************************
+ * This function executes a move and writes to the notation rectangle.
 ******************************************************************************/
 int BoardDisplay_move_piece(struct Move *move)
 {
 	int err;
+
+	move->castling = (move->t == KING 
+						&& move->o_file == E
+						&& (move->d_file == G || move->d_file == C));
 	/*
 	 * During the preceding call, we yellowed the origin square,
 	 * and we drew the moved piece on a yellowed square.  So we start 
@@ -375,18 +602,16 @@ int BoardDisplay_move_piece(struct Move *move)
 	static struct Move last;
 	if( ! first_move )
 	{
-		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
-		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
-		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
+		if((err = un_yellow(&last)) != 0) return err;
 	}
 
 	/*
 	 * Yellow the origin square and the destination square and draw the moved
 	 * piece on it's destination square.
 	 */
-	if((err = color_square(move->o_file, move->o_rank, YELLOW)) != 0) return err;
-	if((err = color_square(move->d_file, move->d_rank, YELLOW)) != 0) return err;
-	if((err = draw_piece(move->t, move->c, move->d_file, move->d_rank)) != 0) return err;
+	if((err = do_move(move)) != 0) return err;
+
+	if((err = draw_move_notation(move)) != 0) return err;
 	
 	/*
 	 * Remember the last move for the next one.
@@ -394,9 +619,10 @@ int BoardDisplay_move_piece(struct Move *move)
 	first_move = 0;
 	last = *move;
 
+	cf_hdmi_send_buffer();
+
 	return 0;
 }
-
 
 /******************************************************************************
  *
@@ -416,52 +642,119 @@ u32 rank_to_pixel(int rank)
 
 int test_move_piece()
 {
-	// TESTS de la fonction move_piece
-	draw_square(200, bd.left + 8*bd.square_size + bd.margin + 10, 250,500, 0);
-	draw_string(100,30, "Bon, CALISS, c'est \ncorrect maintenant! _+~|_~ASD{}");
-	struct Move mv;
-	mv.c = WHITE;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R2;
-	mv.d_file = E;
-	mv.d_rank = R4;
-
+	static int t = 1;
+	static struct Move mv;
+	switch(t){
+	case 1:
+		mv.c = WHITE;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R2;
+		mv.d_file = E;
+		mv.d_rank = R4;
+		mv.turn_number = 1;
+		mv.capture = 0;
+		break;
+	case 2:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R7;
+		mv.d_file = E;
+		mv.d_rank = R5;
+		break;
+	case 3:
+		mv.c = WHITE;
+		mv.t = KNIGHT;
+		mv.o_file = G;
+		mv.o_rank = R1;
+		mv.d_file = F;
+		mv.d_rank = R3;
+		break;
+	case 4:
+		mv.c = BLACK;
+		mv.t = KNIGHT;
+		mv.o_file = B;
+		mv.o_rank = R8;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		break;
+	case 5:
+		mv.c = WHITE;
+		mv.t = PAWN;
+		mv.o_file = D;
+		mv.o_rank = R2;
+		mv.d_file = D;
+		mv.d_rank = R4;
+		mv.capture = 0;
+		break;
+	case 6:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = E;
+		mv.o_rank = R5;
+		mv.d_file = D;
+		mv.d_rank = R4;
+		mv.capture = 1;
+		break;
+	case 7:
+		mv.c = WHITE;
+		mv.t = BISHOP;
+		mv.o_file = F;
+		mv.o_rank = R1;
+		mv.d_file = B;
+		mv.d_rank = R5;
+		mv.capture = 0;
+		break;
+	case 8:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = A;
+		mv.o_rank = R7;
+		mv.d_file = A;
+		mv.d_rank = R6;
+		mv.capture = 0;
+		break;
+	case 9:
+		mv.c = WHITE;
+		mv.t = BISHOP;
+		mv.o_file = B;
+		mv.o_rank = R5;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		mv.capture = 1;
+		break;
+	case 10:
+		mv.c = BLACK;
+		mv.t = PAWN;
+		mv.o_file = D;
+		mv.o_rank = R7;
+		mv.d_file = C;
+		mv.d_rank = R6;
+		mv.capture = 1;
+		break;
+	case 11:
+		mv.c = WHITE;
+		mv.t = KING;
+		mv.o_file = E;
+		mv.o_rank = R1;
+		mv.d_file = G;
+		mv.d_rank = R1;
+		mv.capture = 0;
+		break;
+	case 12:
+		mv.c = BLACK;
+		mv.t = KNIGHT;
+		mv.o_file = G;
+		mv.o_rank = R8;
+		mv.d_file = F;
+		mv.d_rank = R6;
+		break;
+	default:
+		draw_string(bd.top + 8 * bd.square_size + 100, bd.left, "Marie-Eve est super cute!");
+	}
 	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4");
+	mv.turn_number = ++t;
 
-	mv.c = BLACK;
-	mv.t = PAWN;
-	mv.o_file = E;
-	mv.o_rank = R7;
-	mv.d_file = E;
-	mv.d_rank = R5;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5");
-
-	mv.c = WHITE;
-	mv.t = KNIGHT;
-	mv.o_file = G;
-	mv.o_rank = R1;
-	mv.d_file = F;
-	mv.d_rank = R3;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5\n2. Nf3");
-
-	mv.c = BLACK;
-	mv.t = KNIGHT;
-	mv.o_file = B;
-	mv.o_rank = R8;
-	mv.d_file = C;
-	mv.d_rank = R6;
-
-	BoardDisplay_move_piece(&mv);
-	draw_string(200, bd.left + 8*bd.square_size + bd.margin + 10,
-				"1. e4  e5\n2. Nf3 Nc6");
 	return 0;
 }

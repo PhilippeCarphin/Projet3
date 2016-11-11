@@ -60,6 +60,13 @@ struct Move{
 	Rank o_rank;
 	File d_file;
 	Rank d_rank;
+	int enPassant; // Needs to be set by Chessboard.c
+	int castling;  // I can figure out if it's castling so chessboard
+				   // can just sent KING E1 to G1 and I'll know that it's castling
+	int turn_number; // Needs to be set by chessboard.c so that
+					 // I can show move numbers on the screen with notation
+	int capture; // Needs to be set by chessboard.c so that I can know to write the
+				 // 'x' in the chess notation.
 };
 
 
@@ -93,6 +100,12 @@ int draw_chess_board();
 int BoardDisplay_move_piece(struct Move *move);
 int draw_information(struct GameInfo *gi);
 int update_times(struct PlayerTimes *pt);
+
+/******************************************************************************
+ * Function that tests the workings of the whole HDMI module and is usable as
+ * documentation for how to use the BoardDisplay_move_piece function.
+******************************************************************************/
+int test_move_piece();
 
 #endif //_BOARD_DISPLAY_H_
 
