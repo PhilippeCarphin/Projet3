@@ -3,9 +3,12 @@
 #include "json_to_struct.h"
 #include "macros.h"
 #include "chessboard.h"
+#include "base64_converter.h"
 #include "debug.h"
 
 #include <stdio.h>
+
+static const int MAX_lEN = 128;
 
 int newGame_request(const char *data, char *REST_response);
 int move_request(const char *data, char *REST_response);
@@ -24,7 +27,10 @@ int end_request(const char *data, char *REST_response);
 int REST_handle_request(enum request_type type, const char *data, const char *pswd, char *REST_response)
 {
 	FBEGIN
-	if (validate_password(pswd) == unathorized)
+	char pswd_b64[MAX_LEN];
+	
+	ascii_to_base64(pswd, strlen(pswd), pswd_b64);
+	if (validate_password(pswd_b64) == unathorized)
 	{
 		return unathorized;
 	}
@@ -84,6 +90,11 @@ int newGame_request(const char *data, char *REST_response)
 	/* read JSON and store into struct game_info */	
 	struct GameInfo info;
 	parse_game_info(data, &info);
+
+	/* convert password into base64 */
+	char pswd_b64[MAX_LEN];
+	ascii_to_base64(info.secret_code, strlen(info.secret_code), pswd_b64);
+	strcpy(info.secret_code, pswd_b64);
 
 	/*
 	new_game(struct game_info *gi)
