@@ -44,7 +44,6 @@ static int line_skip = 22; // line_skip should be more than the height of a lett
 static BMP pieces;
 static u8 *pieces_data;
 static int piece_height = 204 - WHITE;
-static u32 offsets[6];
 
 #define v_offset 10;
 #define h_offset 10;
@@ -98,6 +97,28 @@ int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat)
 }
 
 /******************************************************************************
+ * Get the offset associated with the piece type.
+******************************************************************************/
+u32 getPieceOffset(PieceType p)
+{
+	switch(p)
+	{
+	case KING:
+		return 8;
+	case PAWN:
+		return 19;
+	case QUEEN:
+		return 1;
+	case BISHOP:
+		return 6;
+	case KNIGHT:
+		return 8;
+	default:
+		return 0;
+	}
+}
+
+/******************************************************************************
  * Read bitmap data into memory, initialize offsets
 ******************************************************************************/
 int BoardDisplay_init()
@@ -115,15 +136,6 @@ int BoardDisplay_init()
 		WHERE DBG_PRINT("Unsuccessful load of ChessPieces.bmp\n");
 		return err;
 	}
-
-	offsets[PAWN] = 19; //19
-	offsets[ROOK] = 13; //13
-	offsets[QUEEN] = 1;
-	offsets[KNIGHT] = 8;
-	offsets[KING] = 8;
-	offsets[BISHOP] = 6;
-
-
 	draw_chess_board();
 	return 0;
 }
@@ -233,7 +245,7 @@ int draw_piece(PieceType type, PieceColor color, File file, Rank rank)
 	u32 bmp_right = MIN(bmp_left + 90,800);
 
 	u32 screen_top = rank_to_pixel(rank) + v_offset;
-	u32 screen_left = file_to_pixel(file) + offsets[type];
+	u32 screen_left = file_to_pixel(file) + getPieceOffset();
 
 	return draw_partial_bitmap( screen_top , screen_left,
 								bmp_top,    bmp_left,
