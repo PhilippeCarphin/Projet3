@@ -10,16 +10,22 @@
 #define MAX(x, y) 	(x > y ? x : y)
 
 /*****************************************************************************
- *
+ * Struct containing info on the board, 
+ * - (top,left) decide where to place the by specifying the position of it's top
+ *   left corner in the screen
+ * - margin specifies the width of the margin around the board.
+ * - square_size determines the width and height of the squares in pixels
+ * - the notation zone is a black rectangle where game notation will be displayed
+ *   and we specify it's top,left corner as well as the width and height.
 ******************************************************************************/
 struct BoardData{
-	int top;
-	int left;
-	int square_size;
-	int notation_top;
-	int notation_left;
-	int notation_width;
-	int notation_height;
+	u32 top;
+	u32 left;
+	u32 square_size;
+	u32 notation_top;
+	u32 notation_left;
+	u32 notation_width;
+	u32 notation_height;
 	u32 margin;
 };
 static struct BoardData bd;
