@@ -27,7 +27,7 @@ int end_request(const char *data, char *REST_response);
 int REST_handle_request(enum request_type type, const char *data, const char *pswd, char *REST_response)
 {
 	FBEGIN
-	char pswd_b64[MAX_LEN];
+	char pswd_b64[MAX_lEN];
 	
 	ascii_to_base64(pswd, strlen(pswd), pswd_b64);
 	if (validate_password(pswd_b64) == unathorized)
@@ -92,7 +92,7 @@ int newGame_request(const char *data, char *REST_response)
 	parse_game_info(data, &info);
 
 	/* convert password into base64 */
-	char pswd_b64[MAX_LEN];
+	char pswd_b64[MAX_lEN];
 	ascii_to_base64(info.secret_code, strlen(info.secret_code), pswd_b64);
 	strcpy(info.secret_code, pswd_b64);
 

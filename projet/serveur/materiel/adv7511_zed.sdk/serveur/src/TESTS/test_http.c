@@ -735,7 +735,7 @@ void test_post_board()
 void test_end()
 {
 	int result;
-	char request[] = "POST /game_end\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse\r\n\r\n";
+	char request[] = "POST /game_end\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST END ************************\n");
