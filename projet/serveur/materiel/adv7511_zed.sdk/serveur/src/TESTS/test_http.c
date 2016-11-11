@@ -134,7 +134,7 @@ void test_bad_request()
 void test_new_game()
 {
 	int result;
-	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 247\r\n\r\nmotdepasse\r\n\r\n{\"player1\": Francis,\"player2\": J.RandomUser,\"round\": 1,\"location\": Polymtl,\"secret_code\": motdepasse,\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
+	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 265\r\n\r\nmotdepasse\r\n\r\n{\"player1\": \"Francis Ouellet\",\"player2\": \"J.RandomUser\",\"round\": \"1\",\"location\": \"Polymtl\",\"secret_code\": \"motdepasse\",\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
 	char response[2048];
 
 	xil_printf("\n******************* TEST NEW GAME *******************\n");
