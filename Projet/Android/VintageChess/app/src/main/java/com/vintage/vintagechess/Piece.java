@@ -22,15 +22,15 @@ public class Piece {
 
     public int getResourceID() {
         String resourceName = (isWhite_ ? "white" : "black") + "_"+ type_ + "_" +Game.style;  // where myresource (without the extension) is the file
-        Context context = Game.activityGame;
+        Context context = Utilities.currentActivity;
         return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
     }
 
 
 
     public Bitmap getBitmap() {
-        Bitmap bmp = BitmapFactory.decodeResource( Game.activityGame.getResources(), getResourceID() );
-        int w = (int)(Game.board.getHeight() - Game.board.getHeight()*Game.offset*2)/8;
+        Bitmap bmp = BitmapFactory.decodeResource( Utilities.currentActivity.getResources(), getResourceID() );
+        int w = (int)(Display.board.getHeight() - Display.board.getHeight()*Display.offset*2)/8;
         Bitmap img = Bitmap.createScaledBitmap( bmp, w, w, true );
         bmp.recycle();
 
