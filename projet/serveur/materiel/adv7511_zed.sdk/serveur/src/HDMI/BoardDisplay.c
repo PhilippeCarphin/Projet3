@@ -418,7 +418,21 @@ int test_move_piece();
  }
 
  /******************************************************************************
-  * Draws the move notation of a move
+  * Draws the move notation of a move.
+  * Standard chess notation works by specifying the least amount of information.
+  * So we say the piece that moved, and the destination of that piece.  
+  * For pawn moves that are not captures, there is no ambiguity in simply
+  * specifying the destination square.
+  * NOTE: One thing that is not taken into account here is the case when there
+  * is more than one piece of a given type that can go to a square, for example,
+  * if there are white rooks on a4 and h4, with nothing between them, in that 
+  * case the move Re4 is ambiguous and we need to write Rae4 to specify that
+  * the rook on a4 moved to e4 and the one on h4.
+  * One way to deal with this is to adop the slighly less standard notation of
+  * always specifying the origin square.
+  * The other alternative is to have the chessboard module prepare the string
+  * representing the move.  In any case, writing chess notation to the screen
+  * was easy for Phil to do and that's the only reason it is there.
  ******************************************************************************/
  int draw_move_notation(struct Move *mv)
  {
@@ -428,6 +442,8 @@ int test_move_piece();
 
  	/*
  	 * For a white move, draw the move number on the complete left and a dot.
+ 	 * Otherwise, move the cursor 9 positions to the right to draw the black
+ 	 * move.
  	 */
  	if( mv->c == WHITE)
  	{
@@ -443,7 +459,10 @@ int test_move_piece();
 
 
  	/*
- 	 * When
+ 	 * We draw the char identifying the piece (K,N,B,R) and nothing for pawns,
+ 	 * except if the move is a capturing move, in which case, we identify the
+ 	 * moved pawn by it's origin file (dx4e meaning the pawn on 'd' takes on
+ 	 * e4)
  	 */
  	if(mv->t != PAWN)
  	{
@@ -454,16 +473,20 @@ int test_move_piece();
  		cursor_left += char_width;
  	}
 
+ 	/*
+ 	 * If the move is a capture, we draw an 'x' between the char identifying
+ 	 * the piece and the destination square.
+ 	 */
 	if( mv->capture )
 	{
 		draw_char(cursor_top, cursor_left, 'x'); cursor_left += char_width;
 	}
 
-
-
+	/*
+	 * And we end by drawing the destination square
+	 */
  	char f = 'a' + mv->d_file;
  	char r = '1' + mv->d_rank;
-
  	draw_char(cursor_top, cursor_left, f); cursor_left += char_width;
  	draw_char(cursor_top, cursor_left, r); cursor_left += char_width;
 
