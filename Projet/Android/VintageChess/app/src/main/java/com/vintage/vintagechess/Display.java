@@ -85,6 +85,10 @@ public class Display {
         return getBoardOffset() + d*getSquareWidth();
     }
 
+    public static boolean isOutOfBounds(Point p) {
+        return false;
+    }
+
     public static void setBoardImg() {
 
         int id = Utilities.currentActivity.getResources().getIdentifier(board_style + "_chess_board", "drawable", Utilities.currentActivity.getPackageName());
