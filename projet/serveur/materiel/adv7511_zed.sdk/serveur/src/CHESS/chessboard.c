@@ -1,22 +1,12 @@
 #include "chessboard.h"
-#include "BoardDisplay.h"
 #include <string.h>
 #include "xil_io.h"
 #include "debug.h"
+#include "BoardDisplay.h"
 //player1 pieces
 
-//typedef enum {pawn, knight, rook, bishop, queen, king }PieceType;
-typedef enum { false = 0 , true = 1 } bool;
-typedef struct Piece
-{
-	PieceType pieceType;
-	bool alive;
-	int x;
-	int y;
-	int rock;
-	int enPassant; // TODO: could become a bool. Should be set after the permitted jump and unset the turn after.
-	PlayerID playerID;
-}Piece;
+
+
 
 enum moveResult{
 	VALID,
@@ -156,7 +146,7 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 }
 
 
-enum ChessboardRestStatus move_piece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
+enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
 
 	// check if it's the player turn
@@ -356,6 +346,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	setBoard(player2Pieces);
 	currentTurnInfo.turn = boardPosition->turn;
 	currentTurnInfo.move_no = boardPosition->move_no;
+	draw_pieces_custom(player1,player2);
 	return OK;
 	
 }

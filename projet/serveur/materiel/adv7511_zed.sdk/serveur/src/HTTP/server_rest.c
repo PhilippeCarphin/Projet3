@@ -151,7 +151,7 @@ int move_request(const char *data, char *REST_response)
 	
 	/* call something like: struct move_info *move_piece(int player, const char *src, const char *dst); */
 	MoveInfo info;
-	int status = move_piece(player, src, dst, &info);
+	int status = movePiece(player, src, dst, &info);
 	
 	if ( status == OK )
 	{

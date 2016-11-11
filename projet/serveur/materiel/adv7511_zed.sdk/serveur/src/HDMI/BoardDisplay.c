@@ -63,7 +63,7 @@ int clear_square(File file, Rank rank);
 int BoardDisplay_init();
 int set_chess_board_params();
 int draw_chess_board();
-int move_piece(struct Move *move);
+int BoardDisplay_move_piece(struct Move *move);
 u32 file_to_pixel(int file);
 u32 rank_to_pixel(int rank);
 
@@ -378,6 +378,29 @@ int draw_pieces()
 	if((err = draw_piece(KING,   BLACK, E, R8)) != 0) return err;
 	if((err = draw_piece(QUEEN,  BLACK, D, R8)) != 0) return err;
 
+	return 0;
+}
+
+/******************************************************************************
+ * Draw pieces in custom positions
+******************************************************************************/
+int draw_pieces_custom(Piece* player1, Piece* player2)
+{
+	int err;
+
+	int i = 0;
+	for (i = 0; i < 16; ++i)
+	{
+		if (player1[i].x != 'x')
+		{
+			if((err = draw_piece(player1[i].pieceType, WHITE,player1[i].x,player1[i].y)) != 0) return err;
+		}
+		if (player2[i].x != 'x')
+		{
+			if((err = draw_piece(player2[i].pieceType, WHITE,player2[i].x,player2[i].y)) != 0) return err;
+		}
+
+	}
 	return 0;
 }
 
