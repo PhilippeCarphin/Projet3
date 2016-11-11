@@ -457,6 +457,15 @@ int test_move_piece();
  		cursor_left += 9 * char_width;
  	}
 
+ 	if( mv->castling)
+ 	{
+ 		if(mv->d_file == G)
+ 			draw_string(cursor_top, cursor_left, "O-O");
+ 		else
+ 			draw_string(cursor_top, cursor_left, "O-O-O");
+
+ 		return;
+ 	}
 
  	/*
  	 * We draw the char identifying the piece (K,N,B,R) and nothing for pawns,
@@ -494,14 +503,94 @@ int test_move_piece();
  }
 
 /******************************************************************************
- * Put the preceding functions to use to do what Clement (Badass) Lanteigne
- * suggested with the coloring of squares
- * For maximum error reporting, we should do 
- * if( function() ) return -1;
+ * Used to remove the yellow squares of the move parameter.  This is used on 
+ * the previous move that BoardDisplay_move_piece remembers.
+******************************************************************************/
+ int un_yellow(struct Move *mv)
+{
+	int err;
+	if( mv->castling)
+	{
+		File rook_file = (d_file == C ? D : G);
+		// Redraw the king on a non-yellow square
+		if((err = clear_square(d_file, d_rank)) != 0) return err;
+		if((err = draw_piece(KING, mv->c, d_file,d_rank)) != 0) return err;
+		// Redraw the rook on a non-yellow square
+		if((err = clear_square(rook_file, d_rank)) != 0) return err;
+		if((err = draw_piece(ROOK, mv->c, rook_file ,d_rank)) != 0) return err;
+	}
+	else
+	{
+		// Clear last origin square,
+		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
+		// Redraw the piece on a non-yellow square.
+		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
+		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
+	}
+	return 0;
+}
+
+/******************************************************************************
+ * Used to move implicated in the move.  This checks if the move is a castling
+ * move, or an en-passant capture and does things appropiately.  Otherwise, it
+ * will simply clear the destination and origin squares with yellow, then draw
+ * the piece on the destination square.
+ * NOTE: the previous move is remembered and the un_yellow() function is used
+ * to restore the right color under the pieces that were moved when the next
+ * move is played.
+******************************************************************************/
+int do_move(struct Move *mv)
+{
+	int err;
+	if( mv->castling )
+	{
+		// clear origin
+		if((err = clear_square(mv->o_file, mv->o_rank)) != 0) return err;;
+		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;;
+		// yellow king square
+		// draw king
+		if((err = draw_piece(KING, mv->c, mv->d_file, mv->d_rank)) != 0) return err;;
+
+		if( mv->d_file == G )
+		{
+			if((err = clear_square(H, mv->o_rank)) != 0) return err;
+			if((err = draw_piece(ROOK, mv->c, F, mv->o_rank)) != 0) return err;
+		}
+		else
+		{
+			if((err = clear_square(A, mv->o_rank)) != 0) return err;
+			if((err = draw_piece(ROOK, mv->c, D, mv->o_rank)) != 0) return err;
+		}
+	}
+	else
+	{
+		if(mv->enPassant)
+		{
+			/*
+			 * we have to clear a different square then the destination square, the square is on 
+			 * the same file as the destination square but it is one rank below if white made the
+			 * en-passant capture, and one rank below if black made the en-passant capture.
+			 */
+			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1)
+			if((err = clear_square(mv->d_file, r)) != 0) return err;;
+		}
+		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
+		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
+		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;
+	}
+	return 0;
+}
+
+/******************************************************************************
+ * This function executes a move and writes to the notation rectangle.
 ******************************************************************************/
 int BoardDisplay_move_piece(struct Move *move)
 {
 	int err;
+
+	move->castling = (move->t == KING 
+						&& mv->o_file == E 
+						&& (mv->d_file == G || mv->d_file == C));
 	/*
 	 * During the preceding call, we yellowed the origin square,
 	 * and we drew the moved piece on a yellowed square.  So we start 
@@ -511,26 +600,21 @@ int BoardDisplay_move_piece(struct Move *move)
 	static struct Move last;
 	if( ! first_move )
 	{
-		if((err = clear_square(last.o_file, last.o_rank)) != 0) return err;
-		if((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
-		if((err = draw_piece(last.t, last.c, last.d_file, last.d_rank)) != 0) return err;
+		if((err = un_yellow(&last)) != 0) return err;
 	}
 
 	/*
 	 * Yellow the origin square and the destination square and draw the moved
 	 * piece on it's destination square.
 	 */
-	if((err = color_square(move->o_file, move->o_rank, YELLOW)) != 0) return err;
-	if((err = color_square(move->d_file, move->d_rank, YELLOW)) != 0) return err;
-	if((err = draw_piece(move->t, move->c, move->d_file, move->d_rank)) != 0) return err;
-	draw_move_notation(move);
+	if((err = do_move(move)) != 0) return err;
+
+	if((err = draw_move_notation(move)) != 0) return err;
 	
 	/*
 	 * Remember the last move for the next one.
 	 */
 	first_move = 0;
-
-
 	last = *move;
 
 	cf_hdmi_send_buffer();
