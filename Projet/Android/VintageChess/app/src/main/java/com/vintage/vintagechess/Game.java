@@ -18,36 +18,28 @@ import java.util.LinkedList;
 
 public class Game {
 
-
-    public static ImageView board;
-    public static ImageView motionlessPieces;
-    public static ImageView movingPiece;
-    public static Context activityGame;
-    public static String board_style;
     public static String style;
-    public static double offset = 0.05133;
     private static Point downPos;
     private static Point lastPos;
-    private static Piece currentPiece;
-    private static Bitmap boardImg;
+    public static Piece currentPiece;
     public static int leftSpace;
     public static String ip;
     private static boolean isWhiteTurn = true;
 
-    private static ArrayList<Piece> pieces = new ArrayList<>();
-    private static LinkedList<Piece> deletedPieces = new LinkedList<Piece>();
+    //private static ArrayList<Piece> pieces = new ArrayList<>();
+    public static Piece[][] pieces;
 
 
     public static void initializeGame() {
 
-        board_style = "red";
+        Display.board_style = "red";
         style = "1";
         initializePieces();
-        setBoardImg();
+        Display.setBoardImg();
     }
 
     private static void initializePieces() {
-        pieces.clear();
+        pieces = Utilities.getEmptyGrid();
         int [] verticals = {0, 1, 6, 7};
         for  (int x = 0 ; x < 8 ; x++) {
             for (int y : verticals) {
@@ -73,112 +65,33 @@ public class Game {
                     name = "queen";
                 }
                 Piece newPiece = new Piece(name, x, y, isWhite);
-                pieces.add(newPiece);
+                pieces[newPiece.p_.x][newPiece.p_.y] = newPiece;
             }
         }
     }
 
-    public static void drawFullBoard() {
-        drawBoard();
-        drawMotionlessPieces();
-    }
-
-    public static void drawBoard() {
-
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas tempCanvas = new Canvas(imageAndroid);
-        tempCanvas.drawBitmap(boardImg,0,0,null);
-
-        board.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
-
-    }
-
-    public static void drawMotionlessPieces() {
-        //int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
-        //boardImg.copy(boardImg.getConfig(), true);
-        Canvas tempCanvas = new Canvas(imageAndroid);
-        for(Piece p : pieces) {
-            Bitmap imageBitmap = p.getBitmap();
-            Point position = p.p_;
-            int xPos =  getPixelPosition(position.x);
-            int yPos =  getPixelPosition(7-position.y);
-            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
-        }
-
-        motionlessPieces.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
-        //board.setOnTouchListener(activityGame);
-    }
-
-    public static void drawMovingPiece() {
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
-
-        if (currentPiece != null) {
-            Canvas tempCanvas = new Canvas(imageAndroid);
-            Bitmap imageBitmap = currentPiece.getBitmap();
-            Point position = currentPiece.p_;
-            int xPos =  getPixelPosition(position.x);
-            int yPos =  getPixelPosition(7-position.y);
-            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
-            tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
-        }
-
-        movingPiece.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
-    }
-
-    public static int getSquareWidth() {
-        return (int)((1-2*offset)*board.getHeight()/8.0);
-    }
-
-    public static int getBoardOffset() {
-        return (int)(board.getHeight() * offset);
-    }
-
-    public static int getPixelPosition(int d) {
-        return getBoardOffset() + d*getSquareWidth();
-    }
-
     private static Piece getPieceOnCell(Point po) {
-        for (Piece p : pieces) {
-            if (p.p_.equals(po)) return p;
-        }
-        return null;
+        return pieces[po.x][po.y];
     }
 
     public static void handleFingerDown(int xPix, int yPix) {
-        downPos = getboardCoordinates(xPix, yPix);
+        downPos = Display.getboardCoordinates(xPix, yPix);
         Log.d("down", downPos.x+" "+downPos.y);
         if (downPos != null) {
             currentPiece = getPieceOnCell(downPos);
         }
         if (currentPiece != null) {
-            pieces.remove(currentPiece);
+            pieces[downPos.x][downPos.y] = null;
             Log.d("Selected piece", currentPiece.type_);
-            drawMotionlessPieces();
-            drawMovingPiece();
+            Display.drawMotionlessPieces();
+            Display.drawMovingPiece();
         }
     }
 
-    private static Point getboardCoordinates(int xPix, int yPix) {
-        int x, y, xView, yView;
-        int min, max;
 
-        xView = xPix - (board.getWidth()-board.getHeight())/2;
-        yView = yPix;
-        min = getBoardOffset();
-        max = board.getHeight() - getBoardOffset();
-        if (xView < min || xView > max || yView < min || yView > max) {
-            Log.d("", "out of bounds");
-            return null;
-        }
-        float insideWidth = board.getHeight()-getBoardOffset()*2;
-        x = (int)(8*(((float)(xView - getBoardOffset()))/insideWidth));
-        y = (int)(8*(((float)(yView - getBoardOffset()))/insideWidth));
-        return new Point(x, 7-y);
-    }
 
     public static void handleFingerUp() {
-        Log.d("up", lastPos.x+" "+lastPos.y);
+        //Log.d("up", lastPos.x+" "+lastPos.y);
         if (currentPiece != null && !downPos.equals(lastPos)) {
             HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y);
         }
@@ -187,13 +100,13 @@ public class Game {
         //finishMove();
     }
 
-    public static void handleMoveOk() {
+    public static void handleMoveOk(String pieceEleminated, String promotion, String state) {
         if (currentPiece != null) {
-            Piece pieceToDelete = getPieceOnCell(lastPos);
-            if (pieceToDelete != null) {
-                pieces.remove(pieceToDelete);
+            if (!pieceEleminated.equals("xx")) {
+                Point p = Utilities.getGridCoordinates(pieceEleminated);
+                pieces[p.x][p.y] = null;
             }
-            pieces.add(currentPiece);
+            pieces[currentPiece.p_.x][currentPiece.p_.y] = currentPiece;
             isWhiteTurn = !isWhiteTurn;
         }
         finishMove();
@@ -202,7 +115,7 @@ public class Game {
     public static void handleMoveNotOk() {
         if (currentPiece != null) {
             currentPiece.p_ = downPos;
-            pieces.add(currentPiece);
+            pieces[downPos.x][downPos.y] = currentPiece;
         }
         finishMove();
     }
@@ -213,8 +126,8 @@ public class Game {
         downPos = null;
         lastPos = null;
         currentPiece = null;
-        drawMotionlessPieces();
-        drawMovingPiece();
+        Display.drawMotionlessPieces();
+        Display.drawMovingPiece();
     }
 
     public static void handleMove(int xPix, int yPix) {
@@ -222,43 +135,18 @@ public class Game {
         if (downPos == null || currentPiece == null ) {
             return;
         }
-        Point p = getboardCoordinates(xPix, yPix);
+        Point p = Display.getboardCoordinates(xPix, yPix);
         if (!p.equals(lastPos)) {
             lastPos = p;
             currentPiece.p_ = lastPos;
-            drawMovingPiece();
+            Display.drawMovingPiece();
         }
         //drawBoard();
     }
 
-    public static void setBoardImg() {
-        int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
-        boardImg = BitmapFactory.decodeResource(activityGame.getResources(), id);
-        //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
-        boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
-    }
 
-    public static void deletePiece(String boardPosition)
-    {
-        //Bug de duplication
-        int x =  Integer.valueOf(boardPosition.charAt(0)) - 97; // 97 cest le a dans la table ascii
-        int y = 8 - Integer.valueOf(boardPosition.charAt(1)) + 48; // 48 cest la 1 dans la table ascii
 
-        Point point = new Point(x,y);
 
-        for(int i = 0; i < pieces.size(); i++)  // Par tres optimal pour chercher la piece O(n)
-        {
-            if(pieces.get(i).p_.equals(point))
-            {
-                deletedPieces.add(pieces.get(i));
-                pieces.remove(pieces.get(i));
-            }
-        }
-
-        for(Piece p : deletedPieces) {
-            Log.d(" DeletedPieces ", p.type_);
-        }
-    }
 
 
 }
