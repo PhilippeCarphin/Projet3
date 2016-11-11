@@ -345,14 +345,16 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	setBoard(player2Pieces);
 	currentTurnInfo.turn = boardPosition->turn;
 	currentTurnInfo.move_no = boardPosition->move_no;
-	draw_pieces_custom(player1,player2);
+	if (draw_pieces_custom(player1Pieces,player2Pieces) != 0)
+	{
+		xil_printf("Error in HDMI restSetBoard");
+	}
 	return OK;
 	
 }
 
 enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
 {
-	
 	*gameInfo = currentGameInfo;
 	return OK;
 }
@@ -374,12 +376,17 @@ enum ChessboardRestStatus end_game()
 		return unathorized;
 	}
 	gameStarted = false;
+	draw_chess_board();
 	return OK;
 }
 
 
 enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
 {
+	// Partially accepting castling
+	if(xs == E && (xd == G || xd == C)){
+		return VALID;
+	}
 	// TODO: check for Castle/Roque/special move
 	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
 		return ILLEGAL; //moving too far
