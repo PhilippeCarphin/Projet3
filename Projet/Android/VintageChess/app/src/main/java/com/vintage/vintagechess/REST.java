@@ -41,19 +41,17 @@ public class REST {
     }
 
 
-    public static Piece getEliminatedPiece(String response)
+    public static void handleMoveResponse(String response)
             throws JSONException {
 
+        Log.d("Response", response);
         JSONObject jsonObject = new JSONObject(response);
-        String pieceEleminated = jsonObject.getString("pieceEleminated");
+        String pieceEleminated = jsonObject.getString("pieceEliminated");
         String promotion = jsonObject.getString("promotion");
         String state = jsonObject.getString("state");
 
-        Log.d("pieceEleminated : ",pieceEleminated);
-        Log.d("promotion : ",promotion);
-        Log.d("state : ",state);
+        Game.handleMoveOk(pieceEleminated, promotion, state);
 
-        return null;
 
     }
 
