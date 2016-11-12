@@ -97,7 +97,7 @@ public class Display {
         boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
     }
 
-    public static Point getboardCoordinates(int xPix, int yPix) {
+    public static Point getboardCoordinates(int xPix, int yPix) throws Exception {
         int x, y, xView, yView;
         int min, max;
 
@@ -106,12 +106,20 @@ public class Display {
         min = getBoardOffset();
         max = board.getHeight() - getBoardOffset();
         if (xView < min || xView > max || yView < min || yView > max) {
-            Log.d("", "out of bounds");
-            return null;
+            throw new Exception("Finger is out of bounds");
         }
         float insideWidth = board.getHeight()-getBoardOffset()*2;
         x = (int)(8*(((float)(xView - getBoardOffset()))/insideWidth));
         y = (int)(8*(((float)(yView - getBoardOffset()))/insideWidth));
         return new Point(x, 7-y);
+    }
+
+
+    public static void blockBoard() {
+        board.setEnabled(false);
+    }
+
+    public static void unBlockBoard() {
+        board.setEnabled(true);
     }
 }
