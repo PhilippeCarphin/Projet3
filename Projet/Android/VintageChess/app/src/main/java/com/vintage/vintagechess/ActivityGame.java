@@ -146,9 +146,10 @@ public class ActivityGame extends AppCompatActivity {
                     break;
             }
 
+
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             Game.recoverFromError();
             Utilities.messageBox("Error with view touch event", e.getMessage());
         }
@@ -163,7 +164,7 @@ public class ActivityGame extends AppCompatActivity {
             Display.drawFullBoard();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             Utilities.messageBox("Error with radio change", e.getMessage());
         }
     }
@@ -201,6 +202,7 @@ public class ActivityGame extends AppCompatActivity {
             Display.board_style = "wood";
         }
     }
+
 
 }
 

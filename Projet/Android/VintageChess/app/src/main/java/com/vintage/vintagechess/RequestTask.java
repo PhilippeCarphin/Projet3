@@ -26,11 +26,14 @@ class RequestTask extends AsyncTask<String, String, String> {
 
     private RequestCallback callback;
     private boolean receiveJSON;
+
+    //constructor
     public RequestTask(RequestCallback callback, boolean receiveJSON) {
         super();
         this.callback = callback;
         this.receiveJSON = receiveJSON;
     }
+
     @Override
     protected String doInBackground(String... args) {
         
@@ -38,8 +41,7 @@ class RequestTask extends AsyncTask<String, String, String> {
        try {
             return downloadUrl("http://132.207.89." + args[0], args[1], args[2]);//urls[0]);
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Unable to retrieve data";
+            return "ERROR";
         }
     }
     // onPostExecute displays the results of the AsyncTask.
@@ -49,11 +51,14 @@ class RequestTask extends AsyncTask<String, String, String> {
         //Utilities.messageBox("Get result", );
 
         try {
+            if (result == "ERROR") throw new Exception("Exception was thrown while running the http request");
             callback.runResponse(result);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            if (Utilities.currentActivity.getClass().getSimpleName().equals("ActivityGame")) {
+                Game.handleMoveNotOk();
+            }
+            Utilities.messageBox("Error handling the http response", e.getMessage());
         }
-
     }
 
 
@@ -64,61 +69,48 @@ class RequestTask extends AsyncTask<String, String, String> {
         //int len = 500;
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        try {
-            conn.setReadTimeout(5000 /* milliseconds */);
-            conn.setConnectTimeout(7000 /* milliseconds */);
-            conn.setDoInput(true);
-            //conn.setDoOutput(true);
-            conn.setRequestMethod(method);
-            if (!body.equals("")) {
+        conn.setReadTimeout(5000 /* milliseconds */);
+        conn.setConnectTimeout(7000 /* milliseconds */);
+        conn.setDoInput(true);
+        //conn.setDoOutput(true);
+        conn.setRequestMethod(method);
+        if (!body.equals("")) {
 
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Accept", "application/json");
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write("helloworld" + "\r\n\r\n");
-                wr.write(body);
-                wr.flush();
-            }
-            else {
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write("helloworld" + "\r\n\r\n");
-                wr.flush();
-            }
-
-
-            //conn.setRequestProperty("content-length", );
-            // Starts the query
-            conn.connect();
-
-            int responseCode = conn.getResponseCode();
-            is = conn.getInputStream();
-            int len = conn.getContentLength();
-            String responseMessage = conn.getResponseMessage();
-            Log.d("content length", ""+len);
-            Log.d("Response message",  responseMessage);
-            String contentAsString = "";
-            if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
-            if (receiveJSON) {
-                // Convert the InputStream into a string
-                contentAsString = readIt(is, len);//readInputStreamToString(conn);
-                Log.d("HTTP GET", "The response is: " + contentAsString);
-            }
-
-            conn.disconnect();
-            return contentAsString;
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write("helloworld" + "\r\n\r\n");
+            wr.write(body);
+            wr.flush();
+        } else {
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write("helloworld" + "\r\n\r\n");
+            wr.flush();
         }
-        catch (Exception e) {
-            Utilities.handleBadHttp(conn.getResponseCode(), conn.getResponseMessage());
-            throw e;
+
+
+        //conn.setRequestProperty("content-length", );
+        // Starts the query
+        conn.connect();
+
+        int responseCode = conn.getResponseCode();
+        is = conn.getInputStream();
+        int len = conn.getContentLength();
+        String responseMessage = conn.getResponseMessage();
+        Log.d("content length", "" + len);
+        Log.d("Response message", responseMessage);
+        String contentAsString = "";
+        if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
+        if (receiveJSON) {
+            // Convert the InputStream into a string
+            contentAsString = readIt(is, len);//readInputStreamToString(conn);
+            Log.d("HTTP GET", "The response is: " + contentAsString);
         }
-        finally {
-            if (is != null) {
-                is.close();
-            }
-        }
+
+        conn.disconnect();
+        return contentAsString;
+
+
     }
 
 
@@ -130,5 +122,5 @@ class RequestTask extends AsyncTask<String, String, String> {
         reader.read(buffer);
         return new String(buffer);
     }
-    
+
 }

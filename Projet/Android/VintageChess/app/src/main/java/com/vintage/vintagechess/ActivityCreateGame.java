@@ -146,7 +146,8 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Utilities.messageBox("Error after pressing button", e.getMessage());
         }
     }
 
