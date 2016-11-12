@@ -11,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
+import org.json.JSONException;
+
 /**
  * Created by User on 2016-10-12.
  */
@@ -27,6 +29,26 @@ public class Utilities {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //dismiss the dialog
+                    }
+                });
+        dlgAlert.setCancelable(false);
+        dlgAlert.create().show();
+    }
+
+    public static void messageBoxStartGame() {
+
+        final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(currentActivity);
+        dlgAlert.setMessage("The game will be started when you will have pressed OK");
+        dlgAlert.setTitle("Start Game");
+        dlgAlert.setPositiveButton("Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //dismiss the dialog
+                        try {
+                            HttpRunner.runPostGameStart();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
         dlgAlert.setCancelable(false);
