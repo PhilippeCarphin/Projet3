@@ -74,7 +74,7 @@ public class Game {
         return pieces[po.x][po.y];
     }
 
-    public static void handleFingerDown(int xPix, int yPix) {
+    public static void handleFingerDown(int xPix, int yPix) throws Exception {
         downPos = Display.getboardCoordinates(xPix, yPix);
         Log.d("down", downPos.x+" "+downPos.y);
         if (downPos != null) {
@@ -93,14 +93,18 @@ public class Game {
     public static void handleFingerUp() {
         //Log.d("up", lastPos.x+" "+lastPos.y);
         if (currentPiece != null && !downPos.equals(lastPos)) {
+            Display.blockBoard();
             HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y);
         }
+        else {
 
+            handleMoveNotOk();
+        }
         //new RequestTask().execute("http://www.google.com");
         //finishMove();
     }
 
-    public static void handleMove(int xPix, int yPix) {
+    public static void handleMove(int xPix, int yPix) throws Exception {
         //lastPos = getboardCoordinates(xPix, yPix);
         if (downPos == null || currentPiece == null ) {
             return;
@@ -142,6 +146,7 @@ public class Game {
         currentPiece = null;
         Display.drawMotionlessPieces();
         Display.drawMovingPiece();
+        Display.unBlockBoard();
     }
 
     public static void recoverFromError() {
