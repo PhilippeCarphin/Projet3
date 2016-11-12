@@ -21,11 +21,13 @@ public class Display {
     public static String board_style;
 
 
+    //draws the board and its pieces
     public static void drawFullBoard() {
         drawBoard();
         drawMotionlessPieces();
     }
 
+    //draws the chessboard image
     public static void drawBoard() {
 
         Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
@@ -36,6 +38,7 @@ public class Display {
 
     }
 
+    //draws the pieces that are not selected in the appropriate board
     public static void drawMotionlessPieces() {
         //int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
         Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
@@ -57,6 +60,7 @@ public class Display {
         //board.setOnTouchListener(activityGame);
     }
 
+    //draw the curent moving piece in the appropriate view
     public static void drawMovingPiece() {
         Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -73,14 +77,17 @@ public class Display {
         movingPiece.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
     }
 
+    //get the size in pixels of a square in the board
     public static int getSquareWidth() {
         return (int)((1-2*offset)*board.getHeight()/8.0);
     }
 
+    //get the size of the board border in pixels
     public static int getBoardOffset() {
         return (int)(board.getHeight() * offset);
     }
 
+    //get the pixel position of the beginning of the square d
     public static int getPixelPosition(int d) {
         return getBoardOffset() + d*getSquareWidth();
     }
@@ -89,6 +96,7 @@ public class Display {
         return false;
     }
 
+    //update the chessboard image
     public static void setBoardImg() {
 
         int id = Utilities.currentActivity.getResources().getIdentifier(board_style + "_chess_board", "drawable", Utilities.currentActivity.getPackageName());
@@ -97,6 +105,8 @@ public class Display {
         boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
     }
 
+
+    //convertir les coordonnees de pixel en coordonnees dans la grille de l'echiquier
     public static Point getboardCoordinates(int xPix, int yPix) throws Exception {
         int x, y, xView, yView;
         int min, max;
@@ -115,10 +125,12 @@ public class Display {
     }
 
 
+    //block the chessboard view
     public static void blockBoard() {
         board.setEnabled(false);
     }
 
+    //unblock the chessboard view
     public static void unBlockBoard() {
         board.setEnabled(true);
     }

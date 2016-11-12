@@ -26,10 +26,11 @@ public class Game {
     public static String ip;
     private static boolean isWhiteTurn = true;
 
-    //private static ArrayList<Piece> pieces = new ArrayList<>();
+
     public static Piece[][] pieces;
 
 
+    //set the parameters by default
     public static void initializeGame() {
 
         Display.board_style = "red";
@@ -38,6 +39,7 @@ public class Game {
         Display.setBoardImg();
     }
 
+    //sets the piece starting positions
     private static void initializePieces() {
         pieces = Utilities.getEmptyGrid();
         int [] verticals = {0, 1, 6, 7};
@@ -70,10 +72,12 @@ public class Game {
         }
     }
 
+    //gets the piece at a certain position
     private static Piece getPieceOnCell(Point po) {
         return pieces[po.x][po.y];
     }
 
+    //handler for when the user puts his finger on the chessboard
     public static void handleFingerDown(int xPix, int yPix) throws Exception {
         downPos = Display.getboardCoordinates(xPix, yPix);
         Log.d("down", downPos.x+" "+downPos.y);
@@ -88,8 +92,7 @@ public class Game {
         }
     }
 
-
-
+    //handler for when the user removes his finger from the chessboard
     public static void handleFingerUp() {
         //Log.d("up", lastPos.x+" "+lastPos.y);
         if (currentPiece != null && !downPos.equals(lastPos)) {
@@ -100,10 +103,10 @@ public class Game {
 
             handleMoveNotOk();
         }
-        //new RequestTask().execute("http://www.google.com");
-        //finishMove();
+
     }
 
+    //handler for when the user already has his finger on the screen and uses it
     public static void handleMove(int xPix, int yPix) throws Exception {
         //lastPos = getboardCoordinates(xPix, yPix);
         if (downPos == null || currentPiece == null ) {
@@ -118,6 +121,7 @@ public class Game {
         //drawBoard();
     }
 
+    //handles when the http returns that the asked move is ok
     public static void handleMoveOk(String pieceEleminated, String promotion, String state) {
         if (currentPiece != null) {
             if (!pieceEleminated.equals("xx")) {

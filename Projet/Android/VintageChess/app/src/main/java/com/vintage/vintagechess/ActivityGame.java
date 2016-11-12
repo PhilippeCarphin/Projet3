@@ -111,6 +111,31 @@ public class ActivityGame extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        try {
+            HttpRunner.runPostGameEnd();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        try {
+            HttpRunner.runPostGameEnd();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String positionToSymbol(int x, int y)
     {
         int valXX = ((x-130)/151);
