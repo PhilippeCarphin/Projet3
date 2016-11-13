@@ -82,7 +82,6 @@ public class Utilities {
     public static Point getGridCoordinates(String boardCoordinates) {
         int x = boardCoordinates.charAt(0) - 97;
         int y = boardCoordinates.charAt(1) - 47;
-        Log.d(x+"", y+"");
         return new Point(x, y);
     }
 
