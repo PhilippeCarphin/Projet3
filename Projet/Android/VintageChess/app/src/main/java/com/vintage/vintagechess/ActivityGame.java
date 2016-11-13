@@ -92,19 +92,19 @@ public class ActivityGame extends AppCompatActivity {
         Display.motionlessPieces = motionlessPieces;
         Display.movingPiece = movingPiece;
 
-        player1Name = (TextView) findViewById(R.id.NamePlayer1);
-        player2Name = (TextView) findViewById(R.id.NamePlayer2);
-        location = (TextView) findViewById(R.id.Location);
+        //player1Name = (TextView) findViewById(R.id.NamePlayer1);
+        //player2Name = (TextView) findViewById(R.id.NamePlayer2);
+        //location = (TextView) findViewById(R.id.Location);
 
-        timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
-        timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
-        round = (TextView) findViewById(R.id.Round);
-        turn = (TextView) findViewById(R.id.Turn);
-        moveNumber = (TextView) findViewById(R.id.MoveNumber);
+        //timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
+        //timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
+        //round = (TextView) findViewById(R.id.Round);
+        //turn = (TextView) findViewById(R.id.Turn);
+        //moveNumber = (TextView) findViewById(R.id.MoveNumber);
 
-        player1Name.setText(ActivityCreateGame.playerName1);
-        player2Name.setText(ActivityCreateGame.playerName2);
-        location.setText(ActivityCreateGame.location);
+        //player1Name.setText(ActivityCreateGame.playerName1);
+        //player2Name.setText(ActivityCreateGame.playerName2);
+        //location.setText(ActivityCreateGame.location);
 
         //Utilities.messageBoxStartGame();
 

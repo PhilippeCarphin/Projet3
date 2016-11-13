@@ -19,147 +19,223 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_weight="1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:gravity="center">
+
             <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center">
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center">
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingRight="5dp">
+
                     <TextView
-                        android:text="Player 1: "
-                        android:layout_width="wrap_content"
+                        android:text="White:"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/Player1" />
+                        android:id="@+id/Player1"
+                        android:layout_weight="1" />
+
                     <TextView
-                        android:text=" "
-                        android:layout_width="wrap_content"
+                        android:text="Black:"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/NamePlayer1" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="Time : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Time1" />
-                    <TextClock
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/TimePlayer1"
-                        android:format12Hour="00" />
+                        android:id="@+id/Player2"
+                        android:layout_weight="1" />
+
                 </LinearLayout>
+
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0">
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
                     <TextView
-                        android:text="Player 2: "
-                        android:layout_width="wrap_content"
+                        android:text="Player1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/Player2" />
+                        android:id="@+id/Player1Name" />
+
                     <TextView
-                        android:text=" "
-                        android:layout_width="wrap_content"
+                        android:text="Player2"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/NamePlayer2" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="Time : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Time2" />
-                    <TextClock
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/TimePlayer2"
-                        android:format12Hour="00" />
+                        android:id="@+id/Player2Name" />
                 </LinearLayout>
+
             </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="25dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="52dp"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:text="Time : "
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/Time1"
+                            android:layout_weight="0" />
+
+                        <TextView
+                            android:text="Time : "
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/Time2"
+                            android:layout_weight="0" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextClock
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/TimePlayer1"
+                            android:format12Hour="00"
+                            android:layout_weight="1"
+                            android:layout_gravity="center" />
+
+                        <TextClock
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/TimePlayer2"
+                            android:format12Hour="00"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="25dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="10dp">
+
+                    <TextView
+                        android:text="Turn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/TurnText"
+                        android:textAppearance="@style/TextAppearance.AppCompat"
+                        android:elevation="1dp"
+                        android:gravity="center_vertical" />
+
+                    <TextView
+                        android:text="Move"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/MoveNumberText"
+                        android:textAppearance="@style/TextAppearance.AppCompat"
+                        android:gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:text=": "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView7" />
+
+                    <TextView
+                        android:text=": "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="Black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/CurrentPlayer"
+                        android:textAppearance="@style/TextAppearance.AppCompat"
+                        android:gravity="center_vertical" />
+
+                    <TextView
+                        android:text="10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/MoveNumber"
+                        android:textAppearance="@style/TextAppearance.AppCompat"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:paddingLeft="25dp">
+
+                <TextView
+                    android:text="Round: "
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0">
-                    <TextView
-                        android:text="Round: "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/RoundText" />
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Round" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="Location: "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/LocationText" />
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Location" />
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
+                    android:id="@+id/RoundText"
+                    android:layout_weight="0" />
+
+                <TextView
+                    android:text="Location: "
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0">
-                    <TextView
-                        android:text="Turn : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/TurnText" />
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Turn" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="Move number: "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/MoveNumberText" />
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/MoveNumber" />
-                </LinearLayout>
+                    android:id="@+id/LocationText"
+                    android:layout_weight="0" />
+
             </LinearLayout>
         </LinearLayout>
 
