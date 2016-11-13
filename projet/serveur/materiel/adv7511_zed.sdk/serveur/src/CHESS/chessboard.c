@@ -3,6 +3,7 @@
 #include "xil_io.h"
 #include "debug.h"
 #include "BoardDisplay.h"
+#include "cf_hdmi.h"
 //player1 pieces
 
 
@@ -238,9 +239,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.o_rank = ys;
 	mv.d_file = xd;
 	mv.d_rank = yd;
-	mv.enPassant = boardGame[xd][yd]->enPassant;
+	mv.enPassant = boardGame[xd][yd]->enPassant; // This needs to be set to true only if the move IS an en-passant
+												 // capture, BoardDisplay does not want to know if the piece is
+	                                             // doing an en-passant capture.
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
+	BoardDisplay_draw_turn((mv.c == WHITE ? BLACK : WHITE));
 	BoardDisplay_move_piece(&mv);
 
 	//check for stalemate, checkmate,
@@ -367,6 +371,8 @@ enum ChessboardRestStatus start_game()
 		return gameInProgress;
 	}
 	gameStarted = true;
+	BoardDisplay_draw_turn(WHITE);
+	cf_hdmi_send_buffer();
 	return OK;
 }
 
@@ -378,9 +384,8 @@ enum ChessboardRestStatus start_game()
 enum ChessboardRestStatus end_game()
 {
 	FBEGIN;
-	if (!gameStarted)
+	if (!0) // if (gameStarted) // GUILLAUME POUR TESTS
 	{
-		BoardDisplay_welcome_screen(); // TODO : Stuff to figure out
 		return unathorized;
 	}
 	gameStarted = false;

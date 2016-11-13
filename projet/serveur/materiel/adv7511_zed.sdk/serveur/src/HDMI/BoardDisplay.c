@@ -103,6 +103,18 @@ int set_chess_board_params()
 	return 0;
 }
 
+int BoardDisplay_draw_turn(PieceColor c)
+{
+	u32 top = bd.top + 8*bd.square_size + bd.margin + 10;
+	u32 left = bd.left + D * bd.square_size;
+	draw_square(top,left, 13 * char_width, line_skip, 0);
+	if( c == WHITE)
+		draw_string(top, left, "White to move");
+	else
+		draw_string(top, left, "Black to move");
+	return 0;
+
+}
 /******************************************************************************
  * Load the images and their data into our memory buffers
 ******************************************************************************/
@@ -685,6 +697,7 @@ int do_move(struct Move *mv)
 			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1);
 			if((err = clear_square(mv->d_file, r)) != 0) return err;
 		}
+
 		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
 		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
 		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;

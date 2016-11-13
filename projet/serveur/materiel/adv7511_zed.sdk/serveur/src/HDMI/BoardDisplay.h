@@ -42,6 +42,7 @@ int draw_information(struct GameInfo *gi);
 int update_times(struct PlayerTimes *pt);
 int BoardDisplay_new_board(GameInfo *gi);
 int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
+int BoardDisplay_draw_turn(PieceColor c);
 int BoardDisplay_welcome_screen();
 
 /******************************************************************************
