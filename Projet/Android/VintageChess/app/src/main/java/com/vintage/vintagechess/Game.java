@@ -98,6 +98,7 @@ public class Game {
         if (currentPiece != null && !downPos.equals(lastPos)) {
             Display.blockBoard();
             HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y);
+
         }
         else {
 
@@ -118,6 +119,8 @@ public class Game {
             currentPiece.p_ = lastPos;
             Display.drawMovingPiece();
         }
+
+        //HttpRunner.runGetStatusBoard();
         //drawBoard();
     }
 
@@ -143,8 +146,6 @@ public class Game {
     }
 
     private static void finishMove() {
-
-
         downPos = null;
         lastPos = null;
         currentPiece = null;

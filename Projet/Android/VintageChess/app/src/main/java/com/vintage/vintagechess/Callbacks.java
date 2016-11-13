@@ -112,7 +112,9 @@ public class Callbacks {
     public static RequestCallback getGetStatusBoardCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response) throws JSONException {
+
+                REST.getStatusSummary(response);
 
             }
         };
