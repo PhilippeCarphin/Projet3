@@ -11,9 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.vintage.vintagechess.ActivityGame"
-    android:layout_alignParentBottom="true"
->
-
+    android:layout_alignParentBottom="true">
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,69 +20,148 @@
         android:adjustViewBounds="true"
         android:layout_weight="1"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0">
-
-            <TextView
-                android:text="TimeB"
-                android:layout_width="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/BlackScore"
-                android:textSize="@android:dimen/app_icon_size" />
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="0dp" />
-            <TextClock
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:text="Player 1: "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Player1" />
+                    <TextView
+                        android:text=" "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/NamePlayer1" />
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Time : "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Time1" />
+                    <TextClock
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/TimePlayer1"
+                        android:format12Hour="00" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0">
+                    <TextView
+                        android:text="Player 2: "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Player2" />
+                    <TextView
+                        android:text=" "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/NamePlayer2" />
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Time : "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Time2" />
+                    <TextClock
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/TimePlayer2"
+                        android:format12Hour="00" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textClock2"
-                android:format12Hour="00"
-                android:textSize="@android:dimen/app_icon_size" />
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="0dp" />
-            <TextView
-                android:text="TimeW"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/WhiteScore"
-                android:textSize="@android:dimen/app_icon_size" />
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="0dp" />
-            <TextClock
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textClock"
-                android:format12Hour="00"
-                android:textSize="@android:dimen/app_icon_size" />
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="0dp" />
-            <TextView
-                android:text="Score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView"
-                android:textSize="@android:dimen/app_icon_size" />
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="0dp" />
-            <TextClock
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textClockForScore"
-                android:format12Hour="00"
-                android:textSize="@android:dimen/app_icon_size" />
-
-
+                android:layout_weight="1"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+                    <TextView
+                        android:text="Round: "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/RoundText" />
+                    <TextView
+                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Round" />
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Location: "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/LocationText" />
+                    <TextView
+                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Location" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0">
+                    <TextView
+                        android:text="Turn : "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/TurnText" />
+                    <TextView
+                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/Turn" />
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="Move number: "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/MoveNumberText" />
+                    <TextView
+                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/MoveNumber" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-
 
         <LinearLayout
             android:orientation="horizontal"

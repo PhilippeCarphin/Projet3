@@ -36,6 +36,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     public static boolean oneTablet;
     public static String password;
     public static String playerName1;
+    public static String playerName2;
     public static int normalTime;
     public static int overTime;
     public static int allowedTurns;
@@ -76,7 +77,6 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextPlayer1Name = (EditText) findViewById(R.id.editTextNamePlayer1);
 
         editTextPlayer2Name = (EditText) findViewById(R.id.editTextNamePlayer2);
-        //editTextPlayer2Name.setEnabled(true);
 
         timePickerMain = (TimePicker) findViewById(R.id.timePickerTimePerPlayer);
         timePickerOverTime = (TimePicker) findViewById(R.id.timePickerOverTime);
@@ -122,6 +122,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             enPassantOption = enPassant.isChecked();
             location = editTextLocation.getText().toString();
             playerName1 = editTextPlayer1Name.getText().toString();
+            playerName2 = editTextPlayer2Name.getText().toString();
             password = editTextPassword.getText().toString();
             normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
             timePerPlay = numberPickerTimePerPlay.getValue();

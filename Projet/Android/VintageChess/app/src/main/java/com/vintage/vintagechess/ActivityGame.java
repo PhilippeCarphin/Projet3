@@ -13,10 +13,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Space;
+import android.widget.TextClock;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -29,6 +33,16 @@ public class ActivityGame extends AppCompatActivity {
     ImageView motionlessPieces;
     ImageView movingPiece;
     Space leftSpace;
+    TextView player1Name;
+    TextView player2Name;
+    TextClock timerPlaye1;
+    TextClock timerPlaye2;
+    TextView round;
+    TextView turn;
+    TextView moveNumber;
+    TextView location;
+    private Button buttonEnd;
+
     private static boolean gameStarted = false;
 
     RadioGroup selectStyle;
@@ -78,8 +92,24 @@ public class ActivityGame extends AppCompatActivity {
         Display.motionlessPieces = motionlessPieces;
         Display.movingPiece = movingPiece;
 
+        player1Name = (TextView) findViewById(R.id.NamePlayer1);
+        player2Name = (TextView) findViewById(R.id.NamePlayer2);
+        location = (TextView) findViewById(R.id.Location);
+
+        timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
+        timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
+        round = (TextView) findViewById(R.id.Round);
+        turn = (TextView) findViewById(R.id.Turn);
+        moveNumber = (TextView) findViewById(R.id.MoveNumber);
+
+        player1Name.setText(ActivityCreateGame.playerName1);
+        player2Name.setText(ActivityCreateGame.playerName2);
+        location.setText(ActivityCreateGame.location);
+
+        //Utilities.messageBoxStartGame();
 
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -100,27 +130,12 @@ public class ActivityGame extends AppCompatActivity {
 
         try {
             HttpRunner.runPostGameEnd();
-            // reste?
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Intent setIntent = new Intent(this,ActivityCreateGame.class);
         startActivity(setIntent);
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        try {
-            HttpRunner.runPostGameEnd();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -134,20 +149,6 @@ public class ActivityGame extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public String positionToSymbol(int x, int y)
-    {
-        int valXX = ((x-130)/151);
-        String valX = Character.toString ((char) (valXX+97));
-        //char valX =  (char) valXX;  /// affiche un carre faut arranger ca
-        int valY = 8 - ((y-62)/151);
-
-        String symbole = valX+String.valueOf(valY);
-        //Log.d("symbole ", symbole );
-
-        return symbole;
-
     }
 
     private void handleTouch(MotionEvent event) {
