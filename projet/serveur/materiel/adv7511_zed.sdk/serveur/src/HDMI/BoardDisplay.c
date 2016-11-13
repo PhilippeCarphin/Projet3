@@ -31,13 +31,21 @@ struct BoardData{
 };
 static struct BoardData bd;
 
-enum Colors { 	BACKGROUND = 0xFF000000,
+enum Colors { 	BACKGROUND = 0xFF666666,
+				GAME_BACKGROUND = 0xFF888888,
 				DARK_SQUARE_COLOR = 0xFFEEEED2,
 				LIGHT_SQUARE_COLOR = 0xFF769656,
 				YELLOW = 0xFFFFFF00,
 				MARGIN_COLOR = 0xFF955C3E
 };
 
+static char readme[] =
+"Welcome to Vintage Chess.\n\n"
+"To start a game\n"
+"\t1. Start Vintage Chess and enter correct IP address in tablet\n"
+"\t   If you are too old to understand what is an IP address, call\n"
+"\t   technical services at 514-978-1336\n\n"
+"\t2. Press CreateNewGame\n";
 
 extern struct Screen screen;
 /******************************************************************************
@@ -64,6 +72,7 @@ int clear_square(File file, Rank rank);
 int BoardDisplay_init();
 int set_chess_board_params();
 int draw_chess_board();
+int draw_coordinates();
 int BoardDisplay_move_piece(struct Move *move);
 u32 file_to_pixel(int file);
 u32 rank_to_pixel(int rank);
@@ -94,6 +103,18 @@ int set_chess_board_params()
 	return 0;
 }
 
+int BoardDisplay_draw_turn(PieceColor c)
+{
+	u32 top = bd.top + 8*bd.square_size + bd.margin + 10;
+	u32 left = bd.left + D * bd.square_size;
+	draw_square(top,left, 13 * char_width, line_skip, 0);
+	if( c == WHITE)
+		draw_string(top, left, "White to move");
+	else
+		draw_string(top, left, "Black to move");
+	return 0;
+
+}
 /******************************************************************************
  * Load the images and their data into our memory buffers
 ******************************************************************************/
@@ -154,12 +175,36 @@ int BoardDisplay_init()
 	int err = 0;
 	set_screen_dimensions(1280,1024);
 	set_chess_board_params();
-	set_background_color(0x00000000); 
 	load_bitmap_files();
-	draw_chess_board();
 	return err;
 }
 
+int BoardDisplay_new_board(GameInfo *gi)
+{
+	int err;
+	set_background_color(GAME_BACKGROUND);
+	if( (err = draw_chess_board()) != 0) return err;
+	if( (err = draw_information(gi)) != 0) return err;
+	cf_hdmi_send_buffer();
+	return 0;
+}
+
+int BoardDisplay_welcome_screen()
+{
+	set_background_color(BACKGROUND);
+	draw_string(100,100,readme);
+	cf_hdmi_send_buffer();
+	return 0;
+}
+
+#if 0 // TODO
+int setup_board()
+{
+	set_background_color(BACKGROUND);
+	draw_empty_board();
+	BoardDisplay_draw_pieces_custom(...);// TODO
+}
+#endif
 
 /******************************************************************************
  * Draw a char, note that draw_partial_bitamp checks the screen dimensions so
@@ -194,14 +239,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 	char c;
 	while( (c = *str++) != 0)
 	{
-		if( c == '\n'){
-			cursor_top += line_skip;
-			cursor_left = screen_left;
-		}
-		else if( c == ' '){
-			cursor_left += char_width;
-		}
-		else if ( 32 < c && c <= '~' )
+		if ( 32 < c && c <= '~' )
 		{
 			if( cursor_left + char_width + 2 >= screen.w){
 				cursor_left = screen_left;
@@ -213,7 +251,17 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 			} else {
 				cursor_left += char_width;
 			}
-		} else {
+		} else if( c == '\n'){
+			cursor_top += line_skip;
+			cursor_left = screen_left;
+		}
+		else if( c == ' '){
+			cursor_left += char_width;
+		}
+		else if (c == '\t'){
+			cursor_left += 4*char_width;
+		}
+		else {
 			DBG_PRINT("%s(): Unknown char\n", __FUNCTION__);
 		}
 
@@ -224,10 +272,27 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 /******************************************************************************
  * Something like this to draw the information on the screen
 ******************************************************************************/
-int draw_information(struct GameInfo *gi)
+int draw_information(GameInfo *gi)
 {
-	//int some_top = 0, some_left = 0;
-	//draw_string(some_top, some_left, gi->player1);
+	u32 top = bd.top + 8*bd.square_size + 3 * bd.margin;
+	u32 left = bd.left;
+	u32 cursor_top = top;
+	u32 cursor_left = left;
+
+	// Draw player names
+	draw_string(cursor_top, cursor_left, "White : \nBlack : ");
+	cursor_left += 8*char_width;
+	draw_string(cursor_top, cursor_left, gi->player_1);
+	cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->player_2);
+
+	// Draw event info
+	cursor_top = top;
+	cursor_left = left + 20 * char_width;
+	draw_string(cursor_top, cursor_left, "   Event :\nLocation :\n    Date :"); cursor_left += 10*char_width;
+	draw_string(cursor_top, cursor_left, "${Event_name}"); cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->location); cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->round);
 	//draw_string(some_top, some_left, gi->player2);
 	// ...
 
@@ -317,9 +382,13 @@ int draw_empty_board()
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
+	draw_coordinates();
+
 	// Dessiner le rectangle pour la zone de notation
 	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, bd.notation_height, 0x00000000);
-	draw_coordinates();
+	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, line_skip, 0x00303030);
+	draw_string(bd.notation_top, bd.notation_left, "GAME NOTATION");
+
 	return 0;
 }
 
@@ -385,7 +454,7 @@ int draw_pieces()
 /******************************************************************************
  * Draw pieces in custom positions
 ******************************************************************************/
-int draw_pieces_custom(Piece* player1, Piece* player2)
+int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2)
 {
 	FBEGIN;
 	draw_empty_board();
@@ -446,6 +515,34 @@ int test_move_piece();
  }
 
  /******************************************************************************
+  * Draw the move number (2 digits max) and a '.'
+ ******************************************************************************/
+int draw_move_number(u32 top, u32 left, int number)
+ {
+	if( number <= 0)
+	{
+		WHERE DBG_PRINT("Invalid move_number\n");
+		return -1;
+	}
+	u32 cursor_left = left;
+	u32 cursor_top = top;
+	int tens = number / 10;
+	int units = number % 10;
+
+	if(tens != 0)
+	{
+		draw_char(cursor_top, cursor_left, '0' + tens);
+	}
+
+	cursor_left += char_width;
+	draw_char(cursor_top, cursor_left, '0' + units);
+	cursor_left += char_width;
+	draw_char(cursor_top, cursor_left, '.');
+
+	return 0;
+ }
+
+ /******************************************************************************
   * Draws the move notation of a move.
   * Standard chess notation works by specifying the least amount of information.
   * So we say the piece that moved, and the destination of that piece.  
@@ -464,8 +561,8 @@ int test_move_piece();
  ******************************************************************************/
  int draw_move_notation(struct Move *mv)
  {
- 	int move_number = (mv->turn_number-1)/2;
- 	u32 cursor_top = bd.notation_top + move_number * line_skip;
+ 	int move_number = (mv->turn_number + 1)/2;
+ 	u32 cursor_top = bd.notation_top + (move_number + 1 ) * line_skip;
  	u32 cursor_left = bd.notation_left;
 
  	/*
@@ -475,14 +572,12 @@ int test_move_piece();
  	 */
  	if( mv->c == WHITE)
  	{
- 		draw_char(cursor_top,cursor_left,'0' + move_number + 1);
- 		cursor_left += char_width;
- 		draw_char(cursor_top,cursor_left, '.');
- 		cursor_left += 2*char_width;
+ 		draw_move_number(cursor_top, cursor_left, move_number);
+ 		cursor_left += 5*char_width;
  	}
  	else
  	{
- 		cursor_left += 9 * char_width;
+ 		cursor_left += 10 * char_width;
  	}
 
  	if( mv->castling)
@@ -602,6 +697,7 @@ int do_move(struct Move *mv)
 			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1);
 			if((err = clear_square(mv->d_file, r)) != 0) return err;
 		}
+
 		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
 		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
 		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;

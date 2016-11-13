@@ -40,7 +40,10 @@ int draw_chess_board();
 int BoardDisplay_move_piece(struct Move *move);
 int draw_information(struct GameInfo *gi);
 int update_times(struct PlayerTimes *pt);
-int draw_pieces_custom(Piece* player1, Piece* player2);
+int BoardDisplay_new_board(GameInfo *gi);
+int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
+int BoardDisplay_draw_turn(PieceColor c);
+int BoardDisplay_welcome_screen();
 
 /******************************************************************************
  * Function that tests the workings of the whole HDMI module and is usable as

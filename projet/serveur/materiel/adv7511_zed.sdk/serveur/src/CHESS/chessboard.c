@@ -3,6 +3,7 @@
 #include "xil_io.h"
 #include "debug.h"
 #include "BoardDisplay.h"
+#include "cf_hdmi.h"
 //player1 pieces
 
 
@@ -139,9 +140,10 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 	{
 		currentGameInfo = *gameInfo;
 		ChessGameInitialisation();
-		// draw_hdmi_init_board();
+		BoardDisplay_new_board(&currentGameInfo);
 		return OK;	
 	}
+
 }
 
 
@@ -237,9 +239,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.o_rank = ys;
 	mv.d_file = xd;
 	mv.d_rank = yd;
-	mv.enPassant = boardGame[xd][yd]->enPassant;
+	mv.enPassant = boardGame[xd][yd]->enPassant; // This needs to be set to true only if the move IS an en-passant
+												 // capture, BoardDisplay does not want to know if the piece is
+	                                             // doing an en-passant capture.
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
+	BoardDisplay_draw_turn((mv.c == WHITE ? BLACK : WHITE));
 	BoardDisplay_move_piece(&mv);
 
 	//check for stalemate, checkmate,
@@ -345,7 +350,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	setBoard(player2Pieces);
 	currentTurnInfo.turn = boardPosition->turn;
 	currentTurnInfo.move_no = boardPosition->move_no;
-	if (draw_pieces_custom(player1Pieces,player2Pieces) != 0)
+	if (BoardDisplay_draw_pieces_custom(player1Pieces,player2Pieces) != 0)
 	{
 		xil_printf("Error in HDMI restSetBoard");
 	}
@@ -366,17 +371,25 @@ enum ChessboardRestStatus start_game()
 		return gameInProgress;
 	}
 	gameStarted = true;
+	BoardDisplay_draw_turn(WHITE);
+	cf_hdmi_send_buffer();
 	return OK;
 }
 
+/******************************************************************************
+ * Ends a game: Return to initial state
+ * NOTE: new_game creates a game but does not start it so for now, I put the
+ * boardDisplay_welcome_screen call in the error case and in the non-error case
+******************************************************************************/
 enum ChessboardRestStatus end_game()
 {
-	if (!gameStarted)
+	FBEGIN;
+	if (!0) // if (gameStarted) // GUILLAUME POUR TESTS
 	{
 		return unathorized;
 	}
 	gameStarted = false;
-	draw_chess_board();
+	BoardDisplay_welcome_screen();
 	return OK;
 }
 
@@ -384,8 +397,10 @@ enum ChessboardRestStatus end_game()
 enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
 {
 	// Partially accepting castling
+	// Castling will be specified by having the tablet request to move
+	// the king.
 	if(xs == E && (xd == G || xd == C)){
-		return VALID;
+		return ILLEGAL;
 	}
 	// TODO: check for Castle/Roque/special move
 	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
