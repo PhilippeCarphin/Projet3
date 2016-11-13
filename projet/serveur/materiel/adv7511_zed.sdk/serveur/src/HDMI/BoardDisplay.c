@@ -64,6 +64,7 @@ int clear_square(File file, Rank rank);
 int BoardDisplay_init();
 int set_chess_board_params();
 int draw_chess_board();
+int draw_coordinates();
 int BoardDisplay_move_piece(struct Move *move);
 u32 file_to_pixel(int file);
 u32 rank_to_pixel(int rank);
@@ -317,9 +318,13 @@ int draw_empty_board()
 		for( rank = R1; rank <= R8; rank++)
 			if((err = clear_square(file,rank)) != 0) return err;
 
+	draw_coordinates();
+
 	// Dessiner le rectangle pour la zone de notation
 	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, bd.notation_height, 0x00000000);
-	draw_coordinates();
+	draw_square(bd.notation_top, bd.notation_left, bd.notation_width, line_skip, 0x00303030);
+	draw_string(bd.notation_top, bd.notation_left, "GAME NOTATION");
+
 	return 0;
 }
 
@@ -446,6 +451,34 @@ int test_move_piece();
  }
 
  /******************************************************************************
+  * Draw the move number (2 digits max) and a '.'
+ ******************************************************************************/
+int draw_move_number(u32 top, u32 left, int number)
+ {
+	if( number <= 0)
+	{
+		WHERE DBG_PRINT("Invalid move_number\n");
+		return -1;
+	}
+	u32 cursor_left = left;
+	u32 cursor_top = top;
+	int tens = number / 10;
+	int units = number % 10;
+
+	if(tens != 0)
+	{
+		draw_char(cursor_top, cursor_left, '0' + tens);
+	}
+
+	cursor_left += char_width;
+	draw_char(cursor_top, cursor_left, '0' + units);
+	cursor_left += char_width;
+	draw_char(cursor_top, cursor_left, '.');
+
+	return 0;
+ }
+
+ /******************************************************************************
   * Draws the move notation of a move.
   * Standard chess notation works by specifying the least amount of information.
   * So we say the piece that moved, and the destination of that piece.  
@@ -464,8 +497,8 @@ int test_move_piece();
  ******************************************************************************/
  int draw_move_notation(struct Move *mv)
  {
- 	int move_number = (mv->turn_number-1)/2;
- 	u32 cursor_top = bd.notation_top + move_number * line_skip;
+ 	int move_number = (mv->turn_number + 1)/2;
+ 	u32 cursor_top = bd.notation_top + (move_number + 1 ) * line_skip;
  	u32 cursor_left = bd.notation_left;
 
  	/*
@@ -475,14 +508,12 @@ int test_move_piece();
  	 */
  	if( mv->c == WHITE)
  	{
- 		draw_char(cursor_top,cursor_left,'0' + move_number + 1);
- 		cursor_left += char_width;
- 		draw_char(cursor_top,cursor_left, '.');
- 		cursor_left += 2*char_width;
+ 		draw_move_number(cursor_top, cursor_left, move_number);
+ 		cursor_left += 5*char_width;
  	}
  	else
  	{
- 		cursor_left += 9 * char_width;
+ 		cursor_left += 10 * char_width;
  	}
 
  	if( mv->castling)
