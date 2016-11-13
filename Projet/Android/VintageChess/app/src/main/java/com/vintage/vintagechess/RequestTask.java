@@ -26,6 +26,7 @@ class RequestTask extends AsyncTask<String, String, String> {
 
     private RequestCallback callback;
     private boolean receiveJSON;
+    private static ActivityCreateGame activityCreateGame;
 
     //constructor
     public RequestTask(RequestCallback callback, boolean receiveJSON) {
@@ -79,12 +80,12 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write("helloworld" + "\r\n\r\n");
+            wr.write(ActivityCreateGame.password + "\r\n\r\n");
             wr.write(body);
             wr.flush();
         } else {
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write("helloworld" + "\r\n\r\n");
+            wr.write(ActivityCreateGame.password  + "\r\n\r\n");
             wr.flush();
         }
 
