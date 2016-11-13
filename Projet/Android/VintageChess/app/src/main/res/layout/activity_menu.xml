@@ -46,7 +46,7 @@
         android:ems="10"
         android:id="@+id/editTextIp"
         android:textSize="32sp"
-        android:text="24"
+        android:text="21"
         android:layout_alignBaseline="@+id/textIP2"
         android:layout_alignBottom="@+id/textIP2"
         android:layout_toRightOf="@+id/textIP2"

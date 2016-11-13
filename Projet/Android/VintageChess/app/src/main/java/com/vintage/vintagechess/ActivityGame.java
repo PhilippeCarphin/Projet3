@@ -106,10 +106,9 @@ public class ActivityGame extends AppCompatActivity {
         //player2Name.setText(ActivityCreateGame.playerName2);
         //location.setText(ActivityCreateGame.location);
 
-        //Utilities.messageBoxStartGame();
+
 
     }
-
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -117,6 +116,8 @@ public class ActivityGame extends AppCompatActivity {
         board.requestLayout();
         if (!gameStarted) {
             Game.initializeGame();
+            Utilities.messageBoxStartGame();
+            gameStarted = true;
         }
         Display.drawFullBoard();
         Game.leftSpace = leftSpace.getWidth();
@@ -151,14 +152,26 @@ public class ActivityGame extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        try {
+            HttpRunner.runPostGameEnd();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void handleTouch(MotionEvent event) {
         try {
 
             int action = event.getAction();
-            if (!gameStarted) {
+            /*if (!gameStarted) {
                 HttpRunner.runPostGameStart();
                 gameStarted = true;
-            }
+            }*/
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     Game.handleFingerDown((int)event.getX(), (int)event.getY());
