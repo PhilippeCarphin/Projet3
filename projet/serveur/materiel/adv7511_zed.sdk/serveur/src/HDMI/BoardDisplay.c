@@ -167,13 +167,14 @@ int BoardDisplay_init()
 	return err;
 }
 
-int BoardDisplay_new_board()
+int BoardDisplay_new_board(GameInfo *gi)
 {
 	int err;
 	set_background_color(GAME_BACKGROUND);
-	err = draw_chess_board();
+	if( (err = draw_chess_board()) != 0) return err;
+	if( (err = draw_information(gi)) != 0) return err;
 	cf_hdmi_send_buffer();
-	return err;
+	return 0;
 }
 
 int BoardDisplay_welcome_screen()
@@ -259,10 +260,27 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 /******************************************************************************
  * Something like this to draw the information on the screen
 ******************************************************************************/
-int draw_information(struct GameInfo *gi)
+int draw_information(GameInfo *gi)
 {
-	//int some_top = 0, some_left = 0;
-	//draw_string(some_top, some_left, gi->player1);
+	u32 top = bd.top + 8*bd.square_size + 3 * bd.margin;
+	u32 left = bd.left;
+	u32 cursor_top = top;
+	u32 cursor_left = left;
+
+	// Draw player names
+	draw_string(cursor_top, cursor_left, "White : \nBlack : ");
+	cursor_left += 8*char_width;
+	draw_string(cursor_top, cursor_left, gi->player_1);
+	cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->player_2);
+
+	// Draw event info
+	cursor_top = top;
+	cursor_left = left + 20 * char_width;
+	draw_string(cursor_top, cursor_left, "   Event :\nLocation :\n    Date :"); cursor_left += 10*char_width;
+	draw_string(cursor_top, cursor_left, "${Event_name}"); cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->location); cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, gi->round);
 	//draw_string(some_top, some_left, gi->player2);
 	// ...
 

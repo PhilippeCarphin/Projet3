@@ -139,7 +139,7 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 	{
 		currentGameInfo = *gameInfo;
 		ChessGameInitialisation();
-		BoardDisplay_new_board();
+		BoardDisplay_new_board(&currentGameInfo);
 		return OK;	
 	}
 
