@@ -125,7 +125,6 @@ public class Game {
     public static void handleMoveOk(String pieceEleminated, String promotion, String state) {
         if (currentPiece != null) {
             if (!pieceEleminated.equals("xx")) {
-                Log.d("position", pieceEleminated);
                 Point p = Utilities.getGridCoordinates(pieceEleminated);
                 pieces[p.x][p.y] = null;
             }
