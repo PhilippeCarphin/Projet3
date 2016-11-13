@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -92,19 +93,19 @@ public class ActivityGame extends AppCompatActivity {
         Display.motionlessPieces = motionlessPieces;
         Display.movingPiece = movingPiece;
 
-        //player1Name = (TextView) findViewById(R.id.NamePlayer1);
-        //player2Name = (TextView) findViewById(R.id.NamePlayer2);
-        //location = (TextView) findViewById(R.id.Location);
+        player1Name = (TextView) findViewById(R.id.Player1Name);
+        player2Name = (TextView) findViewById(R.id.Player2Name);
+        location = (TextView) findViewById(R.id.LocationText);
 
-        //timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
-        //timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
-        //round = (TextView) findViewById(R.id.Round);
-        //turn = (TextView) findViewById(R.id.Turn);
-        //moveNumber = (TextView) findViewById(R.id.MoveNumber);
-
-        //player1Name.setText(ActivityCreateGame.playerName1);
-        //player2Name.setText(ActivityCreateGame.playerName2);
-        //location.setText(ActivityCreateGame.location);
+        timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
+        timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
+        round = (TextView) findViewById(R.id.RoundText);
+        turn = (TextView) findViewById(R.id.TurnText);
+        moveNumber = (TextView) findViewById(R.id.MoveNumberText);
+        player1Name.setText(ActivityCreateGame.playerName1);
+        player2Name.setText(ActivityCreateGame.playerName2);
+        location.setText(ActivityCreateGame.location);
+        round.setText("Round : 0" );
 
         //Utilities.messageBoxStartGame();
 
