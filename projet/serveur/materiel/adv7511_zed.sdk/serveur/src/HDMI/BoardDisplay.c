@@ -687,6 +687,7 @@ int do_move(struct Move *mv)
 	}
 	else
 	{
+#if 0
 		if(mv->enPassant)
 		{
 			/*
@@ -697,6 +698,7 @@ int do_move(struct Move *mv)
 			Rank r = (mv->c == WHITE ? mv->d_rank-1 : mv->d_rank+1);
 			if((err = clear_square(mv->d_file, r)) != 0) return err;
 		}
+#endif
 
 		if((err = color_square(mv->o_file, mv->o_rank, YELLOW)) != 0) return err;
 		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;

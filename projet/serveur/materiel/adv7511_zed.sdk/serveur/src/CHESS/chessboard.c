@@ -384,7 +384,7 @@ enum ChessboardRestStatus start_game()
 enum ChessboardRestStatus end_game()
 {
 	FBEGIN;
-	if (!0) // if (gameStarted) // GUILLAUME POUR TESTS
+	if (gameStarted)
 	{
 		return unathorized;
 	}
