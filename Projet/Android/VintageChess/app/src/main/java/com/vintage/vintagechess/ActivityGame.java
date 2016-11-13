@@ -153,26 +153,10 @@ public class ActivityGame extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        try {
-            HttpRunner.runPostGameEnd();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void handleTouch(MotionEvent event) {
         try {
 
             int action = event.getAction();
-            /*if (!gameStarted) {
-                HttpRunner.runPostGameStart();
-                gameStarted = true;
-            }*/
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     Game.handleFingerDown((int)event.getX(), (int)event.getY());

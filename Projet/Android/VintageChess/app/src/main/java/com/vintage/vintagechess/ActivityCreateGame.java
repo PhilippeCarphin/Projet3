@@ -73,7 +73,7 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        editTextPassword.setEnabled(false);
+        editTextPassword.setEnabled(true);
         editTextPlayer1Name = (EditText) findViewById(R.id.editTextNamePlayer1);
 
         editTextPlayer2Name = (EditText) findViewById(R.id.editTextNamePlayer2);
@@ -111,7 +111,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     }
 
     private void handleRadioChange() {
-        editTextPassword.setEnabled(radioButton2.isChecked());
+        //editTextPassword.setEnabled(radioButton2.isChecked());
         editTextPlayer2Name.setEnabled(radioButton1.isChecked());
     }
 
