@@ -31,13 +31,21 @@ struct BoardData{
 };
 static struct BoardData bd;
 
-enum Colors { 	BACKGROUND = 0xFF000000,
+enum Colors { 	BACKGROUND = 0xFF666666,
+				GAME_BACKGROUND = 0xFF888888,
 				DARK_SQUARE_COLOR = 0xFFEEEED2,
 				LIGHT_SQUARE_COLOR = 0xFF769656,
 				YELLOW = 0xFFFFFF00,
 				MARGIN_COLOR = 0xFF955C3E
 };
 
+static char readme[] =
+"Welcome to Vintage Chess.\n\n"
+"To start a game\n"
+"\t1. Start Vintage Chess and enter correct IP address in tablet\n"
+"\t   If you are too old to understand what is an IP address, call\n"
+"\t   technical services at 514-978-1336\n\n"
+"\t2. Press CreateNewGame\n";
 
 extern struct Screen screen;
 /******************************************************************************
@@ -155,12 +163,35 @@ int BoardDisplay_init()
 	int err = 0;
 	set_screen_dimensions(1280,1024);
 	set_chess_board_params();
-	set_background_color(0x00000000); 
 	load_bitmap_files();
-	draw_chess_board();
 	return err;
 }
 
+int BoardDisplay_new_board()
+{
+	int err;
+	set_background_color(GAME_BACKGROUND);
+	err = draw_chess_board();
+	cf_hdmi_send_buffer();
+	return err;
+}
+
+int BoardDisplay_welcome_screen()
+{
+	set_background_color(BACKGROUND);
+	draw_string(100,100,readme);
+	cf_hdmi_send_buffer();
+	return 0;
+}
+
+#if 0 // TODO
+int setup_board()
+{
+	set_background_color(BACKGROUND);
+	draw_empty_board();
+	BoardDisplay_draw_pieces_custom(...);// TODO
+}
+#endif
 
 /******************************************************************************
  * Draw a char, note that draw_partial_bitamp checks the screen dimensions so
@@ -195,14 +226,7 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 	char c;
 	while( (c = *str++) != 0)
 	{
-		if( c == '\n'){
-			cursor_top += line_skip;
-			cursor_left = screen_left;
-		}
-		else if( c == ' '){
-			cursor_left += char_width;
-		}
-		else if ( 32 < c && c <= '~' )
+		if ( 32 < c && c <= '~' )
 		{
 			if( cursor_left + char_width + 2 >= screen.w){
 				cursor_left = screen_left;
@@ -214,7 +238,17 @@ int draw_string(u32 screen_top, u32 screen_left, char *str)
 			} else {
 				cursor_left += char_width;
 			}
-		} else {
+		} else if( c == '\n'){
+			cursor_top += line_skip;
+			cursor_left = screen_left;
+		}
+		else if( c == ' '){
+			cursor_left += char_width;
+		}
+		else if (c == '\t'){
+			cursor_left += 4*char_width;
+		}
+		else {
 			DBG_PRINT("%s(): Unknown char\n", __FUNCTION__);
 		}
 
@@ -390,7 +424,7 @@ int draw_pieces()
 /******************************************************************************
  * Draw pieces in custom positions
 ******************************************************************************/
-int draw_pieces_custom(Piece* player1, Piece* player2)
+int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2)
 {
 	FBEGIN;
 	draw_empty_board();

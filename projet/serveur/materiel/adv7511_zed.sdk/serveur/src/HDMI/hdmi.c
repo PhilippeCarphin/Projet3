@@ -178,8 +178,8 @@ int init_HDMI()
 
 	Xil_ExceptionEnable();
 
-// This replaces the previous block in the #if 0 part
 	BoardDisplay_init();
+	BoardDisplay_welcome_screen();
 
 	SetVideoResolution(RESOLUTION_1280x1024);
 

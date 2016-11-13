@@ -139,9 +139,10 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 	{
 		currentGameInfo = *gameInfo;
 		ChessGameInitialisation();
-		// draw_hdmi_init_board();
+		BoardDisplay_new_board();
 		return OK;	
 	}
+
 }
 
 
@@ -345,7 +346,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	setBoard(player2Pieces);
 	currentTurnInfo.turn = boardPosition->turn;
 	currentTurnInfo.move_no = boardPosition->move_no;
-	if (draw_pieces_custom(player1Pieces,player2Pieces) != 0)
+	if (BoardDisplay_draw_pieces_custom(player1Pieces,player2Pieces) != 0)
 	{
 		xil_printf("Error in HDMI restSetBoard");
 	}
@@ -369,14 +370,21 @@ enum ChessboardRestStatus start_game()
 	return OK;
 }
 
+/******************************************************************************
+ * Ends a game: Return to initial state
+ * NOTE: new_game creates a game but does not start it so for now, I put the
+ * boardDisplay_welcome_screen call in the error case and in the non-error case
+******************************************************************************/
 enum ChessboardRestStatus end_game()
 {
+	FBEGIN;
 	if (!gameStarted)
 	{
+		BoardDisplay_welcome_screen(); // TODO : Stuff to figure out
 		return unathorized;
 	}
 	gameStarted = false;
-	draw_chess_board();
+	BoardDisplay_welcome_screen();
 	return OK;
 }
 
@@ -384,8 +392,10 @@ enum ChessboardRestStatus end_game()
 enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
 {
 	// Partially accepting castling
+	// Castling will be specified by having the tablet request to move
+	// the king.
 	if(xs == E && (xd == G || xd == C)){
-		return VALID;
+		return ILLEGAL;
 	}
 	// TODO: check for Castle/Roque/special move
 	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
