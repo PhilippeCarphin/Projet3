@@ -1,6 +1,8 @@
 package com.vintage.vintagechess;
 import android.support.v7.app.AppCompatActivity;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,8 +23,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-            Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
-            activityCreateGame.openGame();
+                activityCreateGame.openGame();
             }
         };
         return ret;
@@ -52,9 +53,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) throws JSONException {
-                Log.d("Response", response);
                 REST.handleMoveResponse(response);
-                //Game.handleMoveOk("", "", "");
             }
         };
         return ret;
@@ -85,23 +84,21 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) throws JSONException {
-                Log.d("REPONSE", response );
                 REST.getStatusSummary(response);
             }
         };
         return ret;
     }
 
-    public static RequestCallback getGetStatusBoardCallback()  {
-        RequestCallback ret = new RequestCallback() {
+    public static RequestCallback getGetStatusBoardCallback() {
+        RequestCallback ret = new RequestCallback()  {
             @Override
-            public void runResponse(String response) {
-                try {
-                    REST.getStatusBoard(response);
-                }
-                catch (Exception e) {
-                    Utilities.messageBox("failed handling json", e.getMessage());
-                }
+            public void runResponse(String response) throws JSONException {
+                JSONObject jsonObject = new JSONObject(response);
+                Game.setConfig(REST.getStatusBoard(jsonObject));
+                String white = jsonObject.getString("turn");
+                Display.setWhoseTurn(white);
+                Display.setMoveNumber(jsonObject.getString("move_no"));
             }
         };
         return ret;

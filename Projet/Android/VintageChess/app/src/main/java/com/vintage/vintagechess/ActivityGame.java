@@ -273,7 +273,8 @@ public class ActivityGame extends AppCompatActivity {
         catch (Exception e) {
             //e.printStackTrace();
             Game.recoverFromError();
-            Utilities.messageBox("Error with view touch event", e.getMessage());
+            if (!e.getMessage().contains("Finger is out of bounds"))
+                Utilities.messageBox("Error with view touch event", e.getMessage());
         }
 
     }

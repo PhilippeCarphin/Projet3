@@ -20,6 +20,7 @@ import org.json.JSONException;
 
 public class Utilities {
     public static AppCompatActivity currentActivity;
+    private static boolean debug = true;
 
     public static void messageBox(String title, String content) {
 
@@ -87,6 +88,12 @@ public class Utilities {
 
     public static String getBoardCoordinates(Point p) {
         return (char)(p.x+97) +Integer.valueOf(p.y+1).toString();
+    }
+
+    public static void printStackTrace(Exception e) {
+        if (debug) {
+            e.printStackTrace();
+        }
     }
 
 
