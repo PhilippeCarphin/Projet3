@@ -171,18 +171,20 @@ public class ActivityGame extends AppCompatActivity {
                 listOfRadioButtons.add((RadioButton)o);
             }
         }
+        String[][] resourceNames = new String[][] {{"black_king_1", "white_queen_1"},{"black_king_2", "white_queen_2"}};
         int i = 0;
         for (RadioButton r : listOfRadioButtons) {
-            r.setText("");
-            Bitmap imageAndroid = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Bitmap imageAndroid = Bitmap.createBitmap(200, 100, Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(imageAndroid);
             int backColor = r.isChecked() ? getResources().getColor(R.color.colorAccent) : Color.TRANSPARENT;
             Paint p = new Paint();
             p.setColor(backColor);
-            tempCanvas.drawRect(0,0,tempCanvas.getHeight(), tempCanvas.getWidth(), p);
-            int frontColor = i == 0 ? BoardColors.greenSquareColor : (i == 1 ? BoardColors.blueSquareColor : BoardColors.redSquareColor);
-            p.setColor(frontColor);
-            tempCanvas.drawRect((int)(tempCanvas.getHeight()*0.1),(int)(tempCanvas.getHeight()*0.1), (int)(tempCanvas.getHeight()*0.9), (int)(tempCanvas.getHeight()*0.9), p);
+            tempCanvas.drawRect(0,0,tempCanvas.getWidth(), tempCanvas.getWidth(), p);
+            for (int j = 0 ; j < 2 ; j++) {
+                Bitmap b = Piece.getResourceBitmap(resourceNames[i][j], tempCanvas.getHeight());
+                tempCanvas.drawBitmap(b, j*tempCanvas.getHeight(), 0, null);
+            }
+
             r.setBackground(new BitmapDrawable(this.getResources(), imageAndroid));
             i++;
         }

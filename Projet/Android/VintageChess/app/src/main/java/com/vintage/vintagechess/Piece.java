@@ -32,6 +32,24 @@ public class Piece {
         return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
     }
 
+    public static int getResourceID(String resourceName) {
+        Context context = Utilities.currentActivity;
+        return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
+    }
+
+    public static Bitmap getResourceBitmap(int resourceID, int width) {
+        Bitmap bmp = BitmapFactory.decodeResource( Utilities.currentActivity.getResources(), resourceID );
+        Bitmap img = Bitmap.createScaledBitmap( bmp, width, width, true );
+        bmp.recycle();
+
+        //Log.d("Id", String.valueOf(id));
+        return img;
+    }
+
+    public static Bitmap getResourceBitmap(String resource, int width) {
+        return getResourceBitmap(getResourceID(resource), width);
+    }
+
 
 
     public Bitmap getBitmap() {
