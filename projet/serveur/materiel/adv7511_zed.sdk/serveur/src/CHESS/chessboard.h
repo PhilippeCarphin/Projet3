@@ -25,7 +25,7 @@ typedef struct Piece
 	int x;
 	int y;
 	int rock;
-	int enPassant; // TODO: could become a bool. Should be set after the permitted jump and unset the turn after.
+	bool enPassant; // TODO: could become a bool. Should be set after the permitted jump and unset the turn after.
 	PlayerID playerID;
 }Piece;
 

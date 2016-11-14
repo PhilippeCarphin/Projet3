@@ -28,7 +28,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 	piece.alive = true;
 	piece.x = x;
 	piece.y = y;
-	piece.enPassant = 0;
+	piece.enPassant = false;
 	piece.rock = 0;
 	piece.playerID = playerID;
 	return piece;
@@ -149,6 +149,8 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
+	struct Move mv; // infos for BoardDisplay/HDMI
+	mv.enPassant = false;
 
 	// check if it's the player turn
 	if (player != currentTurnInfo.turn)
@@ -188,6 +190,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		boardGame[xd][ys] = 0; // special cleaning
 		moveInfo->piece_eliminated[0] = xd + 'a';
 		moveInfo->piece_eliminated[1] = ys + '1';
+		mv.enPassant = true;
 		break;
 
 	case VALID:
@@ -232,16 +235,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 
 	//call HDMI draw functions
 
-	struct Move mv;
 	mv.t = boardGame[xd][yd]->pieceType;
 	mv.c = (boardGame[xd][yd]->playerID == player1) ? WHITE : BLACK;
 	mv.o_file = xs;
 	mv.o_rank = ys;
 	mv.d_file = xd;
 	mv.d_rank = yd;
-	mv.enPassant = boardGame[xd][yd]->enPassant; // This needs to be set to true only if the move IS an en-passant
-												 // capture, BoardDisplay does not want to know if the piece is
-	                                             // doing an en-passant capture.
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
 	BoardDisplay_draw_turn((mv.c == WHITE ? BLACK : WHITE));
@@ -384,7 +383,7 @@ enum ChessboardRestStatus start_game()
 enum ChessboardRestStatus end_game()
 {
 	FBEGIN;
-	if (gameStarted)
+	if (!gameStarted)
 	{
 		return unathorized;
 	}
