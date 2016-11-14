@@ -113,7 +113,7 @@ public class Game {
                 pieces[p.x][p.y] = null;
             }
             pieces[currentPiece.p_.x][currentPiece.p_.y] = currentPiece;
-            isWhiteTurn = !isWhiteTurn;
+            //isWhiteTurn = !isWhiteTurn;
             Display.lastPos = downPos;
             Display.newPos = currentPiece.p_;
         }
