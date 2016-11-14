@@ -85,16 +85,8 @@ class RequestTask extends AsyncTask<String, String, String> {
 
             wr.write(body);
             wr.flush();
-<<<<<<< HEAD
         }
-        else if (method.equals("POST")){
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(ActivityCreateGame.password  + "\r\n\r\n");
-            wr.flush();
-        }
-=======
-        } else if(method.equals("POST")){
->>>>>>> 6d8e19a6f8bf1931db5a3f3f2e24bea133c80991
+         else if(method.equals("POST")){
 
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
                 wr.write(ActivityCreateGame.password  + "\r\n\r\n");
