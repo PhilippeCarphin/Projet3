@@ -76,6 +76,13 @@ public class Display {
             tempCanvas.drawText(charToDraw, x, y, numberPaint);
             y = y + 8*getSquareWidth() + getBoardOffset();
             tempCanvas.drawText(charToDraw, x, y, numberPaint);
+            charToDraw = "" + (8-i);
+            x = getBoardOffset()/2;
+            y = (int)(textHeight/2 - metric.descent) + getBoardOffset() + (int)(getSquareWidth() * (i+0.5));
+            tempCanvas.drawText(charToDraw, x, y, numberPaint);
+            x += getSquareWidth() * 8 + getBoardOffset();
+            tempCanvas.drawText(charToDraw, x, y, numberPaint);
+
         }
         //tempCanvas.drawText("allo", 0, 0, numberPaint);
 
@@ -92,7 +99,6 @@ public class Display {
         for(Piece[] array : Game.pieces) {
             for (Piece p : array)  {
                 if (p != null) {
-                    Log.d("drawing ", p.type_);
                     Bitmap imageBitmap = p.getBitmap();
                     Point position = p.p_;
                     int xPos = getPixelPosition(position.x);
@@ -173,16 +179,20 @@ public class Display {
         board.setEnabled(true);
     }
 
+
+    public static void setMoveNumber(String n) {
+        activityGame.moveNumber.setText(n);
+    }
+
+    public static void setWhoseTurn(String turn) {
+        Game.isWhiteTurn = turn.equals("1");
+        activityGame.turn.setText(Game.isWhiteTurn ? "White" : "Black");
+
+    }
+
     public static void statusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
-        if(turnReceived.equals("1")){
-            turnReceived = "White";
-        }else{
-            turnReceived = "Black";
-        }
-        activityGame.turn.setText(turnReceived);
-        activityGame.moveNumber.setText(moveNbReceived);
-        /*stateReceived.setText(stateReceived);
-        lastMoveReceived.setText(lastMoveReceived);*/
+        setMoveNumber(moveNbReceived);
+        setWhoseTurn(turnReceived);
     }
 
 }

@@ -150,7 +150,7 @@ public class ActivityGame extends AppCompatActivity {
         startActivity(setIntent);
 
     }
-/*
+
     @Override
     public void onDestroy()
     {
@@ -161,7 +161,7 @@ public class ActivityGame extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     private void handleTouch(MotionEvent event) {
         try {
@@ -185,7 +185,8 @@ public class ActivityGame extends AppCompatActivity {
         catch (Exception e) {
             //e.printStackTrace();
             Game.recoverFromError();
-            Utilities.messageBox("Error with view touch event", e.getMessage());
+            if (!e.getMessage().contains("Finger is out of bounds"))
+                Utilities.messageBox("Error with view touch event", e.getMessage());
         }
 
     }

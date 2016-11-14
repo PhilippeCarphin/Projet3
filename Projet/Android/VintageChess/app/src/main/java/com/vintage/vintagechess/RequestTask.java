@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 /**
@@ -41,8 +42,20 @@ class RequestTask extends AsyncTask<String, String, String> {
         // params comes from the execute() call: params[0] is the url.
        try {
             return downloadUrl("http://132.207.89." + args[0], args[1], args[2]);//urls[0]);
-        } catch (Exception e) {
-            return "ERROR";
+        }
+       catch (SocketTimeoutException e) {
+           //Utilities.messageBox("Timeout", "Resync in progress");
+           HttpRunner.runGetStatusBoard();
+           Utilities.printStackTrace(e);
+           return new String("DOWNLOAD URL " + e.getLocalizedMessage());
+           //Game.recoverFromError();
+       }
+       catch (Exception e) {
+           //Utilities.messageBox("Error while sending and receiving http response", e.getMessage());
+           Utilities.printStackTrace(e);
+           //Game.recoverFromError();
+           return new String("DOWNLOAD URL " + e.getLocalizedMessage());
+
         }
     }
     // onPostExecute displays the results of the AsyncTask.
@@ -52,13 +65,15 @@ class RequestTask extends AsyncTask<String, String, String> {
         //Utilities.messageBox("Get result", );
 
         try {
-            if (result == "ERROR") throw new Exception("Exception was thrown while running the http request");
-            callback.runResponse(result);
-        } catch (Exception e) {
-            if (Utilities.currentActivity.getClass().getSimpleName().equals("ActivityGame")) {
-                Game.handleMoveNotOk();
+            if (result != null) {
+                if (result.contains("DOWNLOAD URL ")) throw new Exception(result);
+                callback.runResponse(result);
             }
+        }
+        catch (Exception e) {
+            Utilities.printStackTrace(e);
             Utilities.messageBox("Error handling the http response", e.getMessage());
+            Game.recoverFromError();
         }
     }
 
@@ -70,8 +85,8 @@ class RequestTask extends AsyncTask<String, String, String> {
         //int len = 500;
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(5000 /* milliseconds */);
-        conn.setConnectTimeout(7000 /* milliseconds */);
+        conn.setReadTimeout(1000 /* milliseconds */);
+        conn.setConnectTimeout(1000 /* milliseconds */);
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);
@@ -86,8 +101,7 @@ class RequestTask extends AsyncTask<String, String, String> {
             wr.write(body);
             wr.flush();
         }
-         else if(method.equals("POST")){
-
+         else if (method.equals("POST")){
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
                 wr.write(ActivityCreateGame.password  + "\r\n\r\n");
                 wr.flush();
@@ -98,24 +112,20 @@ class RequestTask extends AsyncTask<String, String, String> {
         conn.connect();
 
         int responseCode = conn.getResponseCode();
+        String responseMessage = conn.getResponseMessage();
+        if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
         is = conn.getInputStream();
         int len = conn.getContentLength();
-        String responseMessage = conn.getResponseMessage();
         Log.d("Code " , String.valueOf(responseCode));
         Log.d("content length", "" + len);
         Log.d("Response message", responseMessage);
         String contentAsString = "";
-        if (responseCode != 200) throw new Exception(responseCode + " : " + responseMessage);
         if (receiveJSON) {
-            // Convert the InputStream into a string
             contentAsString = readIt(is, len);//readInputStreamToString(conn);
-            Log.d("HTTP GET", "The response is: " + contentAsString);
         }
 
         conn.disconnect();
         return contentAsString;
-
-
     }
 
 

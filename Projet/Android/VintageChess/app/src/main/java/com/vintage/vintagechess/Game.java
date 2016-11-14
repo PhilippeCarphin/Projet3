@@ -26,7 +26,7 @@ public class Game {
     public static Piece currentPiece;
     public static int leftSpace;
     public static String ip;
-    private static boolean isWhiteTurn = true;
+    public static boolean isWhiteTurn = true;
 
 
     public static Piece[][] pieces = new Piece[][] {
@@ -135,6 +135,14 @@ public class Game {
 
     public static void recoverFromError() {
         handleMoveNotOk();
+    }
+
+    public static void setConfig(LinkedList<Piece> newPieces) {
+        clearPieces();
+        for (Piece p : newPieces) {
+            pieces[p.p_.x][p.p_.y] = p;
+        }
+        Display.drawMotionlessPieces();
     }
 
     public static void clearPieces() {

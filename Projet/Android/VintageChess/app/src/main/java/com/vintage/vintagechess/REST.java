@@ -134,16 +134,11 @@ public class REST {
     }
 
 
-    public static void /*LinkedList<Piece>*/ getStatusBoard(String Status) throws JSONException {
-        Game.clearPieces();
-        String positionInBoard = "";
-        Log.d("Status",Status);
+    public static LinkedList<Piece> getStatusBoard(JSONObject jsonObject) throws JSONException {
 
-        JSONObject jsonObject = new JSONObject(Status);
-        //JSONArray pawn1 = jsonObject.getJSONArray("pawn1");
-        //JSONArray pawn2 = jsonObject.getJSONArray("pawn2");
-        //String turn = jsonObject.getString("turn");
-        //String moveNo = jsonObject.getString("move_no");
+
+        LinkedList<Piece> newConfig = new LinkedList<Piece>();
+
         String[] types1 = new String[] {"king", "queen"};
         String[] types2 = new String[] {"bishop", "rook", "knight"};
         String[] types8 = new String[] {"pawn"};
@@ -156,7 +151,7 @@ public class REST {
                 String position = jsonObject.getString(search);
                 if (!position.equals("xx")) {
                     Point p = Utilities.getGridCoordinates(position);
-                    Game.pieces[p.x][p.y] = new Piece(type, p.x, p.y, isWhite);
+                    newConfig.add(new Piece(type, p.x, p.y, isWhite));
                 }
             }
         }
@@ -168,7 +163,7 @@ public class REST {
                     String position = jsonObject.getString(search + (j == 0 ? "A" : "B"));
                     if (!position.equals("xx")) {
                         Point p = Utilities.getGridCoordinates(position);
-                        Game.pieces[p.x][p.y] = new Piece(type, p.x, p.y, isWhite);
+                        newConfig.add(new Piece(type, p.x, p.y, isWhite));
                     }
                 }
             }
@@ -183,49 +178,12 @@ public class REST {
                     String position = pawns.getString(j);
                     if (!position.equals("xx")) {
                         Point p = Utilities.getGridCoordinates(position);
-                        Game.pieces[p.x][p.y] = new Piece(type, p.x, p.y, isWhite);
+                        newConfig.add(new Piece(type, p.x, p.y, isWhite));
                     }
                 }
             }
         }
-
-        Display.drawFullBoard();
-//        int index1 = 0;
-//        int index2 = 0;
-//
-//        int [] verticals = {0, 1, 6, 7};
-//        for(int i= 0; i< 8; i++)
-//        {
-//            for(int j : verticals)
-//            {
-//                if(Game.pieces[i][j].type_.equals("pawn1"))
-//                {
-//                    //Log.d(Game.pieces[i][j].type_, (String) pawn1.get(index1++));
-//
-//                }else if( Game.pieces[i][j].type_.equals("pawn2"))
-//                {
-//                    // Log.d(Game.pieces[i][j].type_, (String) pawn1.get(index2++));
-//                }
-//                else
-//                {
-//                    positionInBoard = jsonObject.getString(Game.pieces[i][j].type_);
-//                    //Log.d(Game.pieces[i][j].type_, positionInBoard);
-//                }
-//
-//                // int x =  Integer.valueOf(positionInBoard.charAt(0)) - 97; // 97 cest le a dans la table ascii
-//                // int y = 8 - Integer.valueOf(positionInBoard.charAt(1)) + 48; // 48 cest la 1 dans la table ascii
-//                // SETER
-//                //Game.pieces[i][j].p_ = new Point(x,y);
-//            }
-//        }
-//
-//        /* TO DEBUG
-//        Log.d("turn", turn);
-//        Log.d("moveNo", moveNo);
-//        Log.d("pawn1", String.valueOf(pawn1));
-//        Log.d("pawn2", String.valueOf(pawn2));*/
-//        return String.valueOf(jsonObject);
-        return;
+        return newConfig;
     }
 
     public static String postStatusBoard() throws JSONException {
