@@ -22,7 +22,7 @@ public class ActivityGame extends AppCompatActivity {
     ImageView motionlessPieces;
     ImageView movingPiece;
     Space leftSpace;
-    TextView player1Name;
+    TextView player1Name, state;
     TextView player2Name;
     TextClock timerPlaye1;
     TextClock timerPlaye2;
@@ -31,6 +31,7 @@ public class ActivityGame extends AppCompatActivity {
     static TextView moveNumber;
     TextView location;
     private Button buttonEnd;
+    private Button buttonQuit;
     int radioButtonID;
     View radioButton;
     static int index;
@@ -38,7 +39,7 @@ public class ActivityGame extends AppCompatActivity {
     View radioButtonColor;
     RadioGroup RadioGroupSelectColorBoard;
     RadioGroup RadioGroupSelectStylePiece;
-    public static RadioButton radioButtonStyle1, radioButtonStyle2, radioButtonColorRed, radioButtonColorblue, radioButtonColorWood;
+    public static RadioButton radioButtonStyle1, radioButtonStyle2, radioButtonColorRed, radioButtonColorblue, radioButtonColorGreen;
 
     private static boolean gameStarted = false;
 
@@ -59,10 +60,12 @@ public class ActivityGame extends AppCompatActivity {
 
             radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
             radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
-            radioButtonColorWood = (RadioButton) findViewById(R.id.radioButtonWood);
+            radioButtonColorGreen = (RadioButton) findViewById(R.id.radioButtonGreen);
 
             Utilities.currentActivity = this;
             gameStarted = false;
+
+
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_game);
@@ -85,23 +88,13 @@ public class ActivityGame extends AppCompatActivity {
                 }
             });
 
-            /*selectStyle = (RadioGroup) findViewById(R.id.RadioGroupSelect);
-            selectStyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    handleRadioChange();
-                }
-            });
-            radioButtonID = selectStyle.getCheckedRadioButtonId();
-            radioButton = selectStyle.findViewById(radioButtonID);*/
-
 
             Display.board = board;
             Display.motionlessPieces = motionlessPieces;
             Display.movingPiece = movingPiece;
 
 
-
+            state = (TextView)  findViewById(R.id.State);
             player1Name = (TextView) findViewById(R.id.Player1Name);
             player2Name = (TextView) findViewById(R.id.Player2Name);
             location = (TextView) findViewById(R.id.LocationText);
@@ -137,9 +130,16 @@ public class ActivityGame extends AppCompatActivity {
              buttonEnd = (Button) findViewById(R.id.EndGameButton);
             buttonEnd.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    handleButtonClick();
+                    handleButtonEndClick();
                 }
             });
+
+            /*buttonQuit = (Button) findViewById(R.id.QuitGameButton);
+            buttonQuit.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //handleButtonQuitClick();
+                }
+            });*/
         }
         catch (Exception e) {
             Utilities.messageBox("Failed to create game", e.getMessage());
@@ -181,8 +181,8 @@ public class ActivityGame extends AppCompatActivity {
                 Display.whiteSquareColor = ColorBoard.whiteSquareColor;
                 break;
 
-            case R.id.radioButtonWood:
-                Display.blackSquareColor = ColorBoard.woodSquareColor;
+            case R.id.radioButtonGreen:
+                Display.blackSquareColor = ColorBoard.greenSquareColor;
                 Display.whiteSquareColor = ColorBoard.whiteSquareColor;
                 break;
         }
@@ -190,9 +190,13 @@ public class ActivityGame extends AppCompatActivity {
         Display.drawFullBoard();
     }
 
-    private void handleButtonClick() {
+    private void handleButtonEndClick() {
         try {
             HttpRunner.runPostGameEnd();
+            Intent setIntent = new Intent(this,ActivityMenu.class);
+            startActivity(setIntent);
+
+
         }
         catch (Exception e) {
             //e.printStackTrace();
@@ -208,7 +212,7 @@ public class ActivityGame extends AppCompatActivity {
         board.requestLayout();
         if (!gameStarted) {
             //Game.initializeGame();
-            //Utilities.messageBoxStartGame();
+            Utilities.messageBoxStartGame();
             gameStarted = true;
         }
         Display.drawFullBoard();
@@ -279,53 +283,6 @@ public class ActivityGame extends AppCompatActivity {
 
     }
 
-    private void handleRadioChange() {
-        try {
-            applyFilter(selectStyle);
-            changeStyle( radioButtonID, radioButton);
-            //Display.setBoardImg();
-            Display.drawFullBoard();
-        }
-        catch (Exception e) {
-            //e.printStackTrace();
-            Utilities.messageBox("Error with radio change", e.getMessage());
-        }
-    }
-
-    public static void applyFilter(RadioGroup selectStyle) {
-        for (int i = 0 ; i < selectStyle.getChildCount() ; i++) {
-            if ( i % 2 == 0) {
-                View tmpRadio = selectStyle.getChildAt(i);
-                //Log.d("", selectStyle.getChildCount()+"");
-                tmpRadio.getBackground().clearColorFilter();
-            }
-        }
-        int radioButtonID = selectStyle.getCheckedRadioButtonId();
-        View radioButton = selectStyle.findViewById(radioButtonID);
-        radioButton.getBackground().setColorFilter(android.graphics.Color.GRAY, PorterDuff.Mode.MULTIPLY);
-    }
-
-    public static void changeStyle(int radioButtonID, View radioButton) {
-
-        if (index % 2 == 0) {
-            Game.style = "1";
-        }
-        else {
-            Game.style = "2";
-        }
-        if (index / 2 == 0) {
-           // Display.blackSquareColor = ColorBoard.redSquareColor;
-           // Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-        }
-        else if (index / 2 == 1) {
-         //   Display.blackSquareColor = ColorBoard.blueSquareColor;
-           // Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-        }
-        else {
-           // Display.blackSquareColor = ColorBoard.woodSquareColor;
-            //Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-        }
-    }
 
 }
 

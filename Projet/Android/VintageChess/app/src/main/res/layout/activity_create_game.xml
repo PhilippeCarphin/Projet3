@@ -320,9 +320,9 @@
                     <RadioButton
                         android:layout_width="@dimen/config_button_width"
                         android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButtonWood"
+                        android:id="@+id/radioButtonGreen"
                         android:checked="false"
-                        android:text="wood" />
+                        android:text="green" />
                 </RadioGroup>
     </LinearLayout>
 

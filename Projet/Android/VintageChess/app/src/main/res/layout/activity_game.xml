@@ -27,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center">
-            <LinearLayout
+
+                <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
@@ -230,7 +231,28 @@
                     android:id="@+id/RoundText" />
 
             </LinearLayout>
-        </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0">
+
+                    <TextView
+                        android:text="State :"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textState"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:text=""
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/State"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -326,8 +348,8 @@
                             <RadioButton
                                 android:layout_width="@dimen/config_button_width"
                                 android:layout_height="@dimen/config_button_width"
-                                android:id="@+id/radioButtonWood"
-                                android:text="wood" />
+                                android:id="@+id/radioButtonGreen"
+                                android:text="green" />
                         </RadioGroup>
                     </LinearLayout>
                     </LinearLayout>
@@ -386,101 +408,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"/>
         </LinearLayout>
-
-        <!--<LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:layout_gravity="center">
-
-            <Button
-                android:text="End Game"
-                android:layout_width="158dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/EndGameButton"
-                android:layout_weight="1" />
-
-            <HorizontalScrollView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fillViewport="false"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1">
-
-                <RadioGroup
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/RadioGroupSelect">
-
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton"
-                        android:checked="true"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/red_square_with_style1" />
-
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton3"
-                        android:checked="true"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/red_square_with_style2" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton4"
-                        android:checked="true"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/blue_square_with_style1" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton5"
-                        android:checked="false"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/blue_square_with_style2" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton6"
-                        android:checked="false"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/wood_square_with_style1" />
-                    <Space
-                        android:layout_width="@dimen/distance_between_previews"
-                        android:layout_height="wrap_content" />
-                    <RadioButton
-                        android:layout_width="@dimen/config_button_width"
-                        android:layout_height="@dimen/config_button_width"
-                        android:id="@+id/radioButton7"
-                        android:checked="false"
-                        android:button = "@drawable/white"
-                        android:background="@drawable/wood_square_with_style2" />
-                </RadioGroup>
-            </HorizontalScrollView>
-
-        </LinearLayout>-->
-
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -491,7 +418,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"/>
-
         <Button
             android:text="End Game"
             android:layout_width="wrap_content"

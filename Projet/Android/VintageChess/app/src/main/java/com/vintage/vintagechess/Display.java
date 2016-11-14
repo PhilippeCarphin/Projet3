@@ -95,7 +95,7 @@ public class Display {
     //draws the pieces that are not selected in the appropriate board
     public static void drawMotionlessPieces() {
         //int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+          Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
         //boardImg.copy(boardImg.getConfig(), true);
         Canvas tempCanvas = new Canvas(imageAndroid);
         for(Piece[] array : Game.pieces) {
@@ -203,6 +203,9 @@ public class Display {
     public static void statusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
         setMoveNumber(moveNbReceived);
         setWhoseTurn(turnReceived);
+        //activityGame.state.setText(stateReceived);
+
+
     }
 
 }

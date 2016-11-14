@@ -72,7 +72,7 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         ActivityGame.radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
         ActivityGame.radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
-        ActivityGame.radioButtonColorWood = (RadioButton) findViewById(R.id.radioButtonWood);
+        ActivityGame.radioButtonColorGreen = (RadioButton) findViewById(R.id.radioButtonGreen);
 
         radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
@@ -121,6 +121,10 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
+        Display.blackSquareColor = ColorBoard.redSquareColor;
+        Display.whiteSquareColor = ColorBoard.whiteSquareColor;
+        Game.style = "2";
+
         RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
         RadioGroupModeTablette.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -128,15 +132,6 @@ public class ActivityCreateGame extends AppCompatActivity {
                 handleRadioChange();
             }
         });
-
-        /*radioButtonIDColor = RadioGroupSelectColorBoard.getCheckedRadioButtonId();
-        radioButtonColor = RadioGroupSelectColorBoard.findViewById(radioButtonIDColor);
-
-        radioButtonIDStyle = RadioGroupSelectStylePiece.getCheckedRadioButtonId();
-        radioButtonStyle = RadioGroupSelectStylePiece.findViewById(radioButtonIDStyle);
-
-        radioButtonIDMode = RadioGroupModeTablette.getCheckedRadioButtonId();
-        radioButtonMode = RadioGroupModeTablette.findViewById(radioButtonIDStyle);*/
 
         RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
         RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -154,9 +149,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
-        Display.blackSquareColor = ColorBoard.redSquareColor;
-        Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-        Game.style = "2";
+
 
         Callbacks.activityCreateGame = this;
     }
@@ -169,12 +162,10 @@ public class ActivityCreateGame extends AppCompatActivity {
         switch(selectedId) {
             case R.id.radioButtonStyle1:
                 Game.style = "1";
-                ActivityGame.radioButtonStyle1.setChecked(true);
                 break;
 
             case R.id.radioButtonStyle2:
                 Game.style = "2";
-                ActivityGame.radioButtonStyle2.setChecked(true);
                 break;
         }
     }
@@ -194,19 +185,16 @@ public class ActivityCreateGame extends AppCompatActivity {
             case R.id.radioButtonRed:
                 Display.blackSquareColor = ColorBoard.redSquareColor;
                 Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-                ActivityGame.radioButtonColorRed.setChecked(true);
                 break;
 
             case R.id.radioButtonBlue:
                 Display.blackSquareColor = ColorBoard.blueSquareColor;
                 Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-                ActivityGame.radioButtonColorblue.setChecked(true);
                 break;
 
-            case R.id.radioButtonWood:
-                Display.blackSquareColor = ColorBoard.woodSquareColor;
+            case R.id.radioButtonGreen:
+                Display.blackSquareColor = ColorBoard.greenSquareColor;
                 Display.whiteSquareColor = ColorBoard.whiteSquareColor;
-                ActivityGame.radioButtonColorWood.setChecked(true);
                 break;
         }
     }
@@ -231,12 +219,7 @@ public class ActivityCreateGame extends AppCompatActivity {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
 
-            //HttpRunner.runPostNewGame();
-            openGame();
-
-            /*****REST TEST*****/
-            //String newGame = rest.postNewGame();
-            //rest.getGameDetails(newGame);
+            HttpRunner.runPostNewGame();
 
         }
         catch (Exception e) {
