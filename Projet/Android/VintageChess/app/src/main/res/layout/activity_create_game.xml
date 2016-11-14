@@ -163,7 +163,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="12">
-
             <TextView
                 android:text="Password"
                 android:layout_width="wrap_content"
@@ -172,7 +171,6 @@
                 android:id="@+id/textPassword"
                 android:layout_gravity="center|left"
                 android:gravity="center|left"/>
-
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -182,7 +180,30 @@
                 android:id="@+id/editTextPassword"
                 android:layout_gravity="center|left"
                 android:layout_weight="1" />
+        </LinearLayout>
 
+        <!-- PICKING THE GAME Round -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12">
+            <TextView
+                android:text="Round"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/textRound"
+                android:layout_gravity="center|left"
+                android:gravity="center|left"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:ems="5"
+                android:id="@+id/editTextRound"
+                android:layout_gravity="center|left"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <!-- EN_PASSANT OPTION -->
@@ -198,7 +219,6 @@
             android:layout_weight="12"
             android:layout_gravity="center|left"
             android:gravity="center|left">
-
             <Switch
                 android:text="EnPassant option"
                 android:layout_width="wrap_content"
@@ -206,8 +226,105 @@
                 android:gravity="left"
                 android:id="@+id/switchEnPassant"
                 android:layout_weight="0.91" />
-
         </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="12">
+            <TextView
+                android:text="Piece style"
+                android:layout_height="wrap_content"
+                android:id="@+id/textPieceStyle"
+                android:layout_weight="1"
+                android:layout_gravity="center|left"
+                android:gravity="center|left"
+                android:layout_width="wrap_content" />
+            <RadioGroup
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:gravity="center|left"
+                android:id="@+id/RadioGroupForTypePiece"
+                android:layout_width="match_parent">
+                <Space
+                    android:layout_width="@dimen/distance_between_previews"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+                <RadioButton
+                    android:layout_width="@dimen/config_button_width"
+                    android:layout_height="@dimen/config_button_width"
+                    android:id="@+id/radioButtonStyle1"
+                    android:checked="false"
+                    android:text="Style 1"
+                    android:layout_weight="1"/>
+                <Space
+                    android:layout_width="@dimen/distance_between_previews"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+                <RadioButton
+                    android:layout_width="@dimen/config_button_width"
+                    android:layout_height="@dimen/config_button_width"
+                    android:id="@+id/radioButtonStyle2"
+                    android:checked="true"
+                    android:text="Style 2"
+                    android:layout_weight="1"/>
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="12">
+                <TextView
+                    android:text="Color board"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textSelectBoard"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|left"
+                    android:gravity="center|left"
+                    android:layout_width="wrap_content" />
+
+                <RadioGroup
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/RadioGroupBoardColor"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:layout_width="match_parent">
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                    <RadioButton
+                        android:layout_width="@dimen/config_button_width"
+                        android:layout_height="@dimen/config_button_width"
+                        android:id="@+id/radioButtonRed"
+                        android:checked="true"
+                        android:text="red"
+                        android:layout_weight="1"/>
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+                        android:layout_width="@dimen/config_button_width"
+                        android:layout_height="@dimen/config_button_width"
+                        android:id="@+id/radioButtonBlue"
+                        android:checked="false"
+                        android:text="blue"/>
+                    <Space
+                        android:layout_width="@dimen/distance_between_previews"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+                        android:layout_width="@dimen/config_button_width"
+                        android:layout_height="@dimen/config_button_width"
+                        android:id="@+id/radioButtonGreen"
+                        android:checked="false"
+                        android:text="green" />
+                </RadioGroup>
+    </LinearLayout>
 
         <!-- PICKING EACH PLAYER'S TIME -->
         <LinearLayout

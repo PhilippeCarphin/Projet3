@@ -1,28 +1,24 @@
 package com.vintage.vintagechess;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.shapes.RoundRectShape;
-import android.os.Handler;
+import android.graphics.drawable.BitmapDrawable;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Space;
 import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -34,7 +30,7 @@ public class ActivityGame extends AppCompatActivity {
     ImageView motionlessPieces;
     ImageView movingPiece;
     Space leftSpace;
-    TextView player1Name;
+    TextView player1Name, state;
     TextView player2Name;
     TextClock timerPlaye1;
     TextClock timerPlaye2;
@@ -43,6 +39,15 @@ public class ActivityGame extends AppCompatActivity {
     static TextView moveNumber;
     TextView location;
     private Button buttonEnd;
+    private Button buttonQuit;
+    int radioButtonID;
+    View radioButton;
+    static int index;
+    static View radioButtonStyle;
+    View radioButtonColor;
+    RadioGroup RadioGroupSelectColorBoard;
+    RadioGroup RadioGroupSelectStylePiece;
+    public static RadioButton radioButtonStyle1, radioButtonStyle2, radioButtonColorRed, radioButtonColorblue, radioButtonColorGreen;
 
     private static boolean gameStarted = false;
 
@@ -57,8 +62,19 @@ public class ActivityGame extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
+
+
+            radioButtonStyle1 = (RadioButton) findViewById(R.id.radioButtonStyle1);
+            radioButtonStyle2 = (RadioButton) findViewById(R.id.radioButtonStyle2);
+
+            radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
+            radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
+            radioButtonColorGreen = (RadioButton) findViewById(R.id.radioButtonGreen);
+
             Utilities.currentActivity = this;
             gameStarted = false;
+
+
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_game);
@@ -66,7 +82,9 @@ public class ActivityGame extends AppCompatActivity {
             board = (ImageView) findViewById(R.id.imageViewBoard);
             board.setImageResource(android.R.color.transparent);
 
+
             motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
+
             motionlessPieces.setImageResource(android.R.color.transparent);
 
             movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
@@ -81,19 +99,13 @@ public class ActivityGame extends AppCompatActivity {
                 }
             });
 
-            selectStyle = (RadioGroup) findViewById(R.id.RadioGroupSelect);
-            selectStyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    handleRadioChange();
-                }
-            });
-
 
             Display.board = board;
             Display.motionlessPieces = motionlessPieces;
             Display.movingPiece = movingPiece;
 
+
+            state = (TextView)  findViewById(R.id.State);
             player1Name = (TextView) findViewById(R.id.Player1Name);
             player2Name = (TextView) findViewById(R.id.Player2Name);
             location = (TextView) findViewById(R.id.LocationText);
@@ -107,12 +119,144 @@ public class ActivityGame extends AppCompatActivity {
             player2Name.setText(ActivityCreateGame.playerName2);
             location.setText(ActivityCreateGame.location);
             round.setText("Round : 0" );
+             //
+            // index = selectStyle.indexOfChild(radioButton)/2;
+
+            RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
+            RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
+                }
+            });
+
+            RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
+            RadioGroupSelectStylePiece.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
+                }
+            });
+
+             buttonEnd = (Button) findViewById(R.id.EndGameButton);
+            buttonEnd.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    handleButtonEndClick();
+                }
+            });
+
+            /*buttonQuit = (Button) findViewById(R.id.QuitGameButton);
+            buttonQuit.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    //handleButtonQuitClick();
+                }
+            });*/
         }
         catch (Exception e) {
             Utilities.messageBox("Failed to create game", e.getMessage());
         }
+    }
+
+    public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
+
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        // find the radiobutton by returned id
+        view = (RadioButton) findViewById(selectedId);
+
+        int count = radioGroup.getChildCount();
+        ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
+        for (int i=0;i<count;i++) {
+            View o = radioGroup.getChildAt(i);
+            if (o instanceof RadioButton) {
+                listOfRadioButtons.add((RadioButton)o);
+            }
+        }
+        int i = 0;
+        for (RadioButton r : listOfRadioButtons) {
+            r.setText("");
+            Bitmap imageAndroid = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas tempCanvas = new Canvas(imageAndroid);
+            int backColor = r.isChecked() ? getResources().getColor(R.color.colorAccent) : Color.TRANSPARENT;
+            Paint p = new Paint();
+            p.setColor(backColor);
+            tempCanvas.drawRect(0,0,tempCanvas.getHeight(), tempCanvas.getWidth(), p);
+            int frontColor = i == 0 ? BoardColors.greenSquareColor : (i == 1 ? BoardColors.blueSquareColor : BoardColors.redSquareColor);
+            p.setColor(frontColor);
+            tempCanvas.drawRect((int)(tempCanvas.getHeight()*0.1),(int)(tempCanvas.getHeight()*0.1), (int)(tempCanvas.getHeight()*0.9), (int)(tempCanvas.getHeight()*0.9), p);
+            r.setBackground(new BitmapDrawable(this.getResources(), imageAndroid));
+            i++;
+        }
+
+        switch(selectedId) {
+            case R.id.radioButtonStyle1:
+                Game.style = "1";
+                break;
+
+            case R.id.radioButtonStyle2:
+                Game.style = "2";
+                break;
+        }
+
+        Display.drawFullBoard();
+    }
+
+    private void handleRadioButtonBoardColorChange(RadioGroup radioGroup, View view) {
+
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        // find the radiobutton by returned id
+        radioButtonColor = (RadioButton) findViewById(selectedId);
+        int count = radioGroup.getChildCount();
+        ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
+        for (int i=0;i<count;i++) {
+            View o = radioGroup.getChildAt(i);
+            if (o instanceof RadioButton) {
+                listOfRadioButtons.add((RadioButton)o);
+            }
+        }
+        int i = 0;
+        for (RadioButton r : listOfRadioButtons) {
+            r.setText("");
+            Bitmap imageAndroid = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas tempCanvas = new Canvas(imageAndroid);
+            int backColor = r.isChecked() ? getResources().getColor(R.color.colorAccent) : Color.TRANSPARENT;
+            Paint p = new Paint();
+            p.setColor(backColor);
+            tempCanvas.drawRect(0,0,tempCanvas.getHeight(), tempCanvas.getWidth(), p);
+            int frontColor = i == 0 ? BoardColors.greenSquareColor : (i == 1 ? BoardColors.blueSquareColor : BoardColors.redSquareColor);
+            p.setColor(frontColor);
+            tempCanvas.drawRect((int)(tempCanvas.getHeight()*0.1),(int)(tempCanvas.getHeight()*0.1), (int)(tempCanvas.getHeight()*0.9), (int)(tempCanvas.getHeight()*0.9), p);
+            r.setBackground(new BitmapDrawable(this.getResources(), imageAndroid));
+            i++;
+        }
+        switch(selectedId) {
+            case R.id.radioButtonRed:
+                Display.blackSquareColor = BoardColors.redSquareColor;
+                break;
+
+            case R.id.radioButtonBlue:
+                Display.blackSquareColor = BoardColors.blueSquareColor;
+                break;
+
+            case R.id.radioButtonGreen:
+                Display.blackSquareColor = BoardColors.greenSquareColor;
+                break;
+        }
+
+        Display.drawFullBoard();
+    }
+
+    private void handleButtonEndClick() {
+        try {
+            HttpRunner.runPostGameEnd();
+            Intent setIntent = new Intent(this,ActivityMenu.class);
+            startActivity(setIntent);
 
 
+        }
+        catch (Exception e) {
+            //e.printStackTrace();
+            Utilities.messageBox("Error after pressing button", e.getMessage());
+        }
     }
 
     @Override
@@ -126,9 +270,12 @@ public class ActivityGame extends AppCompatActivity {
             Utilities.messageBoxStartGame();
             gameStarted = true;
         }
+        Display.drawFullBoard();
 
+        //handleRadioChange();
+        handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
+        handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
 
-        handleRadioChange();
         }
         catch (Exception e) {
             Utilities.messageBox("Failed to change focus", e.getMessage());
@@ -191,52 +338,6 @@ public class ActivityGame extends AppCompatActivity {
 
     }
 
-    private void handleRadioChange() {
-        try {
-            applyFilter();
-            changeStyle();
-            //Display.setBoardImg();
-            Display.drawFullBoard();
-        }
-        catch (Exception e) {
-            //e.printStackTrace();
-            Utilities.messageBox("Error with radio change", e.getMessage());
-        }
-    }
-
-    private void applyFilter() {
-        for (int i = 0 ; i < selectStyle.getChildCount() ; i++) {
-            if ( i % 2 == 0) {
-                View tmpRadio = selectStyle.getChildAt(i);
-                //Log.d("", selectStyle.getChildCount()+"");
-                tmpRadio.getBackground().clearColorFilter();
-            }
-        }
-        int radioButtonID = selectStyle.getCheckedRadioButtonId();
-        View radioButton = selectStyle.findViewById(radioButtonID);
-        radioButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
-    }
-
-    private void changeStyle() {
-        int radioButtonID = selectStyle.getCheckedRadioButtonId();
-        View radioButton = selectStyle.findViewById(radioButtonID);
-        int index = selectStyle.indexOfChild(radioButton)/2;
-        if (index % 2 == 0) {
-            Game.style = "1";
-        }
-        else {
-            Game.style = "2";
-        }
-        if (index / 2 == 0) {
-            Display.board_style = "red";
-        }
-        else if (index / 2 == 1) {
-            Display.board_style = "blue";
-        }
-        else {
-            Display.board_style = "wood";
-        }
-    }
 
 }
 

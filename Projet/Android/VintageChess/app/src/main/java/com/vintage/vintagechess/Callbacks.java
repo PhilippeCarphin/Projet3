@@ -21,6 +21,7 @@ public class Callbacks {
             public void runResponse(String response) {
                 Game.initializeVariables();
                 activityCreateGame.openGame();
+                Game.clearPieces();
             }
         };
         return ret;

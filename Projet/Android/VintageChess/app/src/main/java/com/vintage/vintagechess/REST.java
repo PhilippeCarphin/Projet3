@@ -29,10 +29,9 @@ public class REST {
         innerObject.put("limit",activityCreateGame.allowedTurns);
         innerObject.put("overtime",activityCreateGame.allowedTurns);
         innerObject.put("overtimeIncrement",activityCreateGame.allowedTurns);
-
         outerObject.put("player1",activityCreateGame.playerName1);
-        outerObject.put("player2","TODO");
-        outerObject.put("round","TODO");
+        outerObject.put("player2", activityCreateGame.playerName2);
+        outerObject.put("round",activityCreateGame.round);
         outerObject.put("location", activityCreateGame.location);
         outerObject.put("secret_code",activityCreateGame.password);
         outerObject.put("twoTablet", activityCreateGame.oneTablet);
