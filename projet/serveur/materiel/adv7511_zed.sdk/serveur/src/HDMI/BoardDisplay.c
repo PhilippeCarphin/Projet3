@@ -521,6 +521,8 @@ static int draw_move_number(u32 top, u32 left, int number)
  static int draw_move_notation(struct Move *mv)
  {
  	int move_number = (mv->turn_number + 1)/2;
+ 	char console_out[10] = {0};
+ 	char buff[5] = {0};
  	u32 cursor_top = bd.notation_top + (move_number + 1 ) * line_skip;
  	u32 cursor_left = bd.notation_left;
 
@@ -529,23 +531,35 @@ static int draw_move_number(u32 top, u32 left, int number)
  	 * Otherwise, move the cursor 9 positions to the right to draw the black
  	 * move.
  	 */
+
  	if( mv->c == WHITE)
  	{
  		draw_move_number(cursor_top, cursor_left, move_number);
+ 		sprintf(buff, "%d. ", move_number);
  		cursor_left += 5*char_width;
  	}
  	else
  	{
  		cursor_left += 10 * char_width;
+ 		sprintf(buff, "%d. ... ", move_number);
  	}
+ 	strcat(console_out, buff);
 
  	if( mv->castling)
  	{
+ 		char *castling_str;
  		if(mv->d_file == G)
- 			draw_string(cursor_top, cursor_left, "O-O");
+ 		{
+ 			castling_str = "O-O";
+ 		}
  		else
- 			draw_string(cursor_top, cursor_left, "O-O-O");
+ 		{
+ 			castling_str = "O-O-O";
+ 		}
 
+		draw_string(cursor_top, cursor_left, castling_str);
+		strcat(console_out, castling_str);
+		xil_printf(console_out);
  		return 0;
  	}
 
@@ -557,12 +571,18 @@ static int draw_move_number(u32 top, u32 left, int number)
  	 */
  	if(mv->t != PAWN)
  	{
- 		draw_char(cursor_top, cursor_left, getPieceChar(mv->t));
+ 		char type_c = getPieceChar(mv->t);
+ 		draw_char(cursor_top, cursor_left, type_c);
+ 		sprintf(buff, "%c", type_c);
  		cursor_left += char_width;
  	} else if (mv->capture){
  		draw_char(cursor_top, cursor_left, 'a' + mv->o_file);
  		cursor_left += char_width;
+ 		sprintf(buff, "%c", 'a' + mv->o_file);
+ 	} else {
+ 		buff[0] = '\0';
  	}
+ 	strcat(console_out, buff);
 
  	/*
  	 * If the move is a capture, we draw an 'x' between the char identifying
@@ -571,6 +591,7 @@ static int draw_move_number(u32 top, u32 left, int number)
 	if( mv->capture )
 	{
 		draw_char(cursor_top, cursor_left, 'x'); cursor_left += char_width;
+		strcat(console_out, "x");
 	}
 
 	/*
@@ -580,6 +601,10 @@ static int draw_move_number(u32 top, u32 left, int number)
  	char r = '1' + mv->d_rank;
  	draw_char(cursor_top, cursor_left, f); cursor_left += char_width;
  	draw_char(cursor_top, cursor_left, r); cursor_left += char_width;
+ 	sprintf(buff, "%c%c",f,r);
+ 	strcat(console_out, buff);
+
+ 	xil_printf("Move made (FIDE notation) %s\n", console_out);
 
  	return 0;
  }
