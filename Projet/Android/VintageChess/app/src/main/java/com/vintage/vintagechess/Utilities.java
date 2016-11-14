@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.TimePicker;
@@ -80,7 +81,7 @@ public class Utilities {
 
     public static Point getGridCoordinates(String boardCoordinates) {
         int x = boardCoordinates.charAt(0) - 97;
-        int y = boardCoordinates.charAt(1) - 48;
+        int y = boardCoordinates.charAt(1) - 47;
         return new Point(x, y);
     }
 

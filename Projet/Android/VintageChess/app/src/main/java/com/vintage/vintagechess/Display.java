@@ -3,9 +3,14 @@ package com.vintage.vintagechess;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.ImageView;
 
 /**
@@ -17,8 +22,12 @@ public class Display {
     public static ImageView motionlessPieces;
     public static ImageView movingPiece;
     public static double offset = 0.05133;
-    private static Bitmap boardImg;
+    //private static Bitmap boardImg;
     public static String board_style;
+    private static int blackSquareColor = Color.rgb(0xEE, 0xEE, 0xD2);
+    private static int whiteSquareColor = Color.rgb(0x76, 0x96, 0x56);
+    private static int borderColor = Color.rgb(0x95, 0x5C, 0x3E);
+    private static int numberColor = Color.WHITE;
 
 
     //draws the board and its pieces
@@ -32,7 +41,45 @@ public class Display {
 
         Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas tempCanvas = new Canvas(imageAndroid);
-        tempCanvas.drawBitmap(boardImg,0,0,null);
+        //tempCanvas.drawBitmap(boardImg,0,0,null);
+        //display the first square
+        Paint backPaint = new Paint();
+        backPaint.setColor(borderColor);
+        tempCanvas.drawRect(0, 0, board.getHeight(), board.getHeight(), backPaint);
+
+        //display the squares
+        for (int i = 0 ; i < 8 ; i++) {
+            for (int j = 0 ; j < 8 ; j++) {
+                int left = getPixelPosition(i);
+                int right = getPixelPosition(i+1);
+                int top = getPixelPosition(j);
+                int bottom = getPixelPosition(j+1);
+                int c = (((i + j) % 2) == 0) ? blackSquareColor : whiteSquareColor;
+                Paint squarePaint = new Paint();
+                squarePaint.setColor(c);
+
+                tempCanvas.drawRect((float)left, (float)top, (float)right, (float)bottom, squarePaint);
+            }
+        }
+
+        //display the numbers
+        //Paint numberPaint = new Paint();
+        //numberPaint.setTextAlign(Paint.Align.CENTER);
+        Paint numberPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        numberPaint.setColor(numberColor);
+        numberPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, Utilities.currentActivity.getResources().getDisplayMetrics()));
+        numberPaint.setTextAlign(Paint.Align.CENTER);
+        Paint.FontMetrics metric = numberPaint.getFontMetrics();
+        int textHeight = (int) Math.ceil(metric.descent - metric.ascent);
+        for (int i = 0 ; i < 8 ; i++) {
+            String charToDraw = String.valueOf((char)(i+65));
+            int x = getBoardOffset() + (int)(getSquareWidth() * (i + 0.5));
+            int y = (int)(textHeight - metric.descent) + getBoardOffset()/2 + (int)((numberPaint.descent() + numberPaint.ascent()) / 2);
+            tempCanvas.drawText(charToDraw, x, y, numberPaint);
+            y = y + 8*getSquareWidth() + getBoardOffset();
+            tempCanvas.drawText(charToDraw, x, y, numberPaint);
+        }
+        //tempCanvas.drawText("allo", 0, 0, numberPaint);
 
         board.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
 
@@ -100,9 +147,9 @@ public class Display {
     public static void setBoardImg() {
 
         int id = Utilities.currentActivity.getResources().getIdentifier(board_style + "_chess_board", "drawable", Utilities.currentActivity.getPackageName());
-        boardImg = BitmapFactory.decodeResource(Utilities.currentActivity.getResources(), id);
+        //boardImg = BitmapFactory.decodeResource(Utilities.currentActivity.getResources(), id);
         //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
-        boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
+        //boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
     }
 
 

@@ -115,7 +115,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextPlayer2Name.setEnabled(radioButton1.isChecked());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M) /* suggéré par android studio */
+    
     private void handleButtonClick() {
         try {
             oneTablet = radioButton2.isChecked();
