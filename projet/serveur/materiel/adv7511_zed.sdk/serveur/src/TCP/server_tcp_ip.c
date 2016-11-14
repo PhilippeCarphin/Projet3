@@ -121,11 +121,11 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 	xil_printf("\n===============================================================================\n");
 
-	xil_printf("Received request:\n%s\n", p->payload);
+	xil_printf("RECEIVED REQUEST :\n%s\n", p->payload);
 
 	HTTP_dispatchRequest(p->payload, HTTP_response);
 
-	xil_printf("Response:\n%s\n",HTTP_response);
+	xil_printf("RESPONSE SENT:\n%s\n",HTTP_response);
 
 	int len = strlen(HTTP_response);
 
