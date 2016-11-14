@@ -8,9 +8,8 @@ import org.json.JSONException;
 
 public class HttpRunner {
 
-    private static void runRequest(String suffix, String method, String body, RequestCallback callback, boolean receiveJSON) {
-        new RequestTask(callback, receiveJSON).execute(Game.ip + suffix, method, body);
-
+    private static void runRequest(final String suffix, final String method, final String body, final RequestCallback callback, final boolean receiveJSON) {
+        new RequestTask(callback, receiveJSON, Game.ip + suffix, method, body).execute();
     }
 
 

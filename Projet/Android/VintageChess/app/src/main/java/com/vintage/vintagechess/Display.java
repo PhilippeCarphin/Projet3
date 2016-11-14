@@ -62,7 +62,7 @@ public class Display {
                     c = Color.YELLOW;
                 }
                 else {
-                    c = (((i + j) % 2) == 0) ? blackSquareColor : whiteSquareColor;
+                    c = (((i + j) % 2) == 1) ? blackSquareColor : whiteSquareColor;
                 }
                 Paint squarePaint = new Paint();
                 squarePaint.setColor(c);
