@@ -83,7 +83,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetStatusBoardCallback();
-        runRequest(suffix, method, body, callback, false);
+        runRequest(suffix, method, body, callback, true);
     }
 
     public static void runGetGameDetails() {

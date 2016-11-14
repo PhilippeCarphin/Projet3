@@ -3,6 +3,9 @@ import android.support.v7.app.AppCompatActivity;
 import org.json.JSONException;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 
 /**
  * Created by User on 2016-11-10.
@@ -18,14 +21,8 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-                try {
-                    Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
-                    activityCreateGame.openGame();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-
-                }
+            Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
+            activityCreateGame.openGame();
             }
         };
         return ret;
@@ -35,7 +32,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-
+                HttpRunner.runGetStatusBoard();
             }
         };
         return ret;
@@ -55,15 +52,9 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) throws JSONException {
-                try {
-                    Log.d("Response", response);
-                    REST.handleMoveResponse(response);
-                    //Game.handleMoveOk("", "", "");
-                }
-                catch (Exception ex) {
-                    Game.handleMoveNotOk();
-                }
-
+                Log.d("Response", response);
+                REST.handleMoveResponse(response);
+                //Game.handleMoveOk("", "", "");
             }
         };
         return ret;
@@ -73,14 +64,6 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-
-                try {
-
-                    //Game.promote
-
-                }
-                catch (Exception ex) {
-                }
 
 
             }
@@ -109,11 +92,16 @@ public class Callbacks {
         return ret;
     }
 
-    public static RequestCallback getGetStatusBoardCallback() {
+    public static RequestCallback getGetStatusBoardCallback()  {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-
+                try {
+                    REST.getStatusBoard(response);
+                }
+                catch (Exception e) {
+                    Utilities.messageBox("failed handling json", e.getMessage());
+                }
             }
         };
         return ret;
