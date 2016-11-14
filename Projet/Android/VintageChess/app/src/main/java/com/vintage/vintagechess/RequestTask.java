@@ -85,8 +85,8 @@ class RequestTask extends AsyncTask<String, String, String> {
         //int len = 500;
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(1000 /* milliseconds */);
-        conn.setConnectTimeout(1000 /* milliseconds */);
+        conn.setReadTimeout(15000 /* milliseconds */);
+        conn.setConnectTimeout(7000 /* milliseconds */);
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);
@@ -117,7 +117,7 @@ class RequestTask extends AsyncTask<String, String, String> {
         is = conn.getInputStream();
         int len = conn.getContentLength();
         Log.d("Code " , String.valueOf(responseCode));
-        Log.d("content length", "" + len);
+        Log.d("Content length", "" + len);
         Log.d("Response message", responseMessage);
         String contentAsString = "";
         if (receiveJSON) {

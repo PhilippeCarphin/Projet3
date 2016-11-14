@@ -23,8 +23,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-            Log.d("response callback ", "\n\n\n\n" +response +"\n\n\n\n");
-            activityCreateGame.openGame();
+                activityCreateGame.openGame();
             }
         };
         return ret;
@@ -54,7 +53,6 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) throws JSONException {
-                Log.d("Response", response);
                 REST.handleMoveResponse(response);
             }
         };
