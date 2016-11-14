@@ -85,8 +85,8 @@ class RequestTask extends AsyncTask<String, String, String> {
         //int len = 500;
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(15000 /* milliseconds */);
-        conn.setConnectTimeout(7000 /* milliseconds */);
+        conn.setReadTimeout(4000 /* milliseconds */);
+        conn.setConnectTimeout(4000 /* milliseconds */);
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);

@@ -61,6 +61,10 @@ public class Game {
         Log.d("down", downPos.x+" "+downPos.y);
         if (downPos != null) {
             currentPiece = getPieceOnCell(downPos);
+            if (currentPiece.isWhite_ != isWhiteTurn) {
+                currentPiece = null;
+                downPos = null;
+            }
         }
         if (currentPiece != null) {
             pieces[downPos.x][downPos.y] = null;
