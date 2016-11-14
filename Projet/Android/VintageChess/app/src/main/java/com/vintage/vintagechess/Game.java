@@ -110,6 +110,8 @@ public class Game {
             }
             pieces[currentPiece.p_.x][currentPiece.p_.y] = currentPiece;
             isWhiteTurn = !isWhiteTurn;
+            Display.lastPos = downPos;
+            Display.newPos = currentPiece.p_;
         }
         finishMove();
         HttpRunner.runGetStatusSummary();
@@ -128,7 +130,7 @@ public class Game {
         downPos = null;
         lastPos = null;
         currentPiece = null;
-        Display.drawMotionlessPieces();
+        Display.drawFullBoard();
         Display.drawMovingPiece();
         Display.unBlockBoard();
     }

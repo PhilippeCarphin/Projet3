@@ -29,6 +29,8 @@ public class Display {
     private static int borderColor = Color.rgb(0x95, 0x5C, 0x3E);
     private static int numberColor = Color.WHITE;
     public static ActivityGame activityGame;
+    public static Point lastPos;
+    public static Point newPos;
 
     //draws the board and its pieces
     public static void drawFullBoard() {
@@ -52,15 +54,23 @@ public class Display {
             for (int j = 0 ; j < 8 ; j++) {
                 int left = getPixelPosition(i);
                 int right = getPixelPosition(i+1);
-                int top = getPixelPosition(j);
-                int bottom = getPixelPosition(j+1);
-                int c = (((i + j) % 2) == 0) ? blackSquareColor : whiteSquareColor;
+                int top = getPixelPosition(7-j);
+                int bottom = getPixelPosition(7-j+1);
+                int c;
+
+                if ((lastPos != null && newPos != null) &&((i == lastPos.x && j == lastPos.y) || (i == newPos.x && j == newPos.y))) {
+                    c = Color.YELLOW;
+                }
+                else {
+                    c = (((i + j) % 2) == 0) ? blackSquareColor : whiteSquareColor;
+                }
                 Paint squarePaint = new Paint();
                 squarePaint.setColor(c);
 
                 tempCanvas.drawRect((float)left, (float)top, (float)right, (float)bottom, squarePaint);
             }
         }
+
 
         //display the numbers
         Paint numberPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
