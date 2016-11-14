@@ -3,7 +3,6 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
-#define DEBUG
 #include "debug.h"
 #include "cf_hdmi.h"
 
@@ -122,10 +121,16 @@ int BoardDisplay_init()
 /******************************************************************************
  * Display the welcome screen.
 ******************************************************************************/
+extern u32 ip_last_byte;
 int BoardDisplay_welcome_screen()
 {
 	set_background_color(BACKGROUND);
 	draw_string(100,100,readme);
+
+	char ip_string_buffer[100] = {0};
+	sprintf(ip_string_buffer, "Server is running on ip : 132.207.89.%lu", ip_last_byte);
+	draw_string(400,100,ip_string_buffer);
+
 	cf_hdmi_send_buffer();
 	return 0;
 }

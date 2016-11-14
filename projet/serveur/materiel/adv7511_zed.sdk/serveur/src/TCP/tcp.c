@@ -52,16 +52,21 @@ int initialiseServer(struct ip_addr *ipaddr,struct ip_addr *netmask,struct ip_ad
 		return 0;
 }
 
+// ONLY CHANGE HERE FOR IP ADDRESS LAST BYTE
+u32 ip_last_byte = 28;
+
 int init_TCP()
 {
 	struct ip_addr ipaddr, netmask, gw;
 
+	u8 ip_hex_char = (16*(ip_last_byte/10) + (ip_last_byte%10));
 	/* the mac address of the board. this should be unique per board */
 	unsigned char mac_ethernet_address[] =
-	{ 0x00, 0x18, 0x3e, 0x00, 0x00, 0x21 };
+	{ 0x00, 0x18, 0x3e, 0x00, 0x00, 0x28 };
+	mac_ethernet_address[5] = ip_hex_char;
 
 	/* initlize IP addresses to be used */
-	IP4_ADDR(&ipaddr,  132, 207, 89, 21);
+	IP4_ADDR(&ipaddr,  132, 207, 89, ip_last_byte);
 	IP4_ADDR(&netmask, 255, 255, 255,  0);
 	IP4_ADDR(&gw,      132, 207, 89,  1);
 
