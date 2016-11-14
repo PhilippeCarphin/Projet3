@@ -22,7 +22,7 @@ int BoardDisplay_init();
  ******************* Chessboard drawing functions *****************************
 ******************************************************************************/
 
-/* NOTE: All interface functions send the buffer to the screen over HDMI.
+/* NOTE: All interface functions send the buffer to the screen over HDMI.*/
 
 /******************************************************************************
  * Displays a fresh board with pieces setup and game information.  Since the 

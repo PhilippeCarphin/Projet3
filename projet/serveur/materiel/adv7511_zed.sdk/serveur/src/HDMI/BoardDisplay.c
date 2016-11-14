@@ -74,7 +74,7 @@ static int first_move = 1;
 ******************************************************************************/
 static int draw_information(GameInfo *gi);
 static int draw_turn(PieceColor c);
-static int update_times(struct PlayerTimes *pt);
+// static int update_times(struct PlayerTimes *pt);
 static int draw_piece(PieceType type, PieceColor color, File file, Rank rank);
 static int color_square(File file, Rank rank, u32 color);
 static int clear_square(File file, Rank rank);
@@ -93,7 +93,7 @@ static int load_bitmap_files();
 static int draw_char(u32 screen_top, u32 screen_left, char c);
 static int draw_string(u32 screen_top, u32 screen_left, char *str);
 static u32 getPieceOffset(PieceType p);
-static int test_move_piece();
+// static int test_move_piece();
 
 
 
@@ -150,8 +150,9 @@ int BoardDisplay_new_board(GameInfo *gi)
 ******************************************************************************/
 int BoardDisplay_start_game()
 {
-	draw_turn(WHITE);
+	if(draw_turn(WHITE) != 0) return -1;
 	cf_hdmi_send_buffer();
+	return 0;
 }
 
 /******************************************************************************
@@ -805,6 +806,7 @@ static u32 getPieceOffset(PieceType p)
 	}
 }
 
+#if 0
 static int test_move_piece()
 {
 	static int t = 1;
@@ -923,3 +925,4 @@ static int test_move_piece()
 
 	return 0;
 }
+#endif
