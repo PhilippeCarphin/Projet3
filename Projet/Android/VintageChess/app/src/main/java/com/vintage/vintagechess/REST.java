@@ -16,7 +16,8 @@ import java.util.LinkedList;
 
 public class REST {
 
-    private static ActivityCreateGame activityGame;// = new ActivityCreateGame();
+    private static ActivityCreateGame activityCreateGame;// = new ActivityCreateGame();
+    private static ActivityGame activityGame;
 
     public static String postNewGame() throws JSONException {
 
@@ -24,19 +25,19 @@ public class REST {
         JSONObject outerObject = new JSONObject();
         JSONObject innerObject = new JSONObject();
 
-        innerObject.put("time",activityGame.normalTime);
-        innerObject.put("increment",activityGame.timePerPlay);
-        innerObject.put("limit",activityGame.allowedTurns);
-        innerObject.put("overtime",activityGame.allowedTurns);
-        innerObject.put("overtimeIncrement",activityGame.allowedTurns);
+        innerObject.put("time",activityCreateGame.normalTime);
+        innerObject.put("increment",activityCreateGame.timePerPlay);
+        innerObject.put("limit",activityCreateGame.allowedTurns);
+        innerObject.put("overtime",activityCreateGame.allowedTurns);
+        innerObject.put("overtimeIncrement",activityCreateGame.allowedTurns);
 
-        outerObject.put("player1",activityGame.playerName1);
+        outerObject.put("player1",activityCreateGame.playerName1);
         outerObject.put("player2","TODO");
         outerObject.put("round","TODO");
-        outerObject.put("location", activityGame.location);
-        outerObject.put("secret_code",activityGame.password);
-        outerObject.put("twoTablet", activityGame.oneTablet);
-        outerObject.put("enPassant", activityGame.enPassantOption);
+        outerObject.put("location", activityCreateGame.location);
+        outerObject.put("secret_code",activityCreateGame.password);
+        outerObject.put("twoTablet", activityCreateGame.oneTablet);
+        outerObject.put("enPassant", activityCreateGame.enPassantOption);
         outerObject.put("timerFormat", innerObject);
 
         //Log.d("NewGame : ", String.valueOf(outerObject));
@@ -73,8 +74,8 @@ public class REST {
     public static void getStatusSummary(String Status) throws JSONException {
 
         JSONObject jsonObject = new JSONObject(Status);
-        Integer turn = jsonObject.getInt("turn");
-        Integer moveNo = jsonObject.getInt("moveNo");
+        String turn = jsonObject.getString("turn");
+        String moveNo = jsonObject.getString("moveNo");
         String lastMove = jsonObject.getString("lastMove");
         String state = jsonObject.getString("state");
 
@@ -82,6 +83,8 @@ public class REST {
         Log.d("moveNo : ", String.valueOf(moveNo));
         Log.d("lastMove : ",lastMove);
         Log.d("state : ",state);
+
+        Display.statusSummary(turn, moveNo, lastMove, state);
 
     }
 

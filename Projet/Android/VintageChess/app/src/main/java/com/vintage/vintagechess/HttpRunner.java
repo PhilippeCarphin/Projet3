@@ -10,6 +10,7 @@ public class HttpRunner {
 
     private static void runRequest(String suffix, String method, String body, RequestCallback callback, boolean receiveJSON) {
         new RequestTask(callback, receiveJSON).execute(Game.ip + suffix, method, body);
+
     }
 
 
@@ -74,7 +75,7 @@ public class HttpRunner {
         String method = "GET";
         String body = ""; //aller chercher le json
         RequestCallback callback = Callbacks.getGetStatusSummaryCallback();
-        runRequest(suffix, method, body, callback, false);
+        runRequest(suffix, method, body, callback, true);
     }
 
     public static void runGetStatusBoard() {

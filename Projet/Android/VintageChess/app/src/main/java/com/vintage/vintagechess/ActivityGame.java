@@ -39,8 +39,8 @@ public class ActivityGame extends AppCompatActivity {
     TextClock timerPlaye1;
     TextClock timerPlaye2;
     TextView round;
-    TextView turn;
-    TextView moveNumber;
+    static TextView turn;
+    static TextView moveNumber;
     TextView location;
     private Button buttonEnd;
 
@@ -66,7 +66,7 @@ public class ActivityGame extends AppCompatActivity {
         board = (ImageView) findViewById(R.id.imageViewBoard);
         board.setImageResource(android.R.color.transparent);
 
-        motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
+          motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
         motionlessPieces.setImageResource(android.R.color.transparent);
 
         movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
@@ -101,8 +101,8 @@ public class ActivityGame extends AppCompatActivity {
         timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
         timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
         round = (TextView) findViewById(R.id.RoundText);
-        turn = (TextView) findViewById(R.id.TurnText);
-        moveNumber = (TextView) findViewById(R.id.MoveNumberText);
+        turn = (TextView) findViewById(R.id.CurrentPlayer);
+        moveNumber = (TextView) findViewById(R.id.MoveNumber);
         player1Name.setText(ActivityCreateGame.playerName1);
         player2Name.setText(ActivityCreateGame.playerName2);
         location.setText(ActivityCreateGame.location);
@@ -150,7 +150,7 @@ public class ActivityGame extends AppCompatActivity {
         startActivity(setIntent);
 
     }
-
+/*
     @Override
     public void onDestroy()
     {
@@ -161,7 +161,7 @@ public class ActivityGame extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void handleTouch(MotionEvent event) {
         try {
@@ -236,7 +236,6 @@ public class ActivityGame extends AppCompatActivity {
             Display.board_style = "wood";
         }
     }
-
 
 }
 
