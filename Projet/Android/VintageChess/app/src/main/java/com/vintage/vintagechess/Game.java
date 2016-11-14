@@ -67,10 +67,12 @@ public class Game {
                 currentPiece = null;
                 downPos = null;
             }
-            pieces[downPos.x][downPos.y] = null;
-            Log.d("Selected piece", currentPiece.type_);
-            Display.drawMotionlessPieces();
-            Display.drawMovingPiece();
+            else {
+                pieces[downPos.x][downPos.y] = null;
+                Log.d("Selected piece", currentPiece.type_);
+                Display.drawMotionlessPieces();
+                Display.drawMovingPiece();
+            }
         }
     }
 
