@@ -119,6 +119,8 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 	char HTTP_response[1000];
 
+	xil_printf("\n===============================================================================\n");
+
 	xil_printf("Received request:\n%s\n", p->payload);
 
 	HTTP_dispatchRequest(p->payload, HTTP_response);
