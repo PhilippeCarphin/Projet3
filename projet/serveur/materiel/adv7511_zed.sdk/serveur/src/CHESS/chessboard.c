@@ -1,12 +1,22 @@
 #include "chessboard.h"
+#include "BoardDisplay.h"
+#include "debug.h"
+
 #include <string.h>
 #include "xil_io.h"
-#include "debug.h"
-#include "BoardDisplay.h"
-//player1 pieces
 
+/******************************************************************************
+ * Structures and global variables
+ ******************************************************************************/
+static GameInfo currentGameInfo;
+static TurnInfo currentTurnInfo;
 
+static Piece* boardGame[8][8];
+static Piece player1Pieces[16];
+static Piece player2Pieces[16];
 
+static bool gameStarted = false;
+static bool player1Turn = true;
 
 enum moveResult{
 	VALID,
@@ -14,121 +24,27 @@ enum moveResult{
 	ENPASSANT,
 	CASTLING
 };
-enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd); // defined at the end of the file but used before then.
 
-static Piece* boardGame[8][8];
-static Piece player1Pieces[16];
-static Piece player2Pieces[16];
+/******************************************************************************
+ * Declarations of internal functions
+ ******************************************************************************/
+static void ChessGameInitialisation();
+static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID);
+static void setBoard(Piece* playerPieces);
+static void clearBoard();
 
-static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
-{
-	Piece piece;
-	piece.pieceType = type;
-	piece.alive = true;
-	piece.x = x;
-	piece.y = y;
-	piece.enPassant = false;
-	piece.rock = 0;
-	piece.playerID = playerID;
-	return piece;
-}
+static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
+static enum moveResult move_king(int xs, int xd, int ys, int yd);
+static enum moveResult move_rook(int xs, int xd, int ys, int yd);
+static enum moveResult move_bishop(int xs, int xd, int ys, int yd);
+static enum moveResult move_knight(int xs, int xd, int ys, int yd);
+static enum moveResult move_queen(int xs, int xd, int ys, int yd);
+static enum moveResult move_pawn(int xs, int xd, int ys, int yd);
 
-//game bools
-static bool gameStarted = false;
-static bool player1Turn = true;
-
-//structs
-
-static GameInfo currentGameInfo;
-static TurnInfo currentTurnInfo;
-
-enum ChessboardRestStatus validate_password(const char *pswd)
-{
-	if (strcmp(currentGameInfo.secret_code, pswd) != 0)
-	{
-		return unathorized;
-	}
-	return OK;
-}
-
-void setBoard(Piece* playerPieces)
-{
-	int i = 0;
-	// place P1 pieces on the board
-	for (i = 0; i < 16; i++)
-	{
-		boardGame[playerPieces[i].x][playerPieces[i].y] = &playerPieces[i];
-	}
-}
-
-void clearBoard()
-{
-	int i = 0;
-	for (i = 0; i < 8;i++)
-	{
-		int j = 0;
-		for (j = 0; j < 8; j++)
-		{
-			boardGame[i][j] = 0; // TODO MAKE NULL
-		}
-	}
-}
-
-static void ChessGameInitialisation()
-{
-	// we clear the board
-	clearBoard();
-	
-	// we initialize the pieces of the first players
-	player1Pieces[0] = PieceInitialisation(4,0,KING,player1);
-	player1Pieces[1] = PieceInitialisation(3,0,QUEEN,player1);
-	player1Pieces[2] = PieceInitialisation(2,0,BISHOP,player1);
-	player1Pieces[3] = PieceInitialisation(5,0,BISHOP,player1);
-	player1Pieces[4] = PieceInitialisation(0,0,ROOK,player1);
-	player1Pieces[5] = PieceInitialisation(7,0,ROOK,player1);
-	player1Pieces[6] = PieceInitialisation(1,0,KNIGHT,player1);
-	player1Pieces[7] = PieceInitialisation(6,0,KNIGHT,player1);
-	player1Pieces[8] = PieceInitialisation(0,1,PAWN,player1);
-	player1Pieces[9] = PieceInitialisation(1,1,PAWN,player1);
-	player1Pieces[10] = PieceInitialisation(2,1,PAWN,player1);
-	player1Pieces[11] = PieceInitialisation(3,1,PAWN,player1);
-	player1Pieces[12] = PieceInitialisation(4,1,PAWN,player1);
-	player1Pieces[13] = PieceInitialisation(5,1,PAWN,player1);
-	player1Pieces[14] = PieceInitialisation(6,1,PAWN,player1);
-	player1Pieces[15] = PieceInitialisation(7,1,PAWN,player1);
-	
-	// place P1 pieces on the board
-	setBoard(player1Pieces);
-
-	// we initialize the pieces for the second player
-	player2Pieces[0] = PieceInitialisation(4,7,KING,player2);
-	player2Pieces[1] = PieceInitialisation(3,7,QUEEN,player2);
-	player2Pieces[2] = PieceInitialisation(2,7,BISHOP,player2);
-	player2Pieces[3] = PieceInitialisation(5,7,BISHOP,player2);
-	player2Pieces[4] = PieceInitialisation(0,7,ROOK,player2);
-	player2Pieces[5] = PieceInitialisation(7,7,ROOK,player2);
-	player2Pieces[6] = PieceInitialisation(1,7,KNIGHT,player2);
-	player2Pieces[7] = PieceInitialisation(6,7,KNIGHT,player2);
-	player2Pieces[8] = PieceInitialisation(0,6,PAWN,player2);
-	player2Pieces[9] = PieceInitialisation(1,6,PAWN,player2);
-	player2Pieces[10] = PieceInitialisation(2,6,PAWN,player2);
-	player2Pieces[11] = PieceInitialisation(3,6,PAWN,player2);
-	player2Pieces[12] = PieceInitialisation(4,6,PAWN,player2);
-	player2Pieces[13] = PieceInitialisation(5,6,PAWN,player2);
-	player2Pieces[14] = PieceInitialisation(6,6,PAWN,player2);
-	player2Pieces[15] = PieceInitialisation(7,6,PAWN,player2);
-	
-	// place P2 pieces on the board
-	setBoard(player2Pieces);
-	player1Turn = true;
-	currentTurnInfo.game_status = NORMAL;
-	currentTurnInfo.last_move[0] = 'x';
-	currentTurnInfo.last_move[1] = 'x';
-	currentTurnInfo.move_no = 1;
-	currentTurnInfo.turn = player1;
-}
-
-
+/******************************************************************************
+ * Copy the received game informations into internal structure and
+ * initialize the game. Display the chessboard in its standard state.
+ ******************************************************************************/
 enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 {
 	if (gameStarted)
@@ -140,16 +56,118 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 		currentGameInfo = *gameInfo;
 		ChessGameInitialisation();
 		BoardDisplay_new_board(&currentGameInfo);
-		return OK;	
+		return OK;
 	}
 
 }
 
+/******************************************************************************
+ * Set gameStarted to true and inform the HDMI module.
+ ******************************************************************************/
+enum ChessboardRestStatus start_game()
+{
+	if (gameStarted)
+	{
+		return gameInProgress;
+	}
 
+	gameStarted = true;
+	BoardDisplay_start_game();
+	return OK;
+}
+
+/******************************************************************************
+ * Return to initial state: sets gameStarted to false and display the
+ * welcome screen.
+******************************************************************************/
+enum ChessboardRestStatus end_game()
+{
+	FBEGIN;
+	if (!gameStarted)
+	{
+		return unathorized;
+	}
+	gameStarted = false;
+	BoardDisplay_welcome_screen();
+	return OK;
+}
+
+/******************************************************************************
+ * Set the chessboard to a custom piece configuration.
+ * Immediately display on screen.
+ ******************************************************************************/
+enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
+{
+	/* clear the board */
+	ChessGameInitialisation();
+	clearBoard();
+
+	/* set player 1 pieces:
+	 * 	- their aliveness
+	 * 	- their position (if alive)
+	 */
+	int i= 0;
+	for (i = 0; i < 16; i++)
+	{
+		if (boardPosition->positions[i][0] == 'x')
+		{
+			player1Pieces[i].alive = false;
+		}
+		else
+		{
+			player1Pieces[i].alive = true;
+			player1Pieces[i].x  = boardPosition->positions[i][0] - 'a';
+			player1Pieces[i].y  = boardPosition->positions[i][1] - '1';
+		}
+
+	}
+
+	/* set player 2 pieces (same as with player 1) */
+	for (i = 16; i < 32; i++)
+	{
+		if (boardPosition->positions[i][0] == 'x')
+		{
+			player2Pieces[i-16].alive = false;
+		}
+		else
+		{
+			player2Pieces[i-16].alive = true;
+			player2Pieces[i-16].x = boardPosition->positions[i][0] - 'a';
+			player2Pieces[i-16].y = boardPosition->positions[i][1] - '1';
+		}
+	}
+
+
+	/* set the board with the now set pieces
+	 * (set individually for each player)
+	 */
+	setBoard(player1Pieces);
+	setBoard(player2Pieces);
+
+	/* initialize run informations */
+	currentTurnInfo.turn = boardPosition->turn;
+	currentTurnInfo.move_no = boardPosition->move_no;
+
+	/* display newly set board on HDMI */
+	if (BoardDisplay_draw_pieces_custom(player1Pieces,player2Pieces) != 0)
+	{
+		xil_printf("Error in HDMI restSetBoard");
+	}
+	return OK;
+
+}
+
+/******************************************************************************
+ * Valid a player's move and, if successful, updates the chessboard accordingly.
+ * Display the change on screen.
+ *
+ * This is the logic core of the program, where most of the actual decisions
+ * are made.
+ ******************************************************************************/
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
-	struct Move mv; // infos for BoardDisplay/HDMI
-	mv.enPassant = false;
+	struct Move mv; 		// infos for BoardDisplay/HDMI
+	mv.enPassant = false;	// set to true only if a piece is captured by En Passant
 
 	// check if it's the player turn
 	if (player != currentTurnInfo.turn)
@@ -162,20 +180,21 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	int ys = src[1]-'1'; // y of source position
 	int xd = dst[0]-'a'; // x of destination
 	int yd = dst[1]-'1'; // y of destination
+
+	// Look for easy-to-find illegal moves.
 	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
 		return deplacementIllegal; // out of the board
-
 	if (boardGame[xs][ys] == 0)
 		return deplacementIllegal; // no piece here
-
 	if (xs == xd && ys == yd)
 		return deplacementIllegal; // not moving
-
-	Piece *piece = boardGame[xs][ys];
-
-	if (piece->playerID != player)
+	if (boardGame[xs][ys]->playerID != player)
 		return deplacementIllegal; // opponent piece
 
+	// Ok, ok, seems fine.
+	// Now, look for piece-specific illegal moves.
+	// Find out if there is a castling or en passant situation, while you're at it.
+	Piece *piece = boardGame[xs][ys];
 	switch(execute_move(piece, xs, xd, ys, yd))
 	{
 	case ILLEGAL:
@@ -187,8 +206,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	case ENPASSANT:
 		boardGame[xd][ys]->alive = false; // special capture using ys instead of yd +/- 1
 		boardGame[xd][ys] = 0; // special cleaning
+
+		// specify which piece is eliminated
 		moveInfo->piece_eliminated[0] = xd + 'a';
 		moveInfo->piece_eliminated[1] = ys + '1';
+
+		// tell HDMI that a piece was captured through en passant
 		mv.enPassant = true;
 		break;
 
@@ -199,8 +222,8 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		return NOT_IMPLEMENTED;
 	}
 
-
-	if (boardGame[xd][yd] != 0)
+	// If we made it this far, the move is valid (for now).
+	if (boardGame[xd][yd] != 0)	// a piece is captured
 	{
 		if (boardGame[xd][yd]->playerID == player)
 			return deplacementIllegal; // capturing allied piece
@@ -208,32 +231,33 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		moveInfo->piece_eliminated[0] = xd + 'a';
 		moveInfo->piece_eliminated[1] = yd + '1';
 	}
-	else
+	else // no piece is captured
 	{
 		moveInfo->piece_eliminated[0] = 'x';
 		moveInfo->piece_eliminated[1] = 'x';
 	}
-	// we dont check for promotion right now
 
-	//setboard position
+	// TODO: check for promotion
+	// TODO: check for check, checkmate, stalemate
 
+	// ACTUALLY move the piece
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
 	boardGame[xd][yd]->x = xd;
 	boardGame[xd][yd]->y = yd;
 
 	// increment turn, change player turn, time stuff
-
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
-	currentTurnInfo.game_status = NORMAL; // FOR NOW
+
+	// TODO: change these values according to promotion and state
+	currentTurnInfo.game_status = NORMAL;
 	moveInfo->game_status = NORMAL;
 	moveInfo->promotion = false;
 
 	//call HDMI draw functions
-
 	mv.t = boardGame[xd][yd]->pieceType;
 	mv.c = (boardGame[xd][yd]->playerID == player1) ? WHITE : BLACK;
 	mv.o_file = xs;
@@ -244,30 +268,55 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
 	BoardDisplay_move_piece(&mv);
 
-	//check for stalemate, checkmate,
-	// not implemented
-
 	return OK;
 }
 
+/******************************************************************************
+ * Change a pawn piece's type. The usual checks are made
+ * (right player, old type is valid, new type is valid).
+ ******************************************************************************/
 enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 {
+	// TODO
 	return NOT_IMPLEMENTED;
 }
 
-//function for second release
-enum ChessboardRestStatus get_time(int player,TimeInfo *timeInfo)
+/******************************************************************************
+ * Compare the given password with the internal game password.
+ * Should be called by REST module before most of its requests.
+ ******************************************************************************/
+enum ChessboardRestStatus validate_password(const char *pswd)
 {
-	return NOT_IMPLEMENTED;
+	if (strcmp(currentGameInfo.secret_code, pswd) != 0)
+	{
+		return unathorized;
+	}
+	return OK;
 }
 
-
+/******************************************************************************
+ * Give information about the turn
+ * (who's turn it is, move number, last move, game status).
+ ******************************************************************************/
 enum ChessboardRestStatus get_summary(TurnInfo *turnInfo)
 {
 	*turnInfo = currentTurnInfo;
 	return OK;
 }
 
+/******************************************************************************
+ * Give game's details, as configured by a /new_game request.
+ ******************************************************************************/
+enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
+{
+	*gameInfo = currentGameInfo;
+	return OK;
+}
+
+/******************************************************************************
+ * Give the position and aliveness of each piece of the chessboard.
+ * Also gives the turn and move number.
+ ******************************************************************************/
 enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 {
 	boardPosition->turn = currentTurnInfo.turn;
@@ -300,97 +349,162 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 		}
 	}
 	return OK;
-	
-}
 
-enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
-{
-// cleasr the board
-	ChessGameInitialisation();
-	clearBoard();
-	
-	// we set player1 pieces 
-	int i= 0;
-	for (i = 0; i < 16; i++)
-	{
-		if (boardPosition->positions[i][0] == 'x')
-		{
-			player1Pieces[i].alive = false;
-		}
-		else
-		{
-			player1Pieces[i].alive = true;
-			player1Pieces[i].x  = boardPosition->positions[i][0] - 'a';
-			player1Pieces[i].y  = boardPosition->positions[i][1] - '1';
-		}
-		
-	}
-	
-	// we set player 2 pieces
-	for (i = 16; i < 32; i++)
-	{
-		if (boardPosition->positions[i][0] == 'x')
-		{
-			player2Pieces[i-16].alive = false;
-		}
-		else
-		{
-			player2Pieces[i-16].alive = true;
-			player2Pieces[i-16].x = boardPosition->positions[i][0] - 'a';
-			player2Pieces[i-16].y = boardPosition->positions[i][1] - '1';
-		}	
-	}
-
-
-	// we set the board
-	setBoard(player1Pieces);
-	setBoard(player2Pieces);
-	currentTurnInfo.turn = boardPosition->turn;
-	currentTurnInfo.move_no = boardPosition->move_no;
-	if (BoardDisplay_draw_pieces_custom(player1Pieces,player2Pieces) != 0)
-	{
-		xil_printf("Error in HDMI restSetBoard");
-	}
-	return OK;
-	
-}
-
-enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
-{
-	*gameInfo = currentGameInfo;
-	return OK;
-}
-
-enum ChessboardRestStatus start_game()
-{
-	if (gameStarted)
-	{
-		return gameInProgress;
-	}
-	gameStarted = true;
-	BoardDisplay_start_game();
-	return OK;
 }
 
 /******************************************************************************
- * Ends a game: Return to initial state
- * NOTE: new_game creates a game but does not start it so for now, I put the
- * boardDisplay_welcome_screen call in the error case and in the non-error case
-******************************************************************************/
-enum ChessboardRestStatus end_game()
+ * Give a player its time informations (time remaining, overtime).
+ ******************************************************************************/
+enum ChessboardRestStatus get_time(int player,TimeInfo *timeInfo)
 {
-	FBEGIN;
-	if (!gameStarted)
-	{
-		return unathorized;
-	}
-	gameStarted = false;
-	BoardDisplay_welcome_screen();
-	return OK;
+	// TODO
+	return NOT_IMPLEMENTED;
 }
 
+/******************************************************************************
+ *
+ ******************************************************************************/
+static void ChessGameInitialisation()
+{
+	// we clear the board
+	clearBoard();
 
-enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
+	// we initialize the pieces of the first players
+	player1Pieces[0] = PieceInitialisation(4,0,KING,player1);
+	player1Pieces[1] = PieceInitialisation(3,0,QUEEN,player1);
+	player1Pieces[2] = PieceInitialisation(2,0,BISHOP,player1);
+	player1Pieces[3] = PieceInitialisation(5,0,BISHOP,player1);
+	player1Pieces[4] = PieceInitialisation(0,0,ROOK,player1);
+	player1Pieces[5] = PieceInitialisation(7,0,ROOK,player1);
+	player1Pieces[6] = PieceInitialisation(1,0,KNIGHT,player1);
+	player1Pieces[7] = PieceInitialisation(6,0,KNIGHT,player1);
+	player1Pieces[8] = PieceInitialisation(0,1,PAWN,player1);
+	player1Pieces[9] = PieceInitialisation(1,1,PAWN,player1);
+	player1Pieces[10] = PieceInitialisation(2,1,PAWN,player1);
+	player1Pieces[11] = PieceInitialisation(3,1,PAWN,player1);
+	player1Pieces[12] = PieceInitialisation(4,1,PAWN,player1);
+	player1Pieces[13] = PieceInitialisation(5,1,PAWN,player1);
+	player1Pieces[14] = PieceInitialisation(6,1,PAWN,player1);
+	player1Pieces[15] = PieceInitialisation(7,1,PAWN,player1);
+
+	// place P1 pieces on the board
+	setBoard(player1Pieces);
+
+	// we initialize the pieces for the second player
+	player2Pieces[0] = PieceInitialisation(4,7,KING,player2);
+	player2Pieces[1] = PieceInitialisation(3,7,QUEEN,player2);
+	player2Pieces[2] = PieceInitialisation(2,7,BISHOP,player2);
+	player2Pieces[3] = PieceInitialisation(5,7,BISHOP,player2);
+	player2Pieces[4] = PieceInitialisation(0,7,ROOK,player2);
+	player2Pieces[5] = PieceInitialisation(7,7,ROOK,player2);
+	player2Pieces[6] = PieceInitialisation(1,7,KNIGHT,player2);
+	player2Pieces[7] = PieceInitialisation(6,7,KNIGHT,player2);
+	player2Pieces[8] = PieceInitialisation(0,6,PAWN,player2);
+	player2Pieces[9] = PieceInitialisation(1,6,PAWN,player2);
+	player2Pieces[10] = PieceInitialisation(2,6,PAWN,player2);
+	player2Pieces[11] = PieceInitialisation(3,6,PAWN,player2);
+	player2Pieces[12] = PieceInitialisation(4,6,PAWN,player2);
+	player2Pieces[13] = PieceInitialisation(5,6,PAWN,player2);
+	player2Pieces[14] = PieceInitialisation(6,6,PAWN,player2);
+	player2Pieces[15] = PieceInitialisation(7,6,PAWN,player2);
+
+	// place P2 pieces on the board
+	setBoard(player2Pieces);
+	player1Turn = true;
+	currentTurnInfo.game_status = NORMAL;
+	currentTurnInfo.last_move[0] = 'x';
+	currentTurnInfo.last_move[1] = 'x';
+	currentTurnInfo.move_no = 1;
+	currentTurnInfo.turn = player1;
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
+{
+	Piece piece;
+	piece.pieceType = type;
+	piece.alive = true;
+	piece.x = x;
+	piece.y = y;
+	piece.enPassant = false;
+	piece.rock = 0;
+	piece.playerID = playerID;
+	return piece;
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static void setBoard(Piece* playerPieces)
+{
+	int i = 0;
+	// place P1 pieces on the board
+	for (i = 0; i < 16; i++)
+	{
+		boardGame[playerPieces[i].x][playerPieces[i].y] = &playerPieces[i];
+	}
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static void clearBoard()
+{
+	int i = 0;
+	for (i = 0; i < 8;i++)
+	{
+		int j = 0;
+		for (j = 0; j < 8; j++)
+		{
+			boardGame[i][j] = 0; // TODO MAKE NULL
+		}
+	}
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
+{
+	enum moveResult result = ILLEGAL;
+	switch (piece->pieceType)
+	{
+	case KING:
+		result = move_king(xs, xd, ys, yd);
+		break;
+
+	case ROOK:
+		result = move_rook(xs, xd, ys, yd);
+		break;
+
+	case BISHOP:
+		result = move_bishop(xs, xd, ys, yd);
+		break;
+
+	case KNIGHT:
+		result = move_knight(xs, xd, ys, yd);
+		break;
+
+	case QUEEN:
+		result = move_queen(xs, xd, ys, yd);
+		break;
+
+	case PAWN:
+		result = move_pawn(xs, xd, ys, yd);
+		break;
+
+	default:
+		result = ILLEGAL; // unidentified piece type
+	}
+	return result;
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
@@ -405,8 +519,11 @@ enum ChessboardRestStatus move_king(int xs, int xd, int ys, int yd)
 	return VALID;
 }
 
+/******************************************************************************
+ *
+ ******************************************************************************/
 // uses static boardGame
-enum ChessboardRestStatus move_rook(int xs, int xd, int ys, int yd)
+static enum moveResult move_rook(int xs, int xd, int ys, int yd)
 {
 	if (xs != xd)
 	{
@@ -430,8 +547,11 @@ enum ChessboardRestStatus move_rook(int xs, int xd, int ys, int yd)
 	return VALID;
 }
 
+/******************************************************************************
+ *
+ ******************************************************************************/
 // uses static boardGame
-enum ChessboardRestStatus move_bishop(int xs, int xd, int ys, int yd)
+static enum moveResult move_bishop(int xs, int xd, int ys, int yd)
 {
 	//if ( (xs > xd ? xs - xd : xd - xs) != (ys > yd ? ys - yd : yd - ys) ) // abs(diff X) != abs(diff Y)
 	if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
@@ -461,7 +581,10 @@ enum ChessboardRestStatus move_bishop(int xs, int xd, int ys, int yd)
 	return VALID;
 }
 
-enum ChessboardRestStatus move_knight(int xs, int xd, int ys, int yd)
+/******************************************************************************
+ *
+ ******************************************************************************/
+static enum moveResult move_knight(int xs, int xd, int ys, int yd)
 {
 	{
 		int x = (xs > xd ? xs - xd : xd - xs); // abs(diff X)
@@ -472,7 +595,11 @@ enum ChessboardRestStatus move_knight(int xs, int xd, int ys, int yd)
 	}
 	return VALID;
 }
-enum ChessboardRestStatus move_queen(int xs, int xd, int ys, int yd)
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static enum moveResult move_queen(int xs, int xd, int ys, int yd)
 {
 	enum moveResult result = move_rook(xs, xd, ys, yd);
 	if (result != VALID)
@@ -484,8 +611,11 @@ enum ChessboardRestStatus move_queen(int xs, int xd, int ys, int yd)
 	return VALID;
 }
 
+/******************************************************************************
+ *
+ ******************************************************************************/
 // uses static boardGame, player1Pieces and player2Pieces and may change their values.
-enum moveResult move_pawn(int xs, int xd, int ys, int yd)
+static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 {
 	Piece *piece = boardGame[xs][ys];
 	if(	piece->playerID == player1 ?
@@ -521,39 +651,3 @@ enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 	//promote stuff if promote
 	return VALID;
 }
-
-enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
-{
-	enum moveResult result = ILLEGAL;
-	switch (piece->pieceType)
-	{
-	case KING:
-		result = move_king(xs, xd, ys, yd);
-		break;
-
-	case ROOK:
-		result = move_rook(xs, xd, ys, yd);
-		break;
-
-	case BISHOP:
-		result = move_bishop(xs, xd, ys, yd);
-		break;
-
-	case KNIGHT:
-		result = move_knight(xs, xd, ys, yd);
-		break;
-
-	case QUEEN:
-		result = move_queen(xs, xd, ys, yd);
-		break;
-
-	case PAWN:
-		result = move_pawn(xs, xd, ys, yd);
-		break;
-
-	default:
-		result = ILLEGAL; // unidentified piece type
-	}
-	return result;
-}
-

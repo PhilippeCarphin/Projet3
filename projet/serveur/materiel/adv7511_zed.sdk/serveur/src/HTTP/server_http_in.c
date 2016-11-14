@@ -107,9 +107,9 @@ int validate_request(const char *header)
 	if (header[0] == '\0')
 		return HTTP_BAD_REQUEST;
 	
-	/* HTTP version must be 1.1 */
+	/* HTTP version must be 1.1
 	if (!strstr(header, "HTTP/1.1"))
-		return HTTP_VERSION_NOT_SUPPORTED;
+		return HTTP_VERSION_NOT_SUPPORTED;*/
 	
 	return HTTP_OK;
 }
