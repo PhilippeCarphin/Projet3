@@ -24,7 +24,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     private RadioGroup radioSelect;
     private RadioButton radioButton1, radioButton2;
 
-    private EditText editTextLocation, editTextPassword, editTextPlayer1Name, editTextPlayer2Name;
+    private EditText editTextLocation, editTextPassword, editTextPlayer1Name, editTextPlayer2Name, editTextRound;
 
     private TimePicker timePickerMain,timePickerOverTime;
     private Switch enPassant;
@@ -37,6 +37,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     public static String password;
     public static String playerName1;
     public static String playerName2;
+    public static String round;
     public static int normalTime;
     public static int overTime;
     public static int allowedTurns;
@@ -74,6 +75,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextPassword.setEnabled(true);
+        editTextRound = (EditText) findViewById(R.id.editTextRound);
         editTextPlayer1Name = (EditText) findViewById(R.id.editTextNamePlayer1);
 
         editTextPlayer2Name = (EditText) findViewById(R.id.editTextNamePlayer2);
@@ -129,6 +131,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
             overTimeIncr = numberPickerTimePerPlay.getValue();
             allowedTurns = numberPickerTurnsBeforedraw.getValue();
+            round = editTextRound.getText().toString();
 
             //handle errors in entries
             if (radioButton2.isChecked()) {

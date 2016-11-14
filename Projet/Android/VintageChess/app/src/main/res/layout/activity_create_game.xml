@@ -185,6 +185,33 @@
 
         </LinearLayout>
 
+        <!-- PICKING THE GAME Round -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12">
+
+            <TextView
+                android:text="Round"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/textRound"
+                android:layout_gravity="center|left"
+                android:gravity="center|left"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:ems="5"
+                android:id="@+id/editTextRound"
+                android:layout_gravity="center|left"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
         <!-- EN_PASSANT OPTION -->
         <ListView
             android:layout_width="match_parent"
