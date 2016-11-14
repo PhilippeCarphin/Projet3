@@ -57,60 +57,60 @@ public class ActivityGame extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
-        Utilities.currentActivity = this;
-        gameStarted = false;
+            Utilities.currentActivity = this;
+            gameStarted = false;
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_game);
 
-        board = (ImageView) findViewById(R.id.imageViewBoard);
-        board.setImageResource(android.R.color.transparent);
+            board = (ImageView) findViewById(R.id.imageViewBoard);
+            board.setImageResource(android.R.color.transparent);
 
-          motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
-        motionlessPieces.setImageResource(android.R.color.transparent);
+            motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
+            motionlessPieces.setImageResource(android.R.color.transparent);
 
-        movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
-        movingPiece.setImageResource(android.R.color.transparent);
+            movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
+            movingPiece.setImageResource(android.R.color.transparent);
 
-        leftSpace = (Space) findViewById(R.id.leftSpace);
+            leftSpace = (Space) findViewById(R.id.leftSpace);
 
-        board.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                handleTouch(event);
-                return true;
-            }
-        });
+            board.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    handleTouch(event);
+                    return true;
+                }
+            });
 
-        selectStyle = (RadioGroup) findViewById(R.id.RadioGroupSelect);
-        selectStyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioChange();
-            }
-        });
+            selectStyle = (RadioGroup) findViewById(R.id.RadioGroupSelect);
+            selectStyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    handleRadioChange();
+                }
+            });
 
 
-        Display.board = board;
-        Display.motionlessPieces = motionlessPieces;
-        Display.movingPiece = movingPiece;
+            Display.board = board;
+            Display.motionlessPieces = motionlessPieces;
+            Display.movingPiece = movingPiece;
 
-        player1Name = (TextView) findViewById(R.id.Player1Name);
-        player2Name = (TextView) findViewById(R.id.Player2Name);
-        location = (TextView) findViewById(R.id.LocationText);
+            player1Name = (TextView) findViewById(R.id.Player1Name);
+            player2Name = (TextView) findViewById(R.id.Player2Name);
+            location = (TextView) findViewById(R.id.LocationText);
 
-        timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
-        timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
-        round = (TextView) findViewById(R.id.RoundText);
-        turn = (TextView) findViewById(R.id.CurrentPlayer);
-        moveNumber = (TextView) findViewById(R.id.MoveNumber);
-        player1Name.setText(ActivityCreateGame.playerName1);
-        player2Name.setText(ActivityCreateGame.playerName2);
-        location.setText(ActivityCreateGame.location);
-        round.setText("Round : 0" );
-    }
-    catch (Exception e) {
-        Utilities.messageBox("Failed to create game", e.getMessage());
-    }
+            timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
+            timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
+            round = (TextView) findViewById(R.id.RoundText);
+            turn = (TextView) findViewById(R.id.CurrentPlayer);
+            moveNumber = (TextView) findViewById(R.id.MoveNumber);
+            player1Name.setText(ActivityCreateGame.playerName1);
+            player2Name.setText(ActivityCreateGame.playerName2);
+            location.setText(ActivityCreateGame.location);
+            round.setText("Round : 0" );
+        }
+        catch (Exception e) {
+            Utilities.messageBox("Failed to create game", e.getMessage());
+        }
 
 
     }
@@ -126,8 +126,7 @@ public class ActivityGame extends AppCompatActivity {
             Utilities.messageBoxStartGame();
             gameStarted = true;
         }
-        //Display.drawFullBoard();
-        Game.leftSpace = leftSpace.getWidth();
+
 
         handleRadioChange();
         }
@@ -138,29 +137,30 @@ public class ActivityGame extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
 
         try {
             HttpRunner.runPostGameEnd();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Utilities.messageBox("Error after having pressed back", e.getMessage());
         }
 
-        Intent setIntent = new Intent(this,ActivityCreateGame.class);
-        startActivity(setIntent);
 
     }
+
+
 
     @Override
     public void onDestroy()
     {
-        super.onDestroy();
         try {
             HttpRunner.runPostGameEnd();
 
         } catch (JSONException e) {
             e.printStackTrace();
+            Utilities.messageBox("Error after destroying view", e.getMessage());
         }
+        super.onDestroy();
     }
 
     private void handleTouch(MotionEvent event) {

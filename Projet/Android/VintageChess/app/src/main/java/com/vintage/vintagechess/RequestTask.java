@@ -56,7 +56,7 @@ class RequestTask extends AsyncTask<String, String, String> {
            //Utilities.messageBox("Error while sending and receiving http response", e.getMessage());
            Utilities.printStackTrace(e);
            //Game.recoverFromError();
-           return new String("DOWNLOAD URL " + e.getLocalizedMessage());
+           return new String("ERROR " + e.getLocalizedMessage());
 
         }
     }
@@ -72,7 +72,7 @@ class RequestTask extends AsyncTask<String, String, String> {
                 return;
             }
             if (result != null) {
-                if (result.contains("DOWNLOAD URL ")) throw new Exception(result);
+                if (result.contains("ERROR ")) throw new Exception(result);
                 callback.runResponse(result);
             }
         }
@@ -80,7 +80,9 @@ class RequestTask extends AsyncTask<String, String, String> {
 
             Utilities.printStackTrace(e);
             Utilities.messageBox("Error handling the http response", e.getMessage());
-            Game.recoverFromError();
+            if (Utilities.currentActivity.getClass().getSimpleName().equals("ActivityGame")) {
+                Game.recoverFromError();
+            }
         }
     }
 

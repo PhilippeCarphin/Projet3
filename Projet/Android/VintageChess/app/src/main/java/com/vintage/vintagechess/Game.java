@@ -24,7 +24,6 @@ public class Game {
     private static Point downPos;
     private static Point lastPos;
     public static Piece currentPiece;
-    public static int leftSpace;
     public static String ip;
     public static boolean isWhiteTurn = true;
 
@@ -162,6 +161,15 @@ public class Game {
                     {null,null,null,null,null,null,null,null},
                     {null,null,null,null,null,null,null,null}
             };
+    }
+
+    public static void initializeVariables() {
+        downPos = null;
+        lastPos = null;
+        currentPiece = null;
+        isWhiteTurn = true;
+        clearPieces();
+        Display.initializeVariables();
     }
 
 

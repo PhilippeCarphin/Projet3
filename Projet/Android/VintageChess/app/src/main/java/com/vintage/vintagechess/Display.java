@@ -200,9 +200,14 @@ public class Display {
 
     }
 
-    public static void statusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
+    public static void updateGameFromStatusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
         setMoveNumber(moveNbReceived);
         setWhoseTurn(turnReceived);
+    }
+
+    public static void initializeVariables() {
+        lastPos = null;
+        newPos = null;
     }
 
 }

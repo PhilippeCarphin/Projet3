@@ -1,6 +1,5 @@
 package com.vintage.vintagechess;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -71,7 +70,7 @@ public class REST {
     }
 
 
-    public static void getStatusSummary(String Status) throws JSONException {
+    public static void updateGameFromStatusSummary(String Status) throws JSONException {
 
         JSONObject jsonObject = new JSONObject(Status);
         String turn = jsonObject.getString("turn");
@@ -84,7 +83,7 @@ public class REST {
         Log.d("lastMove : ",lastMove);
         Log.d("state : ",state);
 
-        Display.statusSummary(turn, moveNo, lastMove, state);
+        Display.updateGameFromStatusSummary(turn, moveNo, lastMove, state);
 
     }
 
@@ -134,7 +133,7 @@ public class REST {
     }
 
 
-    public static LinkedList<Piece> getStatusBoard(JSONObject jsonObject) throws JSONException {
+    public static LinkedList<Piece> getPiecesFromStatusBoard(JSONObject jsonObject) throws JSONException {
 
 
         LinkedList<Piece> newConfig = new LinkedList<Piece>();

@@ -1,12 +1,8 @@
 package com.vintage.vintagechess;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 
 /**
@@ -23,6 +19,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
+                Game.initializeVariables();
                 activityCreateGame.openGame();
             }
         };
@@ -33,6 +30,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
+                Game.initializeVariables();
                 HttpRunner.runGetStatusBoard();
             }
         };
@@ -44,6 +42,8 @@ public class Callbacks {
             @Override
             public void runResponse(String response) {
 
+                Intent setIntent = new Intent(Utilities.currentActivity,ActivityMenu.class);
+                Utilities.currentActivity.startActivity(setIntent);
             }
         };
         return ret;
@@ -84,7 +84,7 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) throws JSONException {
-                REST.getStatusSummary(response);
+                REST.updateGameFromStatusSummary(response);
             }
         };
         return ret;
@@ -94,8 +94,10 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback()  {
             @Override
             public void runResponse(String response) throws JSONException {
+                Display.newPos = null;
+                Display.lastPos = null;
                 JSONObject jsonObject = new JSONObject(response);
-                Game.setConfig(REST.getStatusBoard(jsonObject));
+                Game.setConfig(REST.getPiecesFromStatusBoard(jsonObject));
                 String white = jsonObject.getString("turn");
                 Display.setWhoseTurn(white);
                 Display.setMoveNumber(jsonObject.getString("move_no"));
