@@ -47,7 +47,7 @@ public class Utilities {
                     public void onClick(DialogInterface dialog, int which) {
                         //dismiss the dialog
                         try {
-                            HttpRunner.runPostGameStart();
+                            HttpRunner.runPostGameStart(null);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -25,7 +25,8 @@ import java.net.URL;
 
 class RequestTask extends AsyncTask<String, String, String> {
 
-    private RequestCallback callback;
+    private RequestCallback onSucess;
+    private RequestCallback onFail;
     private boolean receiveJSON;
     private static ActivityCreateGame activityCreateGame;
     private String suffix;
@@ -33,13 +34,14 @@ class RequestTask extends AsyncTask<String, String, String> {
     private String body;
 
     //constructor
-    public RequestTask(RequestCallback callback, boolean receiveJSON, String suffix, String method, String body) {
+    public RequestTask(RequestCallback onSucessCallBack,RequestCallback onFailCallback , boolean receiveJSON, String suffix, String method, String body) {
         super();
-        this.callback = callback;
         this.receiveJSON = receiveJSON;
         this.suffix = suffix;
         this.method = method;
         this.body = body;
+        this.onSucess = onSucessCallBack;
+        this.onFail = onFailCallback;
     }
 
     @Override
@@ -68,18 +70,25 @@ class RequestTask extends AsyncTask<String, String, String> {
 
         try {
             if (result.equals("TIMEOUT")) {
-                new RequestTask(callback, receiveJSON, suffix, method, body).execute();
+                new RequestTask(onSucess,null, receiveJSON, suffix, method, body).execute();
                 return;
             }
             if (result != null) {
                 if (result.contains("ERROR ")) throw new Exception(result);
-                callback.runResponse(result);
+                onSucess.runResponse(result);
             }
         }
         catch (Exception e) {
 
             Utilities.printStackTrace(e);
             Utilities.messageBox("Error handling the http response", e.getMessage());
+            try {
+                if (onFail != null){
+                    onFail.runResponse("test");
+                }
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
             if (Utilities.currentActivity.getClass().getSimpleName().equals("ActivityGame")) {
                 Game.recoverFromError();
             }

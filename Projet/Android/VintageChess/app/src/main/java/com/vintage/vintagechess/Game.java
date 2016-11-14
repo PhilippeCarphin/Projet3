@@ -78,7 +78,7 @@ public class Game {
         //Log.d("up", lastPos.x+" "+lastPos.y);
         if (currentPiece != null && !downPos.equals(lastPos)) {
             Display.blockBoard();
-            HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y);
+            HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y,null);
 
         }
         else {
@@ -117,7 +117,7 @@ public class Game {
             Display.newPos = currentPiece.p_;
         }
         finishMove();
-        HttpRunner.runGetStatusSummary();
+        HttpRunner.runGetStatusSummary(null);
     }
 
 

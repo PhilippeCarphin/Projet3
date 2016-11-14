@@ -144,8 +144,6 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
-
-
         Callbacks.activityCreateGame = this;
     }
 
@@ -213,8 +211,7 @@ public class ActivityCreateGame extends AppCompatActivity {
             if (radioButton2.isChecked()) {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
-
-            HttpRunner.runPostNewGame();
+            HttpRunner.runPostNewGame(Callbacks.getPostNewGameCallback(),null);
 
         }
         catch (Exception e) {

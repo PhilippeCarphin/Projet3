@@ -32,7 +32,7 @@ public class Callbacks {
             @Override
             public void runResponse(String response) {
                 Game.initializeVariables();
-                HttpRunner.runGetStatusBoard();
+                HttpRunner.runGetStatusBoard(null);
             }
         };
         return ret;
@@ -111,7 +111,6 @@ public class Callbacks {
         RequestCallback ret = new RequestCallback() {
             @Override
             public void runResponse(String response) {
-
             }
         };
         return ret;

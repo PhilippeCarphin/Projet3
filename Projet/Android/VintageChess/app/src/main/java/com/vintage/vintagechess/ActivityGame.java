@@ -247,7 +247,7 @@ public class ActivityGame extends AppCompatActivity {
 
     private void handleButtonEndClick() {
         try {
-            HttpRunner.runPostGameEnd();
+            HttpRunner.runPostGameEnd(null);
             Intent setIntent = new Intent(this,ActivityMenu.class);
             startActivity(setIntent);
 
@@ -287,7 +287,7 @@ public class ActivityGame extends AppCompatActivity {
         //super.onBackPressed();
 
         try {
-            HttpRunner.runPostGameEnd();
+            HttpRunner.runPostGameEnd(null);
         } catch (JSONException e) {
             Utilities.messageBox("Error after having pressed back", e.getMessage());
         }
@@ -301,7 +301,7 @@ public class ActivityGame extends AppCompatActivity {
     public void onDestroy()
     {
         try {
-            HttpRunner.runPostGameEnd();
+            HttpRunner.runPostGameEnd(null);
 
         } catch (JSONException e) {
             e.printStackTrace();
