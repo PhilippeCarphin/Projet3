@@ -140,7 +140,7 @@ public class ActivityGame extends AppCompatActivity {
         startActivity(setIntent);
 
     }
-
+/*
     @Override
     public void onDestroy()
     {
@@ -151,7 +151,7 @@ public class ActivityGame extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void handleTouch(MotionEvent event) {
         try {
