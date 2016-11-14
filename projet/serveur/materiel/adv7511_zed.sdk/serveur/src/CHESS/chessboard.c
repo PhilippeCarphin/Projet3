@@ -3,7 +3,6 @@
 #include "xil_io.h"
 #include "debug.h"
 #include "BoardDisplay.h"
-#include "cf_hdmi.h"
 //player1 pieces
 
 
@@ -243,7 +242,6 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.d_rank = yd;
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
-	BoardDisplay_draw_turn((mv.c == WHITE ? BLACK : WHITE));
 	BoardDisplay_move_piece(&mv);
 
 	//check for stalemate, checkmate,
@@ -370,8 +368,7 @@ enum ChessboardRestStatus start_game()
 		return gameInProgress;
 	}
 	gameStarted = true;
-	BoardDisplay_draw_turn(WHITE);
-	cf_hdmi_send_buffer();
+	BoardDisplay_start_game();
 	return OK;
 }
 

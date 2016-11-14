@@ -7,15 +7,6 @@
 #define PIECE_DATA_SIZE 800000 // 800k
 #define CHARS_DATA_SIZE 200000 // 200k
 
-
-
-
-// TEMPORARY:
-struct PlayerTimes{
-	char player1[10];
-	char player2[10];
-};
-
 /******************************************************************************
  * Initialization functions:
  *  - The first thing is to call BoardDisplay_set_image_buffers() to give
@@ -28,28 +19,39 @@ int BoardDisplay_set_image_buffers(u8 *chars_dat, u8 *pieces_dat);
 int BoardDisplay_init();
 
 /******************************************************************************
- * Chessboard drawing functions
- * - draw_chess_board() draws the chessboard with pieces in their initial
- *   positions.
- * - BoardDisplay_move_piece() moves the piece using data specified in the
- *   move data structure.
- * - draw_information() will receive the gameinfo struct and will draw some
- *   of the contained information on the screen.
+ ******************* Chessboard drawing functions *****************************
 ******************************************************************************/
-int draw_chess_board();
-int BoardDisplay_move_piece(struct Move *move);
-int draw_information(struct GameInfo *gi);
-int update_times(struct PlayerTimes *pt);
+
+/* NOTE: All interface functions send the buffer to the screen over HDMI.
+
+/******************************************************************************
+ * Displays a fresh board with pieces setup and game information.  Since the 
+ * game might not be started yet "White to move" will not be drawn and will
+ * only be drawn when BoardDisplay_start_game is called.
+******************************************************************************/
 int BoardDisplay_new_board(GameInfo *gi);
-int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
-int BoardDisplay_draw_turn(PieceColor c);
+
+/******************************************************************************
+ * Add additionnal information to the screen after the game has started.
+ * For now, it will only draw "White to move".
+******************************************************************************/
+int BoardDisplay_start_game();
+
+/******************************************************************************
+ * Display the welcome screen.
+******************************************************************************/
 int BoardDisplay_welcome_screen();
 
 /******************************************************************************
- * Function that tests the workings of the whole HDMI module and is usable as
- * documentation for how to use the BoardDisplay_move_piece function.
+ * This function executes a move and writes to the notation rectangle.
 ******************************************************************************/
-int test_move_piece();
+int BoardDisplay_move_piece(struct Move *move);
+
+/******************************************************************************
+ * Draw pieces in custom positions
+******************************************************************************/
+int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
+
 
 #endif //_BOARD_DISPLAY_H_
 
