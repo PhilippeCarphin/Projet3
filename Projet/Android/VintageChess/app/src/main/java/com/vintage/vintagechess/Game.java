@@ -9,6 +9,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -110,6 +112,9 @@ public class Game {
     //handler for when the user already has his finger on the screen and uses it
     public static void handleMove(int xPix, int yPix) throws Exception {
         //lastPos = getboardCoordinates(xPix, yPix);
+
+
+
         if (downPos == null || currentPiece == null ) {
             return;
         }
@@ -119,13 +124,13 @@ public class Game {
             currentPiece.p_ = lastPos;
             Display.drawMovingPiece();
         }
+        //HttpRunner.runGetStatusSummary();
 
-        //HttpRunner.runGetStatusBoard();
         //drawBoard();
     }
 
     //handles when the http returns that the asked move is ok
-    public static void handleMoveOk(String pieceEleminated, String promotion, String state) {
+    public static void handleMoveOk(String pieceEleminated, String promotion, String state) throws JSONException {
         if (currentPiece != null) {
             if (!pieceEleminated.equals("xx")) {
                 Point p = Utilities.getGridCoordinates(pieceEleminated);
@@ -135,7 +140,10 @@ public class Game {
             isWhiteTurn = !isWhiteTurn;
         }
         finishMove();
+        HttpRunner.runGetStatusSummary();
+        //HttpRunner.runPostGameEnd();
     }
+
 
     public static void handleMoveNotOk() {
         if (currentPiece != null) {

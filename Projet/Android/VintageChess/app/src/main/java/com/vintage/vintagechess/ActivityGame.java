@@ -39,8 +39,8 @@ public class ActivityGame extends AppCompatActivity {
     TextClock timerPlaye1;
     TextClock timerPlaye2;
     TextView round;
-    TextView turn;
-    TextView moveNumber;
+    static TextView turn;
+    static TextView moveNumber;
     TextView location;
     private Button buttonEnd;
 
@@ -225,6 +225,14 @@ public class ActivityGame extends AppCompatActivity {
         else {
             Display.board_style = "wood";
         }
+    }
+
+    public static void statusSammarry(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
+        turn.setText(turnReceived);
+        moveNumber.setText(moveNbReceived);
+        /*stateReceived.setText(stateReceived);
+        lastMoveReceived.setText(lastMoveReceived);*/
+        
     }
 
 

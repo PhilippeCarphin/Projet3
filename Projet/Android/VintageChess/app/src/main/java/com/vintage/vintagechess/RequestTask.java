@@ -75,20 +75,22 @@ class RequestTask extends AsyncTask<String, String, String> {
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);
+        Log.d("Methode  ", method);
         if (!body.equals("")) {
 
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(ActivityCreateGame.password + "\r\n\r\n");
+
             wr.write(body);
             wr.flush();
-        } else {
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(ActivityCreateGame.password  + "\r\n\r\n");
-            wr.flush();
-        }
+        } else if(method.equals("POST")){
 
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(ActivityCreateGame.password  + "\r\n\r\n");
+                wr.flush();
+        }
 
         //conn.setRequestProperty("content-length", );
         // Starts the query
@@ -98,6 +100,7 @@ class RequestTask extends AsyncTask<String, String, String> {
         is = conn.getInputStream();
         int len = conn.getContentLength();
         String responseMessage = conn.getResponseMessage();
+        Log.d("Code " , String.valueOf(responseCode));
         Log.d("content length", "" + len);
         Log.d("Response message", responseMessage);
         String contentAsString = "";

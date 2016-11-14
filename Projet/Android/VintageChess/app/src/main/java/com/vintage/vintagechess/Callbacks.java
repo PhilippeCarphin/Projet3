@@ -101,9 +101,9 @@ public class Callbacks {
     public static RequestCallback getGetStatusSummaryCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
-
-
+            public void runResponse(String response) throws JSONException {
+                Log.d("REPONSE", response );
+                REST.getStatusSummary(response);
             }
         };
         return ret;
@@ -114,7 +114,7 @@ public class Callbacks {
             @Override
             public void runResponse(String response) throws JSONException {
 
-                REST.getStatusSummary(response);
+
 
             }
         };
