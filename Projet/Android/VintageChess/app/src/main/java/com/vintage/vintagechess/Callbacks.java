@@ -24,6 +24,7 @@ public class Callbacks {
             @Override
             public void runResponse(String response) {
                 activityCreateGame.openGame();
+                Game.clearPieces();
             }
         };
         return ret;
