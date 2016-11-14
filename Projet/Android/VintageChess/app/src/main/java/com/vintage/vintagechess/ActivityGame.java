@@ -100,8 +100,8 @@ public class ActivityGame extends AppCompatActivity {
         timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
         timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
         round = (TextView) findViewById(R.id.RoundText);
-        turn = (TextView) findViewById(R.id.TurnText);
-        moveNumber = (TextView) findViewById(R.id.MoveNumberText);
+        turn = (TextView) findViewById(R.id.CurrentPlayer);
+        moveNumber = (TextView) findViewById(R.id.MoveNumber);
         player1Name.setText(ActivityCreateGame.playerName1);
         player2Name.setText(ActivityCreateGame.playerName2);
         location.setText(ActivityCreateGame.location);
@@ -226,15 +226,6 @@ public class ActivityGame extends AppCompatActivity {
             Display.board_style = "wood";
         }
     }
-
-    public static void statusSammarry(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
-        turn.setText(turnReceived);
-        moveNumber.setText(moveNbReceived);
-        /*stateReceived.setText(stateReceived);
-        lastMoveReceived.setText(lastMoveReceived);*/
-        
-    }
-
 
 }
 

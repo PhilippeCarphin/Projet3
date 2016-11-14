@@ -82,7 +82,7 @@ public class REST {
         Log.d("lastMove : ",lastMove);
         Log.d("state : ",state);
 
-        activityGame.statusSammarry(turn, moveNo, lastMove, state);
+        Display.statusSummary(turn, moveNo, lastMove, state);
 
     }
 

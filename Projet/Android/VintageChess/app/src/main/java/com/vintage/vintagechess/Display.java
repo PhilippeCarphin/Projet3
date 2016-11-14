@@ -28,7 +28,7 @@ public class Display {
     private static int whiteSquareColor = Color.rgb(0x76, 0x96, 0x56);
     private static int borderColor = Color.rgb(0x95, 0x5C, 0x3E);
     private static int numberColor = Color.WHITE;
-
+    public static ActivityGame activityGame;
 
     //draws the board and its pieces
     public static void drawFullBoard() {
@@ -181,4 +181,17 @@ public class Display {
     public static void unBlockBoard() {
         board.setEnabled(true);
     }
+
+    public static void statusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
+        if(turnReceived.equals("1")){
+            turnReceived = "White";
+        }else{
+            turnReceived = "Black";
+        }
+        activityGame.turn.setText(turnReceived);
+        activityGame.moveNumber.setText(moveNbReceived);
+        /*stateReceived.setText(stateReceived);
+        lastMoveReceived.setText(lastMoveReceived);*/
+    }
+
 }

@@ -113,8 +113,6 @@ public class Game {
     public static void handleMove(int xPix, int yPix) throws Exception {
         //lastPos = getboardCoordinates(xPix, yPix);
 
-
-
         if (downPos == null || currentPiece == null ) {
             return;
         }
@@ -124,8 +122,6 @@ public class Game {
             currentPiece.p_ = lastPos;
             Display.drawMovingPiece();
         }
-        //HttpRunner.runGetStatusSummary();
-
         //drawBoard();
     }
 
@@ -141,7 +137,6 @@ public class Game {
         }
         finishMove();
         HttpRunner.runGetStatusSummary();
-        //HttpRunner.runPostGameEnd();
     }
 
 
@@ -165,13 +160,6 @@ public class Game {
     public static void recoverFromError() {
         handleMoveNotOk();
     }
-
-
-
-
-
-
-
 
 }
 
