@@ -65,7 +65,7 @@ public class ActivityGame extends AppCompatActivity {
         board = (ImageView) findViewById(R.id.imageViewBoard);
         board.setImageResource(android.R.color.transparent);
 
-        motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
+          motionlessPieces = (ImageView) findViewById(R.id.imageViewMotionlessPieces);
         motionlessPieces.setImageResource(android.R.color.transparent);
 
         movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
