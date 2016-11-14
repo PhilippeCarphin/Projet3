@@ -44,6 +44,11 @@ public class ActivityCreateGame extends AppCompatActivity {
     public static int timePerPlay;
     public static int overTimeIncr;
     public static boolean enPassantOption;
+    View radioButtonStyle;
+    View radioButtonColor;
+    RadioGroup RadioGroupModeTablette;
+    RadioGroup RadioGroupSelectColorBoard;
+    RadioGroup RadioGroupSelectStylePiece;
 
     public static REST rest;
 
@@ -61,6 +66,13 @@ public class ActivityCreateGame extends AppCompatActivity {
         setContentView(R.layout.activity_create_game);
 
         Utilities.hideKeyPad(this);
+
+        ActivityGame.radioButtonStyle1 = (RadioButton) findViewById(R.id.radioButtonStyle1);
+        ActivityGame.radioButtonStyle2 = (RadioButton) findViewById(R.id.radioButtonStyle2);
+
+        ActivityGame.radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
+        ActivityGame.radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
+        ActivityGame.radioButtonColorWood = (RadioButton) findViewById(R.id.radioButtonWood);
 
         radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
@@ -109,15 +121,96 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
+        RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
+        RadioGroupModeTablette.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                handleRadioChange();
+            }
+        });
+
+        /*radioButtonIDColor = RadioGroupSelectColorBoard.getCheckedRadioButtonId();
+        radioButtonColor = RadioGroupSelectColorBoard.findViewById(radioButtonIDColor);
+
+        radioButtonIDStyle = RadioGroupSelectStylePiece.getCheckedRadioButtonId();
+        radioButtonStyle = RadioGroupSelectStylePiece.findViewById(radioButtonIDStyle);
+
+        radioButtonIDMode = RadioGroupModeTablette.getCheckedRadioButtonId();
+        radioButtonMode = RadioGroupModeTablette.findViewById(radioButtonIDStyle);*/
+
+        RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
+        RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
+            }
+        });
+
+        RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
+        RadioGroupSelectStylePiece.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
+            }
+        });
+
+        Display.blackSquareColor = ColorBoard.redSquareColor;
+        Display.whiteSquareColor = ColorBoard.whiteSquareColor;
+        Game.style = "2";
+
         Callbacks.activityCreateGame = this;
     }
 
-    private void handleRadioChange() {
-        //editTextPassword.setEnabled(radioButton2.isChecked());
-        editTextPlayer2Name.setEnabled(radioButton1.isChecked());
+   public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
+
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        // find the radiobutton by returned id
+        view = (RadioButton) findViewById(selectedId);
+        switch(selectedId) {
+            case R.id.radioButtonStyle1:
+                Game.style = "1";
+                ActivityGame.radioButtonStyle1.setChecked(true);
+                break;
+
+            case R.id.radioButtonStyle2:
+                Game.style = "2";
+                ActivityGame.radioButtonStyle2.setChecked(true);
+                break;
+        }
     }
 
-    
+    public void handleRadioChange() {
+        //editTextPassword.setEnabled(radioButton2.isChecked());
+        editTextPlayer2Name.setEnabled(radioButton1.isChecked());
+
+    }
+
+   private void handleRadioButtonBoardColorChange(RadioGroup radioGroup, View view) {
+
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        // find the radiobutton by returned id
+        radioButtonColor = (RadioButton) findViewById(selectedId);
+        switch(selectedId) {
+            case R.id.radioButtonRed:
+                Display.blackSquareColor = ColorBoard.redSquareColor;
+                Display.whiteSquareColor = ColorBoard.whiteSquareColor;
+                ActivityGame.radioButtonColorRed.setChecked(true);
+                break;
+
+            case R.id.radioButtonBlue:
+                Display.blackSquareColor = ColorBoard.blueSquareColor;
+                Display.whiteSquareColor = ColorBoard.whiteSquareColor;
+                ActivityGame.radioButtonColorblue.setChecked(true);
+                break;
+
+            case R.id.radioButtonWood:
+                Display.blackSquareColor = ColorBoard.woodSquareColor;
+                Display.whiteSquareColor = ColorBoard.whiteSquareColor;
+                ActivityGame.radioButtonColorWood.setChecked(true);
+                break;
+        }
+    }
+
     private void handleButtonClick() {
         try {
             oneTablet = radioButton2.isChecked();
@@ -138,15 +231,12 @@ public class ActivityCreateGame extends AppCompatActivity {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
 
-
-            HttpRunner.runPostNewGame();
+            //HttpRunner.runPostNewGame();
+            openGame();
 
             /*****REST TEST*****/
             //String newGame = rest.postNewGame();
             //rest.getGameDetails(newGame);
-
-
-
 
         }
         catch (Exception e) {
