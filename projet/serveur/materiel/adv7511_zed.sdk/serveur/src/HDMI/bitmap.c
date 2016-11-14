@@ -33,7 +33,7 @@ static void read_2Bytes_LittleEndian(u16 *dst, unsigned char *src)
 }
 
 /*******************************************************************************
- *
+ * Read the header information of a bitmap file into a BMP struct.
 *******************************************************************************/
 static int ReadBitmapHeader(BMP *bmp, FIL *fil)
 {
@@ -75,6 +75,10 @@ static int read_bitmap_data(BMP *bmp, FIL *fil, u8* imgData)
 	int err = 0;
 	unsigned int bytes_read;
 
+	/*
+	 * Note that data does not necessarily start right after the header in the 
+	 * bitmap file
+	 */
 	if( (err = f_lseek(fil, bmp->DataOffset)) != 0 ) return err;
 	if( (err = f_read(fil, imgData, bmp->ImageDataSize, &bytes_read)) != 0 ) return err;
 
@@ -123,7 +127,12 @@ int read_bitmap_file(char *path, BMP *bmp, u8 *imgData, int imgDataMax)
 
 /*******************************************************************************
  * Interface function to get the color of a pixel. Returns a u32 whose bytes
- * are AARRGGBB
+ * are AARRGGBB.
+ * This index calculation was inspired by the C library QDBMP for reading and
+ * writing bitmap files (http://qdbmp.sourceforge.net).
+ * Also note that depending on the software that writes the file, the alpha 
+ * channel is not always in the same place: The images we use were saved with
+ * GIMP rather than ImageMagick.
 *******************************************************************************/
 u32 get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData)
 {

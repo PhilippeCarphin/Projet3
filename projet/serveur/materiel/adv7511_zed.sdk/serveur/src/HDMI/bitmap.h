@@ -1,10 +1,3 @@
-/*
- * bitmap.h
- *
- *  Created on: 2016-09-08
- *      Author: frouee && guvacc
- */
-
 #ifndef BITMAP_H_
 #define BITMAP_H_
 #include <stdio.h>
@@ -45,10 +38,8 @@ int read_bitmap_file(char *path, BMP *bmp, u8 *imgData, int imgDataMax);
 
 /*******************************************************************************
  * Interface function to get the color of a pixel. Returns a u32 whose bytes
- * are AARRGGBB
+ * are AARRGGBB.  
 *******************************************************************************/
 u32 get_pixel_rgba(int i, int j, BMP *bmp, u8 *imgData);
-
-int ReadBitmapFile(char* path);
 
 #endif /* BITMAP_H_ */
