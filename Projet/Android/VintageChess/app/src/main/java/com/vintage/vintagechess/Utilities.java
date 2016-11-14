@@ -81,7 +81,7 @@ public class Utilities {
 
     public static Point getGridCoordinates(String boardCoordinates) {
         int x = boardCoordinates.charAt(0) - 97;
-        int y = boardCoordinates.charAt(1) - 47;
+        int y = boardCoordinates.charAt(1) - 49;
         return new Point(x, y);
     }
 
@@ -89,16 +89,5 @@ public class Utilities {
         return (char)(p.x+97) +Integer.valueOf(p.y+1).toString();
     }
 
-    public static Piece[][] getEmptyGrid() {
-        return new Piece[][] {
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null},
-                {null,null,null,null,null,null,null,null}
-        };
-    }
+
 }

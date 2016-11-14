@@ -23,7 +23,7 @@ public class Display {
     public static ImageView movingPiece;
     public static double offset = 0.05133;
     //private static Bitmap boardImg;
-    public static String board_style;
+    public static String board_style = "1";
     private static int blackSquareColor = Color.rgb(0xEE, 0xEE, 0xD2);
     private static int whiteSquareColor = Color.rgb(0x76, 0x96, 0x56);
     private static int borderColor = Color.rgb(0x95, 0x5C, 0x3E);
@@ -63,8 +63,6 @@ public class Display {
         }
 
         //display the numbers
-        //Paint numberPaint = new Paint();
-        //numberPaint.setTextAlign(Paint.Align.CENTER);
         Paint numberPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         numberPaint.setColor(numberColor);
         numberPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, Utilities.currentActivity.getResources().getDisplayMetrics()));
@@ -74,7 +72,7 @@ public class Display {
         for (int i = 0 ; i < 8 ; i++) {
             String charToDraw = String.valueOf((char)(i+65));
             int x = getBoardOffset() + (int)(getSquareWidth() * (i + 0.5));
-            int y = (int)(textHeight - metric.descent) + getBoardOffset()/2 + (int)((numberPaint.descent() + numberPaint.ascent()) / 2);
+            int y = (int)(textHeight/2 - metric.descent) + getBoardOffset()/2;// + (int)((numberPaint.descent() + numberPaint.ascent()) / 2);
             tempCanvas.drawText(charToDraw, x, y, numberPaint);
             y = y + 8*getSquareWidth() + getBoardOffset();
             tempCanvas.drawText(charToDraw, x, y, numberPaint);
@@ -94,6 +92,7 @@ public class Display {
         for(Piece[] array : Game.pieces) {
             for (Piece p : array)  {
                 if (p != null) {
+                    Log.d("drawing ", p.type_);
                     Bitmap imageBitmap = p.getBitmap();
                     Point position = p.p_;
                     int xPos = getPixelPosition(position.x);
@@ -143,14 +142,6 @@ public class Display {
         return false;
     }
 
-    //update the chessboard image
-    public static void setBoardImg() {
-
-        int id = Utilities.currentActivity.getResources().getIdentifier(board_style + "_chess_board", "drawable", Utilities.currentActivity.getPackageName());
-        //boardImg = BitmapFactory.decodeResource(Utilities.currentActivity.getResources(), id);
-        //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
-        //boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
-    }
 
 
     //convertir les coordonnees de pixel en coordonnees dans la grille de l'echiquier

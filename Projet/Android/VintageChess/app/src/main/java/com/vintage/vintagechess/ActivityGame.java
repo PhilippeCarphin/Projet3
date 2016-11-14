@@ -56,6 +56,7 @@ public class ActivityGame extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try {
         Utilities.currentActivity = this;
         gameStarted = false;
 
@@ -106,24 +107,33 @@ public class ActivityGame extends AppCompatActivity {
         player2Name.setText(ActivityCreateGame.playerName2);
         location.setText(ActivityCreateGame.location);
         round.setText("Round : 0" );
-
+    }
+    catch (Exception e) {
+        Utilities.messageBox("Failed to create game", e.getMessage());
+    }
 
 
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        try {
+
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
         if (!gameStarted) {
-            Game.initializeGame();
+            //Game.initializeGame();
             Utilities.messageBoxStartGame();
             gameStarted = true;
         }
-        Display.drawFullBoard();
+        //Display.drawFullBoard();
         Game.leftSpace = leftSpace.getWidth();
 
         handleRadioChange();
+        }
+        catch (Exception e) {
+            Utilities.messageBox("Failed to change focus", e.getMessage());
+        }
     }
 
     @Override
@@ -184,7 +194,7 @@ public class ActivityGame extends AppCompatActivity {
         try {
             applyFilter();
             changeStyle();
-            Display.setBoardImg();
+            //Display.setBoardImg();
             Display.drawFullBoard();
         }
         catch (Exception e) {

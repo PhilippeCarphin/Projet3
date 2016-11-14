@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 public class Game {
 
-    public static String style;
+    public static String style ="1";
     private static Point downPos;
     private static Point lastPos;
     public static Piece currentPiece;
@@ -29,48 +29,24 @@ public class Game {
     private static boolean isWhiteTurn = true;
 
 
-    public static Piece[][] pieces;
+    public static Piece[][] pieces = new Piece[][] {
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null}};
 
 
-    //set the parameters by default
-    public static void initializeGame() {
 
-        Display.board_style = "red";
-        style = "1";
-        initializePieces();
-        Display.setBoardImg();
-    }
 
     //sets the piece starting positions
-    private static void initializePieces() {
-        pieces = Utilities.getEmptyGrid();
-        int [] verticals = {0, 1, 6, 7};
-        for  (int x = 0 ; x < 8 ; x++) {
-            for (int y : verticals) {
-                boolean isWhite = y < 4;
-
-                String name;
-                if (y % 7 != 0) { //pawns
-                    name = "pawn";
-                }
-                else if (x % 7 == 0) {
-                    name = "rook";
-                }
-                else if ((x - 1) % 5 == 0) {
-                    name = "knight";
-                }
-                else if ((x - 2) % 3 == 0) {
-                    name = "bishop";
-                }
-                else if (x == 4) {
-                    name = "king";
-                }
-                else {
-                    name = "queen";
-                }
-                Piece newPiece = new Piece(name, x, y, isWhite);
-                pieces[newPiece.p_.x][newPiece.p_.y] = newPiece;
-            }
+    private static void initializePieces(LinkedList<Piece> newPieces) {
+        clearPieces();
+        for (Piece newPiece : newPieces) {
+            pieces[newPiece.p_.x][newPiece.p_.y] = newPiece;
         }
     }
 
@@ -160,6 +136,20 @@ public class Game {
     public static void recoverFromError() {
         handleMoveNotOk();
     }
+
+    public static void clearPieces() {
+            pieces =  new Piece[][] {
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null},
+                    {null,null,null,null,null,null,null,null}
+            };
+    }
+
 
 }
 
