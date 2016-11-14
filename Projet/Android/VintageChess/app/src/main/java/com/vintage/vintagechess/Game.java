@@ -61,6 +61,10 @@ public class Game {
         Log.d("down", downPos.x+" "+downPos.y);
         if (downPos != null) {
             currentPiece = getPieceOnCell(downPos);
+            if (currentPiece.isWhite_ != isWhiteTurn) {
+                currentPiece = null;
+                downPos = null;
+            }
         }
         if (currentPiece != null) {
             pieces[downPos.x][downPos.y] = null;
@@ -109,7 +113,9 @@ public class Game {
                 pieces[p.x][p.y] = null;
             }
             pieces[currentPiece.p_.x][currentPiece.p_.y] = currentPiece;
-            isWhiteTurn = !isWhiteTurn;
+            //isWhiteTurn = !isWhiteTurn;
+            Display.lastPos = downPos;
+            Display.newPos = currentPiece.p_;
         }
         finishMove();
         HttpRunner.runGetStatusSummary();
@@ -128,7 +134,7 @@ public class Game {
         downPos = null;
         lastPos = null;
         currentPiece = null;
-        Display.drawMotionlessPieces();
+        Display.drawFullBoard();
         Display.drawMovingPiece();
         Display.unBlockBoard();
     }

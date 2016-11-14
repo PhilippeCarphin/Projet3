@@ -28,12 +28,18 @@ class RequestTask extends AsyncTask<String, String, String> {
     private RequestCallback callback;
     private boolean receiveJSON;
     private static ActivityCreateGame activityCreateGame;
+    private String suffix;
+    private String method;
+    private String body;
 
     //constructor
-    public RequestTask(RequestCallback callback, boolean receiveJSON) {
+    public RequestTask(RequestCallback callback, boolean receiveJSON, String suffix, String method, String body) {
         super();
         this.callback = callback;
         this.receiveJSON = receiveJSON;
+        this.suffix = suffix;
+        this.method = method;
+        this.body = body;
     }
 
     @Override
@@ -41,14 +47,10 @@ class RequestTask extends AsyncTask<String, String, String> {
         
         // params comes from the execute() call: params[0] is the url.
        try {
-            return downloadUrl("http://132.207.89." + args[0], args[1], args[2]);//urls[0]);
+            return downloadUrl("http://132.207.89." + suffix, method, body);//urls[0]);
         }
        catch (SocketTimeoutException e) {
-           //Utilities.messageBox("Timeout", "Resync in progress");
-           HttpRunner.runGetStatusBoard();
-           Utilities.printStackTrace(e);
-           return new String("DOWNLOAD URL " + e.getLocalizedMessage());
-           //Game.recoverFromError();
+           return "TIMEOUT";
        }
        catch (Exception e) {
            //Utilities.messageBox("Error while sending and receiving http response", e.getMessage());
@@ -65,12 +67,17 @@ class RequestTask extends AsyncTask<String, String, String> {
         //Utilities.messageBox("Get result", );
 
         try {
+            if (result.equals("TIMEOUT")) {
+                new RequestTask(callback, receiveJSON, suffix, method, body).execute();
+                return;
+            }
             if (result != null) {
                 if (result.contains("DOWNLOAD URL ")) throw new Exception(result);
                 callback.runResponse(result);
             }
         }
         catch (Exception e) {
+
             Utilities.printStackTrace(e);
             Utilities.messageBox("Error handling the http response", e.getMessage());
             Game.recoverFromError();
@@ -85,8 +92,8 @@ class RequestTask extends AsyncTask<String, String, String> {
         //int len = 500;
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(15000 /* milliseconds */);
-        conn.setConnectTimeout(7000 /* milliseconds */);
+        conn.setReadTimeout(4000 /* milliseconds */);
+        conn.setConnectTimeout(4000 /* milliseconds */);
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);
