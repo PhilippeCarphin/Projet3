@@ -259,8 +259,8 @@ static int draw_information(GameInfo *gi)
 	// Draw event info
 	cursor_top = top;
 	cursor_left = left + 20 * char_width;
-	draw_string(cursor_top, cursor_left, "   Event :\nLocation :\n    Date :"); cursor_left += 10*char_width;
-	draw_string(cursor_top, cursor_left, "${Event_name}"); cursor_top += line_skip;
+	draw_string(cursor_top, cursor_left, "   Event :\nLocation :\n   Round :"); cursor_left += 10*char_width;
+	draw_string(cursor_top, cursor_left, "Livrable 1!"); cursor_top += line_skip;
 	draw_string(cursor_top, cursor_left, gi->location); cursor_top += line_skip;
 	draw_string(cursor_top, cursor_left, gi->round);
 	//draw_string(some_top, some_left, gi->player2);
