@@ -207,6 +207,21 @@ public class ActivityGame extends AppCompatActivity {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         // find the radiobutton by returned id
         radioButtonColor = (RadioButton) findViewById(selectedId);
+
+        switch(selectedId) {
+            case R.id.radioButtonRed:
+                Display.blackSquareColor = BoardColors.redSquareColor;
+                break;
+
+            case R.id.radioButtonBlue:
+                Display.blackSquareColor = BoardColors.blueSquareColor;
+                break;
+
+            case R.id.radioButtonGreen:
+                Display.blackSquareColor = BoardColors.greenSquareColor;
+                break;
+        }
+
         int count = radioGroup.getChildCount();
         ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
         for (int i=0;i<count;i++) {
@@ -229,19 +244,6 @@ public class ActivityGame extends AppCompatActivity {
             tempCanvas.drawRect((int)(tempCanvas.getHeight()*0.1),(int)(tempCanvas.getHeight()*0.1), (int)(tempCanvas.getHeight()*0.9), (int)(tempCanvas.getHeight()*0.9), p);
             r.setBackground(new BitmapDrawable(this.getResources(), imageAndroid));
             i++;
-        }
-        switch(selectedId) {
-            case R.id.radioButtonRed:
-                Display.blackSquareColor = BoardColors.redSquareColor;
-                break;
-
-            case R.id.radioButtonBlue:
-                Display.blackSquareColor = BoardColors.blueSquareColor;
-                break;
-
-            case R.id.radioButtonGreen:
-                Display.blackSquareColor = BoardColors.greenSquareColor;
-                break;
         }
 
         Display.drawFullBoard();
@@ -296,8 +298,6 @@ public class ActivityGame extends AppCompatActivity {
 
 
     }
-
-
 
     @Override
     public void onDestroy()

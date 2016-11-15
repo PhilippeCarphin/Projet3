@@ -98,9 +98,7 @@ class RequestTask extends AsyncTask<String, String, String> {
 
     private String downloadUrl(String myurl, String method, String body) throws Exception {
         InputStream is = null;
-        // Only display the first 500 characters of the retrieved
-        // web page content.
-        //int len = 500;
+
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(4000 /* milliseconds */);
