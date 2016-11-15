@@ -1,0 +1,4 @@
+*
+# Adding this file is necessary so that there can be the empty folder lib
+# indeed, git will not add an empty folder, but we need the empty folder to
+# be created when we clone or the BSP won't build.
