@@ -113,14 +113,14 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(ActivityCreateGame.password + "\r\n\r\n");
+            wr.write(CreateGameInfo.password + "\r\n\r\n");
 
             wr.write(body);
             wr.flush();
         }
         else if (method.equals("POST")) {
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write(ActivityCreateGame.password  + "\r\n\r\n");
+                wr.write(CreateGameInfo.password  + "\r\n\r\n");
                 wr.flush();
         }
 

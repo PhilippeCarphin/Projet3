@@ -115,9 +115,9 @@ public class ActivityGame extends AppCompatActivity {
             round = (TextView) findViewById(R.id.RoundText);
             turn = (TextView) findViewById(R.id.CurrentPlayer);
             moveNumber = (TextView) findViewById(R.id.MoveNumber);
-            player1Name.setText(ActivityCreateGame.playerName1);
-            player2Name.setText(ActivityCreateGame.playerName2);
-            location.setText(ActivityCreateGame.location);
+            player1Name.setText(CreateGameInfo.playerName1);
+            player2Name.setText(CreateGameInfo.playerName2);
+            location.setText(CreateGameInfo.location);
             round.setText("Round : 0" );
              //
             // index = selectStyle.indexOfChild(radioButton)/2;

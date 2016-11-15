@@ -27,18 +27,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     private NumberPicker numberPickerTurnsBeforedraw, numberPickerOverTimePerPlay, numberPickerTimePerPlay;
 
     private Button buttonCreateGame;
-    public static String location;
-    public static boolean oneTablet;
-    public static String password;
-    public static String playerName1;
-    public static String playerName2;
-    public static String round;
-    public static int normalTime;
-    public static int overTime;
-    public static int allowedTurns;
-    public static int timePerPlay;
-    public static int overTimeIncr;
-    public static boolean enPassantOption;
+
     View radioButtonStyle;
     View radioButtonColor;
     RadioGroup RadioGroupModeTablette;
@@ -194,18 +183,18 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     private void handleButtonClick() {
         try {
-            oneTablet = radioButton2.isChecked();
-            enPassantOption = enPassant.isChecked();
-            location = editTextLocation.getText().toString();
-            playerName1 = editTextPlayer1Name.getText().toString();
-            playerName2 = editTextPlayer2Name.getText().toString();
-            password = editTextPassword.getText().toString();
-            normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
-            timePerPlay = numberPickerTimePerPlay.getValue();
-            overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
-            overTimeIncr = numberPickerTimePerPlay.getValue();
-            allowedTurns = numberPickerTurnsBeforedraw.getValue();
-            round = editTextRound.getText().toString();
+            CreateGameInfo.oneTablet = radioButton2.isChecked();
+            CreateGameInfo.enPassantOption = enPassant.isChecked();
+            CreateGameInfo.location = editTextLocation.getText().toString();
+            CreateGameInfo.playerName1 = editTextPlayer1Name.getText().toString();
+            CreateGameInfo.playerName2 = editTextPlayer2Name.getText().toString();
+            CreateGameInfo.password = editTextPassword.getText().toString();
+            CreateGameInfo.normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
+            CreateGameInfo.timePerPlay = numberPickerTimePerPlay.getValue();
+            CreateGameInfo.overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
+            CreateGameInfo.overTimeIncr = numberPickerTimePerPlay.getValue();
+            CreateGameInfo.allowedTurns = numberPickerTurnsBeforedraw.getValue();
+            CreateGameInfo.round = editTextRound.getText().toString();
 
             //handle errors in entries
             if (radioButton2.isChecked()) {
