@@ -41,11 +41,14 @@ enum Colors { 	BACKGROUND = 0xFF666666,
 
 static char readme[] =
 "Welcome to Vintage Chess.\n\n"
-"To start a game\n"
-"\t1. Start Vintage Chess and enter correct IP address in tablet\n"
-"\t   If you are too old to understand what is an IP address, call\n"
-"\t   technical services at 514-978-1336\n\n"
-"\t2. Press CreateNewGame\n";
+"To start a game\n\n"
+"\t1. Start Vintage Chess and enter the IP address \n"
+"\t   that is shown below.If you are too old to understand\n"
+"\t   what is an IP address, call technical services\n"
+"\t   at 514-978-1336\n\n"
+"\t2. Press Start\n\n"
+"\t3. Enter information in the fields\n\n"
+"\t4. Press Create Game\n";
 
 extern struct Screen screen;
 /******************************************************************************
@@ -130,7 +133,7 @@ int BoardDisplay_welcome_screen()
 
 	char ip_string_buffer[100] = {0};
 	sprintf(ip_string_buffer, "Server is running on ip : 132.207.89.%lu", ip_last_byte);
-	draw_string(400,100,ip_string_buffer);
+	draw_string(500,100,ip_string_buffer);
 
 	cf_hdmi_send_buffer();
 	return 0;
