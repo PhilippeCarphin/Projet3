@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -35,20 +33,13 @@ public class ActivityGame extends AppCompatActivity {
     TextClock timerPlaye1;
     TextClock timerPlaye2;
     TextView round;
-    static TextView turn;
-    static TextView moveNumber;
+    TextView turn;
+    TextView moveNumber;
     TextView location;
     private Button buttonEnd;
-    private Button buttonQuit;
-    int radioButtonID;
-    View radioButton;
-    static int index;
-    static View radioButtonStyle;
     View radioButtonColor;
-    RadioGroup RadioGroupSelectColorBoard;
-    RadioGroup RadioGroupSelectStylePiece;
-    public static RadioButton radioButtonStyle1, radioButtonStyle2, radioButtonColorRed, radioButtonColorblue, radioButtonColorGreen;
-
+    private RadioGroup radioGroupBoardColor;
+    private RadioGroup radioGroupPieceStyle;
     private static boolean gameStarted = false;
 
     RadioGroup selectStyle;
@@ -63,14 +54,7 @@ public class ActivityGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try {
 
-
-            radioButtonStyle1 = (RadioButton) findViewById(R.id.radioButtonStyle1);
-            radioButtonStyle2 = (RadioButton) findViewById(R.id.radioButtonStyle2);
-
-            radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
-            radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
-            radioButtonColorGreen = (RadioButton) findViewById(R.id.radioButtonGreen);
-
+            Game.activityGame = this;
             Utilities.currentActivity = this;
             gameStarted = false;
 
@@ -78,6 +62,10 @@ public class ActivityGame extends AppCompatActivity {
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_game);
+            round = (TextView) findViewById(R.id.textRound);
+            turn = (TextView) findViewById(R.id.CurrentPlayer);
+            moveNumber = (TextView) findViewById(R.id.MoveNumber);;
+            location = (TextView) findViewById(R.id.LocationText);;
 
             board = (ImageView) findViewById(R.id.imageViewBoard);
             board.setImageResource(android.R.color.transparent);
@@ -115,26 +103,27 @@ public class ActivityGame extends AppCompatActivity {
             round = (TextView) findViewById(R.id.RoundText);
             turn = (TextView) findViewById(R.id.CurrentPlayer);
             moveNumber = (TextView) findViewById(R.id.MoveNumber);
-            player1Name.setText(ActivityCreateGame.playerName1);
-            player2Name.setText(ActivityCreateGame.playerName2);
-            location.setText(ActivityCreateGame.location);
+            player1Name.setText(CreateGameInfo.playerName1);
+            player2Name.setText(CreateGameInfo.playerName2);
+            location.setText(CreateGameInfo.location);
             round.setText("Round : 0" );
              //
             // index = selectStyle.indexOfChild(radioButton)/2;
 
-            RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
-            RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            radioGroupBoardColor = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
+            int a = 0;
+            radioGroupBoardColor.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
+                    handleRadioButtonBoardColorChange();
                 }
             });
 
-            RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
-            RadioGroupSelectStylePiece.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            radioGroupPieceStyle = (RadioGroup) findViewById(R.id.radioGroupStyle);
+            radioGroupPieceStyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
-                    handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
+                    handleRadioButtonStyleChange();
                 }
             });
 
@@ -144,6 +133,9 @@ public class ActivityGame extends AppCompatActivity {
                     handleButtonEndClick();
                 }
             });
+
+
+
 
             /*buttonQuit = (Button) findViewById(R.id.QuitGameButton);
             buttonQuit.setOnClickListener(new View.OnClickListener() {
@@ -157,16 +149,16 @@ public class ActivityGame extends AppCompatActivity {
         }
     }
 
-    public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
+    public void handleRadioButtonStyleChange() {
 
-        int selectedId = radioGroup.getCheckedRadioButtonId();
+        int selectedId = radioGroupPieceStyle.getCheckedRadioButtonId();
         // find the radiobutton by returned id
-        view = (RadioButton) findViewById(selectedId);
+        RadioButton tempRadioButton = (RadioButton) findViewById(selectedId);
 
-        int count = radioGroup.getChildCount();
+        int count = radioGroupPieceStyle.getChildCount();
         ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
         for (int i=0;i<count;i++) {
-            View o = radioGroup.getChildAt(i);
+            View o = radioGroupPieceStyle.getChildAt(i);
             if (o instanceof RadioButton) {
                 listOfRadioButtons.add((RadioButton)o);
             }
@@ -202,9 +194,9 @@ public class ActivityGame extends AppCompatActivity {
         Display.drawFullBoard();
     }
 
-    private void handleRadioButtonBoardColorChange(RadioGroup radioGroup, View view) {
+    private void handleRadioButtonBoardColorChange() {
 
-        int selectedId = radioGroup.getCheckedRadioButtonId();
+        int selectedId = radioGroupBoardColor.getCheckedRadioButtonId();
         // find the radiobutton by returned id
         radioButtonColor = (RadioButton) findViewById(selectedId);
 
@@ -222,10 +214,10 @@ public class ActivityGame extends AppCompatActivity {
                 break;
         }
 
-        int count = radioGroup.getChildCount();
+        int count = radioGroupBoardColor.getChildCount();
         ArrayList<RadioButton> listOfRadioButtons = new ArrayList<RadioButton>();
         for (int i=0;i<count;i++) {
-            View o = radioGroup.getChildAt(i);
+            View o = radioGroupBoardColor.getChildAt(i);
             if (o instanceof RadioButton) {
                 listOfRadioButtons.add((RadioButton)o);
             }
@@ -270,15 +262,14 @@ public class ActivityGame extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
         if (!gameStarted) {
-            //Game.initializeGame();
             Utilities.messageBoxStartGame();
             gameStarted = true;
         }
         Display.drawFullBoard();
 
         //handleRadioChange();
-        handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
-        handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
+            handleRadioButtonBoardColorChange();
+            handleRadioButtonStyleChange();
 
         }
         catch (Exception e) {
@@ -304,6 +295,7 @@ public class ActivityGame extends AppCompatActivity {
     {
         try {
             HttpRunner.runPostGameEnd(null);
+            Game.activityGame = null;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -340,6 +332,14 @@ public class ActivityGame extends AppCompatActivity {
 
     }
 
+    public void setMoveNumberText(String text) {
+        moveNumber.setText(text);
+    }
+
+    public void setWhoseTurn(String turn) {
+        Game.isWhiteTurn = turn.equals("1");
+        this.turn.setText(Game.isWhiteTurn ? "White" : "Black");
+    }
 
 }
 

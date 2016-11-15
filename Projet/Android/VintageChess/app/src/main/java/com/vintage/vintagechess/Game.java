@@ -26,6 +26,8 @@ public class Game {
     public static Piece currentPiece;
     public static String ip;
     public static boolean isWhiteTurn = true;
+    public static boolean gameStarted = false;
+    public static ActivityGame activityGame;
 
 
     public static Piece[][] pieces = new Piece[][] {
