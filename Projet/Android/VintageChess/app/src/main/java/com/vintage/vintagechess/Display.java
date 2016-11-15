@@ -21,7 +21,6 @@ public class Display {
     public static String board_style;
     public static int blackSquareColor = BoardColors.greenSquareColor;
     public static int lightSquareColor = BoardColors.whiteSquareColor;
-    public static ActivityGame activityGame;
     public static Point lastPos;
     public static Point newPos;
 
@@ -193,19 +192,11 @@ public class Display {
     }
 
 
-    public static void setMoveNumber(String n) {
-        activityGame.moveNumber.setText(n);
-    }
 
-    public static void setWhoseTurn(String turn) {
-        Game.isWhiteTurn = turn.equals("1");
-        activityGame.turn.setText(Game.isWhiteTurn ? "White" : "Black");
-
-    }
 
     public static void updateGameFromStatusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
-        setMoveNumber(moveNbReceived);
-        setWhoseTurn(turnReceived);
+        Game.activityGame.setMoveNumberText(moveNbReceived);
+        Game.activityGame.setWhoseTurn(turnReceived);
         //activityGame.state.setText(stateReceived);
 
 

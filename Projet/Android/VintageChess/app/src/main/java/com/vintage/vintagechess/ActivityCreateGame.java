@@ -51,13 +51,6 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         Utilities.hideKeyPad(this);
 
-        ActivityGame.radioButtonStyle1 = (RadioButton) findViewById(R.id.radioButtonStyle1);
-        ActivityGame.radioButtonStyle2 = (RadioButton) findViewById(R.id.radioButtonStyle2);
-
-        ActivityGame.radioButtonColorRed = (RadioButton) findViewById(R.id.radioButtonRed);
-        ActivityGame.radioButtonColorblue = (RadioButton) findViewById(R.id.radioButtonBlue);
-        ActivityGame.radioButtonColorGreen = (RadioButton) findViewById(R.id.radioButtonGreen);
-
         radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
         radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);

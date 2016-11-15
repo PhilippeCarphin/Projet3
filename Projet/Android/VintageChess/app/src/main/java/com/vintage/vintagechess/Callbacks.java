@@ -101,8 +101,9 @@ public class Callbacks {
                 JSONObject jsonObject = new JSONObject(response);
                 Game.setConfig(REST.getPiecesFromStatusBoard(jsonObject));
                 String white = jsonObject.getString("turn");
-                Display.setWhoseTurn(white);
-                Display.setMoveNumber(jsonObject.getString("move_no"));
+                Game.activityGame.setWhoseTurn(white);
+                Game.activityGame.setMoveNumberText(jsonObject.getString("move_no"));
+
             }
         };
         return ret;
