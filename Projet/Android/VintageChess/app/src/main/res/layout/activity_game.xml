@@ -22,311 +22,279 @@
         android:layout_alignParentStart="true"
         android:layout_gravity="center">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center">
+        <!-- tous les trucs du haut -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
-                <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingRight="5dp">
-
-                    <TextView
-                        android:text="White:"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Player1"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:text="Black:"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Player2"
-                        android:layout_weight="1" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text="Player1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Player1Name" />
-                    <TextView
-                        android:text="Player2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/Player2Name" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingLeft="25dp">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:text="Time : "
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/Time1"
-                            android:layout_weight="0" />
-
-                        <TextView
-                            android:text="Time : "
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/Time2"
-                            android:layout_weight="0" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextClock
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/TimePlayer1"
-                            android:format12Hour="00"
-                            android:layout_weight="1"
-                            android:layout_gravity="center" />
-
-                        <TextClock
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/TimePlayer2"
-                            android:format12Hour="00"
-                            android:layout_weight="1" />
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingLeft="25dp">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="10dp">
-
-                    <TextView
-                        android:text="Turn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/TurnText"
-                        android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:elevation="1dp"
-                        android:gravity="center_vertical" />
-
-                    <TextView
-                        android:text="Move"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/MoveNumberText"
-                        android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:gravity="center_vertical" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:text=": "
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView7" />
-
-                    <TextView
-                        android:text=": "
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView6" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:text="White"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/CurrentPlayer"
-                        android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:gravity="center_vertical" />
-
-                    <TextView
-                        android:text="0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/MoveNumber"
-                        android:textAppearance="@style/TextAppearance.AppCompat"
-                        android:gravity="center" />
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingLeft="25dp">
+                android:layout_weight="1">
 
                 <TextView
-                    android:text="Location :"
+                    android:text="White: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="Black: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <TextView
+                    android:text="Player1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/LocationText"
-                    android:layout_weight="0" />
+                    android:id="@+id/Player1Name" />
+                <TextView
+                    android:text="Player2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Player2Name" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"/>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="Time : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="Time : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TimePlayer1"
+                    android:format12Hour="00"
+                    android:layout_gravity="center" />
+
+                <TextClock
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/TimePlayer2"
+                    android:format12Hour="00" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="Turn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:elevation="1dp"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:text="Move"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    android:gravity="center_vertical" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text=": "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text=": "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="White"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/CurrentPlayer"
+                    android:textAppearance="@style/TextAppearance.AppCompat" />
+
+                <TextView
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/MoveNumber"
+                    android:textAppearance="@style/TextAppearance.AppCompat" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/LocationText" />
 
                 <TextView
                     android:text="Round :"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/RoundText" />
 
             </LinearLayout>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0">
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0" />
-
-                    <TextView
-                        android:text="State :"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textState"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:text=""
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/State"
-                        android:layout_weight="1" />
-                </LinearLayout>
-            </LinearLayout>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0" />
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
-                        <TextView
-                            android:text="Piece style"
-                            android:layout_height="match_parent"
-                            android:id="@+id/textPieceStyle"
-                            android:layout_weight="1"
-                            android:layout_width="match_parent" />
-                        <RadioGroup
-                            android:orientation="horizontal"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:id="@+id/RadioGroupForTypePiece"
-                            android:layout_width="wrap_content">
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/radioButtonStyle1"
-                                android:layout_weight="1"
-                                android:button="@null"
-                                android:checked="true"/>
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/radioButtonStyle2"
-                                android:layout_weight="1"
-                                android:button="@null"
-                                android:checked="false"/>
-                        </RadioGroup>
+                <TextView
+                    android:text="State :"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textState"
+                    android:layout_weight="1" />
 
-
-                        <TextView
-                            android:text="Color board"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/textSelectBoard"
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content" />
-
-                        <RadioGroup
-                            android:orientation="horizontal"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/RadioGroupBoardColor"
-                            android:layout_weight="1"
-                            android:layout_width="wrap_content">
-
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/radioButtonGreen"
-                                android:button="@null"
-                                android:checked="true"/>
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:button="@null"
-                                android:checked="false"
-                                android:id="@+id/radioButtonBlue"/>
-
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:id="@+id/radioButtonRed"
-                                android:button="@null"
-                                android:checked="false"/>
-                        </RadioGroup>
+                <TextView
+                    android:text=""
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/State"
+                    android:layout_weight="1" />
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Piece style: "
+                android:layout_height="match_parent"
+                android:id="@+id/textPieceStyle"
+                android:layout_weight="1"
+                android:layout_width="match_parent" />
+            <RadioGroup
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:id="@+id/RadioGroupForTypePiece"
+                android:layout_width="wrap_content">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioButtonStyle1"
+                    android:button="@null"
+                    android:checked="true"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioButtonStyle2"
+                    android:button="@null"
+                    android:checked="false"/>
+            </RadioGroup>
+
+
+            <TextView
+                android:text="Board Color: "
+                android:layout_height="wrap_content"
+                android:id="@+id/textSelectBoard"
+                android:layout_weight="1"
+                android:layout_width="wrap_content" />
+
+            <RadioGroup
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:id="@+id/RadioGroupBoardColor"
+                android:layout_weight="1"
+                android:layout_width="wrap_content">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioButtonGreen"
+                    android:button="@null"
+                    android:checked="true"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:checked="false"
+                    android:id="@+id/radioButtonBlue"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/radioButtonRed"
+                    android:button="@null"
+                    android:checked="false"/>
+            </RadioGroup>
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -380,23 +348,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"/>
         </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:layout_gravity="center">
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"/>
-        <Button
-            android:text="End Game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/EndGameButton"
-            android:layout_weight="1" />
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:layout_gravity="center">
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"/>
+            <Button
+                android:text="End Game"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/EndGameButton"
+                android:layout_weight="1" />
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>
