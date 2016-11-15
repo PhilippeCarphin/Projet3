@@ -117,13 +117,31 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 	int maxPacketLength = tcp_sndbuf(tpcb);
 	/* decode the expected HTTP request and generate the appropriate response */
 
+	char totalPayloadBuffer[10000];
+
+	strcpy(totalPayloadBuffer, p->payload);
+	int hasNextBuffer = 1;
+	struct pbuf* next = p->next;
+	while (hasNextBuffer == 1)
+	{
+		if (next != NULL)
+		{
+			strcat(totalPayloadBuffer, next->payload);
+			next = next->next;
+		}
+		else
+		{
+			hasNextBuffer = 0;
+		}
+	}
+
 	char HTTP_response[1000];
 
 	xil_printf("\n===============================================================================\n");
 
-	xil_printf("RECEIVED REQUEST :\n%s\n", p->payload);
+	xil_printf("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
 
-	HTTP_dispatchRequest(p->payload, HTTP_response);
+	HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
 
 	xil_printf("RESPONSE SENT:\n%s\n",HTTP_response);
 

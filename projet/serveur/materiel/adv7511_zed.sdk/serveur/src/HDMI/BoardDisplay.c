@@ -266,6 +266,15 @@ static int draw_information(GameInfo *gi)
 	//draw_string(some_top, some_left, gi->player2);
 	// ...
 
+	char ip_buff_2[100] = {0};
+	sprintf(ip_buff_2,"IP is 132.207.89.%lu", ip_last_byte);
+
+	u32 width = char_width * strlen(ip_buff_2) - 3;
+	cursor_left = 1150 - width;
+	cursor_top = 1000;//1080 - line_skip - 30;
+	draw_square(cursor_top, cursor_left, width, line_skip, 0);
+	draw_string(cursor_top, cursor_left, ip_buff_2);
+
 	return 0;
 }
 
@@ -793,10 +802,12 @@ static int draw_string(u32 screen_top, u32 screen_left, char *str)
 	{
 		if ( 32 < c && c <= '~' )
 		{
+#if 0
 			if( cursor_left + char_width + 2 >= screen.w){
 				cursor_left = screen_left;
 				cursor_top += line_skip;
 			}
+#endif
 			if( (err =draw_char(cursor_top, cursor_left, c)) != 0){
 				WHERE DBG_PRINT("Could not draw char %c\n");
 				return err;
