@@ -22,6 +22,7 @@ int getBoard_request(char *REST_response);
 int postBoard_request(const char *data, char *REST_response);
 int getDetails_request(char *REST_response);
 int start_request(char *REST_response);
+int join_request(char *REST_response);
 int end_request(const char *data, char *REST_response);
 
 /******************************************************************************
@@ -31,20 +32,24 @@ int REST_handle_request(enum request_type type, const char *data, const char *ps
 {
 	FBEGIN
 	char pswd_b64[MAX_lEN];
-	
+	pswd_b64[0] = '\0';
 	ascii_to_base64(pswd, strlen(pswd), pswd_b64);
-	if (type != NEW_GAME && validate_password(pswd_b64) == unathorized)
-	{
-		return unathorized;
-	}
 
 	switch (type)
 	{
 	case NEW_GAME:
 		return newGame_request(data, REST_response);
 	case MOVE:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
 		return move_request(data, REST_response);
 	case PROMOTE:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
 		return promote_request(data, REST_response);
 	case GET_TIME:
 		return getTime_request(data, REST_response);
@@ -53,13 +58,31 @@ int REST_handle_request(enum request_type type, const char *data, const char *ps
 	case GET_BOARD:
 		return getBoard_request(REST_response);
 	case POST_BOARD:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
 		return postBoard_request(data, REST_response);
 	case GET_DETAILS:
 		return getDetails_request(REST_response);
 	case START:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
 		return start_request(REST_response);
 	case END:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
 		return end_request(data, REST_response);
+	case JOIN:
+		if (validate_password(pswd_b64) == unathorized)
+		{
+			return unathorized;
+		}
+		return join_request(REST_response);
 	case ERROR:
 	default:
 		return -1;
@@ -331,6 +354,19 @@ int start_request(char *REST_response)
 	/* call something like: int start_game(); */
 	int status = start_game();
 	
+	/* send code to client via HTTP (200 or 401) */
+	REST_response[0] = '\0';
+	return status;
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+int join_request(char *REST_response)
+{
+	/* call something like: int start_game(); */
+	int status = join_game();
+
 	/* send code to client via HTTP (200 or 401) */
 	REST_response[0] = '\0';
 	return status;

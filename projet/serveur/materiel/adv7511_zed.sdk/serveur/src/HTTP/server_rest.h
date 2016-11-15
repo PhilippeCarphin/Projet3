@@ -20,6 +20,7 @@ enum request_type
 	GET_DETAILS,
 	START,
 	END,
+	JOIN,
 	ERROR
 };
 

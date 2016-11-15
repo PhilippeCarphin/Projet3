@@ -1,5 +1,6 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
+#define DEBUG
 #include "debug.h"
 
 #include <string.h>
@@ -77,6 +78,19 @@ enum ChessboardRestStatus start_game()
 }
 
 /******************************************************************************
+ *
+ ******************************************************************************/
+enum ChessboardRestStatus join_game()
+{
+	if (!gameStarted)
+	{
+		return unathorized;
+	}
+
+	return OK;
+}
+
+/******************************************************************************
  * Return to initial state: sets gameStarted to false and display the
  * welcome screen.
 ******************************************************************************/
@@ -88,6 +102,7 @@ enum ChessboardRestStatus end_game()
 		return unathorized;
 	}
 	gameStarted = false;
+	currentGameInfo.secret_code[0] = '\0';
 	BoardDisplay_welcome_screen();
 	return OK;
 }
@@ -166,6 +181,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
  ******************************************************************************/
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo)
 {
+	FBEGIN;
 	struct Move mv; 		// infos for BoardDisplay/HDMI
 	mv.enPassant = false;	// set to true only if a piece is captured by En Passant
 
@@ -268,6 +284,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
 	BoardDisplay_move_piece(&mv);
 
+	FEND;
 	return OK;
 }
 
@@ -287,6 +304,7 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
  ******************************************************************************/
 enum ChessboardRestStatus validate_password(const char *pswd)
 {
+	//xil_printf("Sent password: %s\nInternal password: %s\n", pswd, currentGameInfo.secret_code);
 	if (strcmp(currentGameInfo.secret_code, pswd) != 0)
 	{
 		return unathorized;
@@ -362,14 +380,14 @@ enum ChessboardRestStatus get_time(int player,TimeInfo *timeInfo)
 }
 
 /******************************************************************************
- *
+ * Set the board and pieces to their standard initial state, ready to play.
  ******************************************************************************/
 static void ChessGameInitialisation()
 {
 	// we clear the board
 	clearBoard();
 
-	// we initialize the pieces of the first players
+	// we initialize the pieces of the first player
 	player1Pieces[0] = PieceInitialisation(4,0,KING,player1);
 	player1Pieces[1] = PieceInitialisation(3,0,QUEEN,player1);
 	player1Pieces[2] = PieceInitialisation(2,0,BISHOP,player1);
@@ -410,6 +428,8 @@ static void ChessGameInitialisation()
 
 	// place P2 pieces on the board
 	setBoard(player2Pieces);
+
+	// initialize currentTurnInfo
 	player1Turn = true;
 	currentTurnInfo.game_status = NORMAL;
 	currentTurnInfo.last_move[0] = 'x';
@@ -419,7 +439,7 @@ static void ChessGameInitialisation()
 }
 
 /******************************************************************************
- *
+ * Set a piece to an initial state.
  ******************************************************************************/
 static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 {
@@ -435,7 +455,8 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 }
 
 /******************************************************************************
- *
+ * Set the board so that each square that should be occupied by a piece has
+ * the corresponding pointer. It does so only for one player's pieces.
  ******************************************************************************/
 static void setBoard(Piece* playerPieces)
 {
@@ -448,7 +469,7 @@ static void setBoard(Piece* playerPieces)
 }
 
 /******************************************************************************
- *
+ * Set every square of the chessboard to NULL.
  ******************************************************************************/
 static void clearBoard()
 {
@@ -464,7 +485,7 @@ static void clearBoard()
 }
 
 /******************************************************************************
- *
+ * Check if a piece's move is valid, depending on its type.
  ******************************************************************************/
 static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
 {
@@ -502,7 +523,8 @@ static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd
 }
 
 /******************************************************************************
- *
+ * Check if a king's move is valid.
+ * NOTE: Does not yet check for castling and check situations.
  ******************************************************************************/
 static enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
@@ -520,25 +542,26 @@ static enum moveResult move_king(int xs, int xd, int ys, int yd)
 }
 
 /******************************************************************************
- *
+ * Check if a rook's move is valid.
  ******************************************************************************/
-// uses static boardGame
 static enum moveResult move_rook(int xs, int xd, int ys, int yd)
 {
 	if (xs != xd)
 	{
 		if(ys!=yd)
 			return ILLEGAL; // moving in both directions
-		else
-		{ // moving on the x
+		else // moving on the x axis
+		{
+			/* check squares between min+1 and max-1 for an obstructing piece */
 			int i = (xs < xd ? xs + 1 : xd + 1); // min + 1
 			for (; i < (xs > xd ? xs : xd); ++i) // i < max
 				if(boardGame[i][ys] != 0)
 					return ILLEGAL; // passing over a piece
 		}
 	}
-	else
-	{ // moving on the y
+	else // moving on the y axis
+	{
+		/* check squares between min+1 and max-1 for an obstructing piece */
 		int i = (ys < yd ? ys + 1 : yd + 1); // min + 1
 		for (; i < (ys > yd ? ys : yd); ++i) // i < max
 			if(boardGame[xs][i] != 0)
@@ -548,18 +571,17 @@ static enum moveResult move_rook(int xs, int xd, int ys, int yd)
 }
 
 /******************************************************************************
- *
+ * Check if a bishop's move is valid.
  ******************************************************************************/
-// uses static boardGame
 static enum moveResult move_bishop(int xs, int xd, int ys, int yd)
 {
-	//if ( (xs > xd ? xs - xd : xd - xs) != (ys > yd ? ys - yd : yd - ys) ) // abs(diff X) != abs(diff Y)
+	// not moving equally in both directions
 	if (xs - xd  != ys - yd && xs - xd  != yd - ys) // diff X != diff Y && diff X != -diff Y
-		return ILLEGAL; // not moving equally in both directions
+		return ILLEGAL;
 
-	// Francis was here j'ai rajouter : || (xs > xd && ys > yd) a : 	if ((xs < xd && ys < yd) || (xs > xd && ys > yd))
+	// moving along the y = x axis
 	if ((xs < xd && ys < yd) || (xs > xd && ys > yd))
-	{ // meme signe
+	{
 		int i = (xs < xd ? xs : xd); // min X
 		int j = (ys < yd ? ys : yd); // min Y
 		int dist = (xs > xd ? xs - xd : xd - xs);
@@ -568,8 +590,10 @@ static enum moveResult move_bishop(int xs, int xd, int ys, int yd)
 			if(boardGame[i+k][j+k] != 0)
 				return ILLEGAL; // passing over a piece
 	}
+
+	// moving along the y = -x axis
 	else
-	{ // signe different
+	{
 		int i = (xs < xd ? xs : xd); // min X
 		int j = (ys > yd ? ys : yd); // max Y
 		int dist = (xs > xd ? xs - xd : xd - xs);
@@ -582,7 +606,7 @@ static enum moveResult move_bishop(int xs, int xd, int ys, int yd)
 }
 
 /******************************************************************************
- *
+ * Check if a knight's move is valid.
  ******************************************************************************/
 static enum moveResult move_knight(int xs, int xd, int ys, int yd)
 {
@@ -597,7 +621,7 @@ static enum moveResult move_knight(int xs, int xd, int ys, int yd)
 }
 
 /******************************************************************************
- *
+ * Check if a queen's move is valid.
  ******************************************************************************/
 static enum moveResult move_queen(int xs, int xd, int ys, int yd)
 {
@@ -612,9 +636,8 @@ static enum moveResult move_queen(int xs, int xd, int ys, int yd)
 }
 
 /******************************************************************************
- *
+ * Check if a pawn's move is valid.
  ******************************************************************************/
-// uses static boardGame, player1Pieces and player2Pieces and may change their values.
 static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 {
 	Piece *piece = boardGame[xs][ys];

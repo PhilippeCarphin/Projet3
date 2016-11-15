@@ -28,6 +28,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	static char pswd[MAX_LENGTH];	/* body part of request */
 	int len, err, need_header;
 		
+	pswd[0] = '\0';
 	/* get header */
 	get_header(request, header);	
 	if ((err = validate_request(header)) != HTTP_OK)
@@ -163,6 +164,11 @@ enum request_type get_type(const char *header, int *need_header)
 	{
 		*need_header = 0;
 		return NEW_GAME;
+	}
+	if (strstr(header, "POST /join_game"))
+	{
+		*need_header = 0;
+		return JOIN;
 	}
 	if (strstr(header, "POST /move"))
 	{

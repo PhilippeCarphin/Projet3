@@ -41,6 +41,7 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo);
  * Set gameStarted to true and inform the HDMI module.
  ******************************************************************************/
 enum ChessboardRestStatus start_game();
+enum ChessboardRestStatus join_game();
 
 /******************************************************************************
  * Return to initial state: set gameStarted to false and display the

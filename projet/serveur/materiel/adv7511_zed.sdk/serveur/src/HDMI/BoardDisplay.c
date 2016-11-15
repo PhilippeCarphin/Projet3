@@ -3,6 +3,7 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
+#define DEBUG
 #include "debug.h"
 #include "cf_hdmi.h"
 
@@ -165,6 +166,7 @@ int BoardDisplay_start_game()
 ******************************************************************************/
 int BoardDisplay_move_piece(struct Move *move)
 {
+	FBEGIN;
 	int err;
 
 	move->castling = (move->t == KING 
@@ -198,7 +200,7 @@ int BoardDisplay_move_piece(struct Move *move)
 
 	draw_turn((move->c == WHITE ? BLACK : WHITE));
 	cf_hdmi_send_buffer();
-
+	FEND;
 	return 0;
 }
 
@@ -473,8 +475,10 @@ static char getPieceChar(PieceType t)
  		return 'B';
  	case ROOK:
  		return 'R';
+ 	case QUEEN:
+ 		return 'Q';
  	default:
- 		return ' ';
+ 		return 'W';
  	}
  }
 
@@ -525,9 +529,10 @@ static int draw_move_number(u32 top, u32 left, int number)
  ******************************************************************************/
  static int draw_move_notation(struct Move *mv)
  {
+	FBEGIN;
  	int move_number = (mv->turn_number + 1)/2;
- 	char console_out[10] = {0};
- 	char buff[5] = {0};
+ 	char console_out[30] = {0};
+ 	char buff[30] = {0};
  	u32 cursor_top = bd.notation_top + (move_number + 1 ) * line_skip;
  	u32 cursor_left = bd.notation_left;
 
@@ -536,7 +541,7 @@ static int draw_move_number(u32 top, u32 left, int number)
  	 * Otherwise, move the cursor 9 positions to the right to draw the black
  	 * move.
  	 */
-
+ 	WHEREL;
  	if( mv->c == WHITE)
  	{
  		draw_move_number(cursor_top, cursor_left, move_number);
@@ -565,9 +570,11 @@ static int draw_move_number(u32 top, u32 left, int number)
 		draw_string(cursor_top, cursor_left, castling_str);
 		strcat(console_out, castling_str);
 		xil_printf(console_out);
+		FEND;
  		return 0;
  	}
 
+ 	WHEREL;
  	/*
  	 * We draw the char identifying the piece (K,N,B,R) and nothing for pawns,
  	 * except if the move is a capturing move, in which case, we identify the
@@ -611,6 +618,7 @@ static int draw_move_number(u32 top, u32 left, int number)
 
  	xil_printf("Move made (FIDE notation) %s\n", console_out);
 
+ 	FEND;
  	return 0;
  }
 
@@ -653,6 +661,7 @@ static int un_yellow(struct Move *mv)
 ******************************************************************************/
 static int do_move(struct Move *mv)
 {
+	FBEGIN;
 	int err;
 	if( mv->castling )
 	{
@@ -693,6 +702,7 @@ static int do_move(struct Move *mv)
 		if((err = color_square(mv->d_file, mv->d_rank, YELLOW)) != 0) return err;
 		if((err = draw_piece(mv->t, mv->c, mv->d_file, mv->d_rank)) != 0) return err;
 	}
+	FEND;
 	return 0;
 }
 
