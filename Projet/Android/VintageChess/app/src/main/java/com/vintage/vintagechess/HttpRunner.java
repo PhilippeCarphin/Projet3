@@ -1,6 +1,7 @@
 package com.vintage.vintagechess;
 
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 
 import org.json.JSONException;
 
@@ -12,6 +13,7 @@ public class HttpRunner {
 
     private static void runRequest(final String suffix, final String method, final String body,final RequestCallback onSucessCallBack,final RequestCallback onFailCallBack, final boolean receiveJSON) {
         new RequestTask(onSucessCallBack,onFailCallBack, receiveJSON, Game.ip + suffix, method, body).execute();
+        Utilities.dialog = ProgressDialog.show(Utilities.currentActivity, "Loading", "Please wait...", true);
     }
 
 

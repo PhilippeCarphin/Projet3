@@ -73,6 +73,7 @@ class RequestTask extends AsyncTask<String, String, String> {
                 new RequestTask(onSucess,null, receiveJSON, suffix, method, body).execute();
                 return;
             }
+            Utilities.dialog.dismiss();
             if (result != null) {
                 if (result.contains("ERROR ")) throw new Exception(result);
                 onSucess.runResponse(result);
