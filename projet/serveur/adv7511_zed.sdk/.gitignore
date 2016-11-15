@@ -6,4 +6,5 @@ webtalk
 **/debug
 ./tp3/release
 *.o
+*.a
 
