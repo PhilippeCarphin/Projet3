@@ -841,17 +841,17 @@ static u32 getPieceOffset(PieceType p)
 	switch(p)
 	{
 	case KING:
-		return 8;
+		return 14;
 	case PAWN:
-		return 19;
+		return 25;
 	case QUEEN:
-		return 1;
-	case BISHOP:
 		return 6;
+	case BISHOP:
+		return 10;
 	case KNIGHT:
-		return 8;
+		return 14;
 	case ROOK:
-		return 13;
+		return 19;
 	default:
 		return 0;
 	}
