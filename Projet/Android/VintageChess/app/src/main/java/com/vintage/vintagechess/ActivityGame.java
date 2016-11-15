@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Space;
 import android.widget.TextClock;
 import android.widget.TextView;
 
@@ -24,23 +23,24 @@ import java.util.ArrayList;
 
 public class ActivityGame extends AppCompatActivity {
 
-    ImageView board;
-    ImageView motionlessPieces;
-    ImageView movingPiece;
-    Space leftSpace;
-    TextView player1Name, state;
-    TextView player2Name;
-    TextClock timerPlaye1;
-    TextClock timerPlaye2;
-    TextView round;
-    TextView turn;
-    TextView moveNumber;
-    TextView location;
-    private Button buttonEnd;
-    View radioButtonColor;
+
+    //chessboard views
+    private ImageView board;
+    private ImageView motionlessPieces;
+    private ImageView movingPiece;
+
+    private TextView textViewPlayer1Name, textViewPlayer2Name;
+    private TextClock textClockPlayer1, textClockPlayer2;
+    private TextView state;
+    private TextView textViewRoundNumber;
+    private TextView textViewWhoseTurn;
+    private TextView textViewMoveNumber;
+    private TextView textViewLocation;
+    
     private RadioGroup radioGroupBoardColor;
     private RadioGroup radioGroupPieceStyle;
 
+    private Button buttonEndGame;
 
     RadioGroup selectStyle;
 
@@ -62,10 +62,10 @@ public class ActivityGame extends AppCompatActivity {
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_game);
-            round = (TextView) findViewById(R.id.textRound);
-            turn = (TextView) findViewById(R.id.CurrentPlayer);
-            moveNumber = (TextView) findViewById(R.id.MoveNumber);;
-            location = (TextView) findViewById(R.id.LocationText);;
+            textViewRoundNumber = (TextView) findViewById(R.id.textRound);
+            textViewWhoseTurn = (TextView) findViewById(R.id.CurrentPlayer);
+            textViewMoveNumber = (TextView) findViewById(R.id.MoveNumber);;
+            textViewLocation = (TextView) findViewById(R.id.LocationText);;
 
             board = (ImageView) findViewById(R.id.imageViewBoard);
             board.setImageResource(android.R.color.transparent);
@@ -78,7 +78,6 @@ public class ActivityGame extends AppCompatActivity {
             movingPiece = (ImageView) findViewById(R.id.imageViewMovingPieces);
             movingPiece.setImageResource(android.R.color.transparent);
 
-            leftSpace = (Space) findViewById(R.id.leftSpace);
 
             board.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
@@ -94,19 +93,19 @@ public class ActivityGame extends AppCompatActivity {
 
 
             state = (TextView)  findViewById(R.id.State);
-            player1Name = (TextView) findViewById(R.id.Player1Name);
-            player2Name = (TextView) findViewById(R.id.Player2Name);
-            location = (TextView) findViewById(R.id.LocationText);
+            textViewPlayer1Name = (TextView) findViewById(R.id.Player1Name);
+            textViewPlayer2Name = (TextView) findViewById(R.id.Player2Name);
+            textViewLocation = (TextView) findViewById(R.id.LocationText);
 
-            timerPlaye1 = (TextClock) findViewById(R.id.TimePlayer1);
-            timerPlaye2 = (TextClock) findViewById(R.id.TimePlayer2);
-            round = (TextView) findViewById(R.id.RoundText);
-            turn = (TextView) findViewById(R.id.CurrentPlayer);
-            moveNumber = (TextView) findViewById(R.id.MoveNumber);
-            player1Name.setText(CreateGameInfo.playerName1);
-            player2Name.setText(CreateGameInfo.playerName2);
-            location.setText(CreateGameInfo.location);
-            round.setText("Round : 0" );
+            textClockPlayer1 = (TextClock) findViewById(R.id.TimePlayer1);
+            textClockPlayer2 = (TextClock) findViewById(R.id.TimePlayer2);
+            textViewRoundNumber = (TextView) findViewById(R.id.RoundText);
+            textViewWhoseTurn = (TextView) findViewById(R.id.CurrentPlayer);
+            textViewMoveNumber = (TextView) findViewById(R.id.MoveNumber);
+            textViewPlayer1Name.setText(CreateGameInfo.playerName1);
+            textViewPlayer2Name.setText(CreateGameInfo.playerName2);
+            textViewLocation.setText(CreateGameInfo.location);
+            textViewRoundNumber.setText("Round : 0" );
              //
             // index = selectStyle.indexOfChild(radioButton)/2;
 
@@ -127,8 +126,8 @@ public class ActivityGame extends AppCompatActivity {
                 }
             });
 
-             buttonEnd = (Button) findViewById(R.id.EndGameButton);
-            buttonEnd.setOnClickListener(new View.OnClickListener() {
+             buttonEndGame = (Button) findViewById(R.id.EndGameButton);
+            buttonEndGame.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     handleButtonEndClick();
                 }
@@ -198,7 +197,6 @@ public class ActivityGame extends AppCompatActivity {
 
         int selectedId = radioGroupBoardColor.getCheckedRadioButtonId();
         // find the radiobutton by returned id
-        radioButtonColor = (RadioButton) findViewById(selectedId);
 
         switch(selectedId) {
             case R.id.radioButtonRed:
@@ -335,12 +333,12 @@ public class ActivityGame extends AppCompatActivity {
     }
 
     public void setMoveNumberText(String text) {
-        moveNumber.setText(text);
+        textViewMoveNumber.setText(text);
     }
 
     public void setWhoseTurn(String turn) {
         Game.isWhiteTurn = turn.equals("1");
-        this.turn.setText(Game.isWhiteTurn ? "White" : "Black");
+        this.textViewWhoseTurn.setText(Game.isWhiteTurn ? "White" : "Black");
     }
 
 }
