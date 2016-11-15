@@ -25,13 +25,14 @@ Pour le livrable 1 veuillez trouver les items demandés dans les dossiers suivant
 		- Lancer XilinxSDK avec ce dossier comme workspace
 		- Faire File->Import, choisir General->Existing project into workspace
 			- Cliquer browse, et choisir le dossier /projet/serveur/adv7511_zed.sdk
-			  (il devrait être choisi par défaut), cliquer OK
-			- Importer les deux projets trouvés (le projet logiciel (nommé serveur)
-			  et le hardware (nommé system_top_hw_platform_0)
-		- Faire File->New->Board Support Package
-			- Laisser le nom "standalone_bsp_0" (c'est important)
-			- Faire OK.
+			- Importer les TROID projets trouvés (le projet logiciel (nommé serveur),
+			  le hardware (nommé system_top_hw_platform_0) et le bsp (standalone_bsp_0).
+		- Donner le temps au bsp d'être "buildé"
 		- Right-click le projet serveur et cliquer "Build Project"
+
+	Pour rouler le projet
+		
+		- Cliquer la flèche à côté du bouton Run ou Debug et choisir run_config
 			
 /projet/serveur/adv7511_zed.sdk/serveur
 	
