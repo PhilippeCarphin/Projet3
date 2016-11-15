@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
@@ -13,33 +14,31 @@ import android.widget.ImageView;
  */
 
 public class Display {
-    public static ImageView board;
-    public static ImageView motionlessPieces;
-    public static ImageView movingPiece;
-    public static double offset = 0.05133;
-    //private static Bitmap boardImg;
-    public static String board_style;
-    public static int blackSquareColor = BoardColors.greenSquareColor;
-    public static int lightSquareColor = BoardColors.whiteSquareColor;
-    public static Point lastPos;
-    public static Point newPos;
+    private double offset;
+    private Game game;
+
+    public Display(Game game) {
+        offset = 0.05133;
+        this.game = game;
+    }
+
 
     //draws the board and its pieces
-    public static void drawFullBoard() {
+    public void drawFullBoard() {
         drawBoard();
         drawMotionlessPieces();
     }
 
     //draws the chessboard image
-    public static void drawBoard() {
+    public void drawBoard() {
 
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap imageAndroid = Bitmap.createBitmap(game.activityGame.board.getHeight(), game.activityGame.board.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas tempCanvas = new Canvas(imageAndroid);
         //tempCanvas.drawBitmap(boardImg,0,0,null);
         //display the first square
         Paint backPaint = new Paint();
         backPaint.setColor(BoardColors.borderColor);
-        tempCanvas.drawRect(0, 0, board.getHeight(), board.getHeight(), backPaint);
+        tempCanvas.drawRect(0, 0, game.activityGame.board.getHeight(), game.activityGame.board.getHeight(), backPaint);
 
         //display the squares
         for (int i = 0 ; i < 8 ; i++) {
@@ -50,11 +49,11 @@ public class Display {
                 int bottom = getPixelPosition(7-j+1);
                 int c;
 
-                if ((lastPos != null && newPos != null) &&((i == lastPos.x && j == lastPos.y) || (i == newPos.x && j == newPos.y))) {
+                if ((game.lastMoveOrigin != null) &&((i == game.lastMoveOrigin.x && j == game.lastMoveOrigin.y) || (i == game.lastMoveDestination.x && j == game.lastMoveDestination.y))) {
                     c = BoardColors.lastSquareColor;
                 }
                 else {
-                    c = (((i + j) % 2) == 1) ? blackSquareColor : lightSquareColor;
+                    c = (((i + j) % 2) == 1) ? GameConfig.darkSquareColor : GameConfig.lightSquareColor;
                 }
                 Paint squarePaint = new Paint();
                 squarePaint.setColor(c);
@@ -65,8 +64,6 @@ public class Display {
 
 
         //display the numbers
-        //Paint numberPaint = new Paint();
-        //numberPaint.setTextAlign(Paint.Align.CENTER);
         Paint numberPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         numberPaint.setColor(BoardColors.numberColor);
         numberPaint.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, Utilities.currentActivity.getResources().getDisplayMetrics()));
@@ -90,20 +87,22 @@ public class Display {
         }
         //tempCanvas.drawText("allo", 0, 0, numberPaint);
 
-        board.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
+        game.activityGame.board.setImageDrawable(new BitmapDrawable(game.activityGame.board.getResources(), imageAndroid));
 
     }
 
+
+
     //draws the pieces that are not selected in the appropriate board
-    public static void drawMotionlessPieces() {
+    public void drawMotionlessPieces() {
         //int id = activityGame.getResources().getIdentifier(board_style + "_chess_board", "drawable", activityGame.getPackageName());
-          Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+          Bitmap imageAndroid = Bitmap.createBitmap(game.activityGame.motionlessPieces.getHeight(), game.activityGame.motionlessPieces.getHeight(), Bitmap.Config.ARGB_8888);
         //boardImg.copy(boardImg.getConfig(), true);
         Canvas tempCanvas = new Canvas(imageAndroid);
-        for(Piece[] array : Game.pieces) {
+        for(Piece[] array : game.pieces) {
             for (Piece p : array)  {
                 if (p != null) {
-                    Bitmap imageBitmap = p.getBitmap();
+                    Bitmap imageBitmap = p.getBitmap(game.activityGame.board, offset);
                     Point position = p.p_;
                     int xPos = getPixelPosition(position.x);
                     int yPos = getPixelPosition(7 - position.y);
@@ -112,58 +111,50 @@ public class Display {
             }
         }
 
-        motionlessPieces.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
+        game.activityGame.motionlessPieces.setImageDrawable(new BitmapDrawable(game.activityGame.motionlessPieces.getResources(), imageAndroid));
         //board.setOnTouchListener(activityGame);
     }
 
     //draw the curent moving piece in the appropriate view
-    public static void drawMovingPiece() {
-        Bitmap imageAndroid = Bitmap.createBitmap(board.getHeight(), board.getHeight(), Bitmap.Config.ARGB_8888);
+    public void drawMovingPiece() {
+        Bitmap imageAndroid = Bitmap.createBitmap(game.activityGame.movingPiece.getHeight(), game.activityGame.movingPiece.getHeight(), Bitmap.Config.ARGB_8888);
 
-        if (Game.currentPiece != null) {
+        if (game.currentPiece != null) {
             Canvas tempCanvas = new Canvas(imageAndroid);
-            Bitmap imageBitmap = Game.currentPiece.getBitmap();
-            Point position = Game.currentPiece.p_;
+            Bitmap imageBitmap = game.currentPiece.getBitmap(game.activityGame.board, offset);
+            Point position = game.currentPiece.p_;
             int xPos =  getPixelPosition(position.x);
             int yPos =  getPixelPosition(7-position.y);
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
             tempCanvas.drawBitmap(imageBitmap,xPos,yPos,null);
         }
 
-        movingPiece.setImageDrawable(new BitmapDrawable(board.getResources(), imageAndroid));
+        game.activityGame.movingPiece.setImageDrawable(new BitmapDrawable(game.activityGame.movingPiece.getResources(), imageAndroid));
     }
 
     //get the size in pixels of a square in the board
-    public static int getSquareWidth() {
-        return (int)((1-2*offset)*board.getHeight()/8.0);
+    public int getSquareWidth() {
+        return (int)((1-2*offset)*game.activityGame.board.getHeight()/8.0);
     }
 
     //get the size of the board border in pixels
-    public static int getBoardOffset() {
-        return (int)(board.getHeight() * offset);
+    public int getBoardOffset() {
+        return (int)(game.activityGame.board.getHeight() * offset);
     }
 
     //get the pixel position of the beginning of the square d
-    public static int getPixelPosition(int d) {
+    public int getPixelPosition(int d) {
         return getBoardOffset() + d*getSquareWidth();
     }
 
+    //todo
     public static boolean isOutOfBounds(Point p) {
         return false;
     }
 
-    //update the chessboard image
-    public static void setBoardImg() {
-
-        int id = Utilities.currentActivity.getResources().getIdentifier(board_style + "_chess_board", "drawable", Utilities.currentActivity.getPackageName());
-        //boardImg = BitmapFactory.decodeResource(Utilities.currentActivity.getResources(), id);
-        //imagenAndroid = Bitmap.createBitmap(imagenAndroid,0,0,2999,2999);
-        //boardImg = Bitmap.createScaledBitmap( boardImg, board.getHeight() , board.getHeight() , true );
-    }
-
 
     //convertir les coordonnees de pixel en coordonnees dans la grille de l'echiquier
-    public static Point getboardCoordinates(int xPix, int yPix) throws Exception {
+    public Point getboardCoordinates(ImageView board, int xPix, int yPix) throws Exception {
         int x, y, xView, yView;
         int min, max;
 
@@ -182,30 +173,17 @@ public class Display {
 
 
     //block the chessboard view
-    public static void blockBoard() {
+    public void blockBoard(ImageView board) {
         board.setEnabled(false);
     }
 
     //unblock the chessboard view
-    public static void unBlockBoard() {
+    public void unBlockBoard(ImageView board) {
         board.setEnabled(true);
     }
 
 
 
 
-    public static void updateGameFromStatusSummary(String turnReceived, String moveNbReceived, String lastMoveReceived, String stateReceived ){
-        Game.activityGame.setMoveNumberText(moveNbReceived);
-        Game.activityGame.setWhoseTurn(turnReceived);
-        //activityGame.state.setText(stateReceived);
-
-
-
-    }
-
-    public static void initializeVariables() {
-        lastPos = null;
-        newPos = null;
-    }
 
 }

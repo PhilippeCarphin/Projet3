@@ -16,10 +16,8 @@ public class ErrorCallback {
     public static RequestCallback getPostNewGameCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
-                Game.initializeVariables();
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 activityCreateGame.openGame();
-                Game.clearPieces();
             }
         };
         return ret;
@@ -28,9 +26,8 @@ public class ErrorCallback {
     public static RequestCallback getPostGameStartCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
-                Game.initializeVariables();
-                HttpRunner.runGetStatusBoard(null);
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGamee) {
+                HttpRunner.runGetStatusBoard(null, activityGame, null);
             }
         };
         return ret;
@@ -38,7 +35,7 @@ public class ErrorCallback {
     public static RequestCallback getGetGameDetailsCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
 
             }
         };

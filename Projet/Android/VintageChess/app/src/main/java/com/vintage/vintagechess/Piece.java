@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.widget.ImageView;
 
 /**
  * Created by User on 2016-11-01.
@@ -27,7 +28,7 @@ public class Piece {
     }
 
     public int getResourceID() {
-        String resourceName = (isWhite_ ? "white" : "black") + "_"+ type_ + "_" +Game.style;  // where myresource (without the extension) is the file
+        String resourceName = (isWhite_ ? "white" : "black") + "_"+ type_ + "_" +GameConfig.style;  // where myresource (without the extension) is the file
         Context context = Utilities.currentActivity;
         return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
     }
@@ -52,9 +53,9 @@ public class Piece {
 
 
 
-    public Bitmap getBitmap() {
+    public Bitmap getBitmap(ImageView board, double offset) {
         Bitmap bmp = BitmapFactory.decodeResource( Utilities.currentActivity.getResources(), getResourceID() );
-        int w = (int)(Display.board.getHeight() - Display.board.getHeight()*Display.offset*2)/8;
+        int w = (int)(board.getHeight() - board.getHeight()*offset*2)/8;
         Bitmap img = Bitmap.createScaledBitmap( bmp, w, w, true );
         bmp.recycle();
 

@@ -1,13 +1,9 @@
 package com.vintage.vintagechess;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -44,7 +40,7 @@ public class ActivityMenu extends AppCompatActivity {
 
     private void handleClick(View v) {
         try {
-            Game.ip = editText.getText().toString();
+            GameConfig.ip = editText.getText().toString();
             boolean existingGame = false;
             //todo: handle http to know if existing game or not. If one already exists and contains
             //two players, throw an exception.

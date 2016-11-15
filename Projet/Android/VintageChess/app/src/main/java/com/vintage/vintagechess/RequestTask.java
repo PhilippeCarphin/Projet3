@@ -1,14 +1,11 @@
 package com.vintage.vintagechess;
 
-import android.content.res.Resources;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,9 +28,11 @@ class RequestTask extends AsyncTask<String, String, String> {
     private String suffix;
     private String method;
     private String body;
+    private ActivityGame activityGame;
+    private ActivityCreateGame activityCreateGame;
 
     //constructor
-    public RequestTask(RequestCallback onSucessCallBack,RequestCallback onFailCallback , boolean receiveJSON, String suffix, String method, String body) {
+    public RequestTask(ActivityCreateGame activityCreateGame, ActivityGame activityGame,RequestCallback onSucessCallBack,RequestCallback onFailCallback , boolean receiveJSON, String suffix, String method, String body) {
         super();
         this.receiveJSON = receiveJSON;
         this.suffix = suffix;
@@ -41,6 +40,8 @@ class RequestTask extends AsyncTask<String, String, String> {
         this.body = body;
         this.onSucess = onSucessCallBack;
         this.onFail = onFailCallback;
+        this.activityGame = activityGame;
+        this.activityCreateGame = activityCreateGame;
     }
 
     @Override
@@ -51,6 +52,7 @@ class RequestTask extends AsyncTask<String, String, String> {
             return downloadUrl("http://132.207.89." + suffix, method, body);//urls[0]);
         }
        catch (SocketTimeoutException e) {
+           Utilities.printStackTrace(e);
            return "TIMEOUT";
        }
        catch (Exception e) {
@@ -69,13 +71,18 @@ class RequestTask extends AsyncTask<String, String, String> {
 
         try {
             if (result.equals("TIMEOUT")) {
-                new RequestTask(onSucess,null, receiveJSON, suffix, method, body).execute();
+
+                Utilities.dialog = ProgressDialog.show(Utilities.currentActivity, "Loading", "Please wait...", true);
+                new RequestTask(activityCreateGame, activityGame, onSucess, null, receiveJSON, suffix, method, body).execute();
                 return;
             }
-            Utilities.dialog.dismiss();
+            if (Utilities.dialog != null) {
+                Utilities.dialog.dismiss();
+
+            }
             if (result != null) {
                 if (result.contains("ERROR ")) throw new Exception(result);
-                onSucess.runResponse(result);
+                onSucess.runResponse(result, activityGame, activityCreateGame);
             }
         }
         catch (Exception e) {
@@ -84,13 +91,13 @@ class RequestTask extends AsyncTask<String, String, String> {
             Utilities.messageBox("Error handling the http response", e.getMessage());
             try {
                 if (onFail != null){
-                    onFail.runResponse("test");
+                    onFail.runResponse("test", activityGame, activityCreateGame);
                 }
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
             if (Utilities.currentActivity.getClass().getSimpleName().equals("ActivityGame")) {
-                Game.recoverFromError();
+                activityGame.game.recoverFromError();
             }
         }
     }
@@ -101,25 +108,28 @@ class RequestTask extends AsyncTask<String, String, String> {
 
         URL url = new URL(myurl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(4000 /* milliseconds */);
-        conn.setConnectTimeout(4000 /* milliseconds */);
+        conn.setReadTimeout(1000 /* milliseconds */);
+        conn.setConnectTimeout(1000 /* milliseconds */);
         conn.setDoInput(true);
         //conn.setDoOutput(true);
         conn.setRequestMethod(method);
+        Log.d("URL", myurl);
         Log.d("Methode  ", method);
+        Log.d("password ", GameConfig.password);
+        Log.d("Body", body);
         if (!body.equals("")) {
 
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(CreateGameInfo.password + "\r\n\r\n");
+            wr.write(GameConfig.password + "\r\n\r\n");
 
             wr.write(body);
             wr.flush();
         }
         else if (method.equals("POST")) {
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write(CreateGameInfo.password  + "\r\n\r\n");
+                wr.write(GameConfig.password  + "\r\n\r\n");
                 wr.flush();
         }
 

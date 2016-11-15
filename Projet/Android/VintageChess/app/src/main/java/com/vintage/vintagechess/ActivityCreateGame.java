@@ -17,8 +17,8 @@ import android.widget.TimePicker;
 public class ActivityCreateGame extends AppCompatActivity {
 
 
-    private RadioGroup radioSelect;
-    private RadioButton radioButton1, radioButton2;
+    //private RadioGroup radioSelect;
+    //private RadioButton radioButton1, radioButton2;
 
     private EditText editTextLocation, editTextPassword, editTextPlayer1Name, editTextPlayer2Name, editTextRound;
 
@@ -47,15 +47,15 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         Utilities.hideKeyPad(this);
         Utilities.currentActivity = this;
-        radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
-        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
-        radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
-        radioSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioChange();
-            }
-        });
+//        radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
+//        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
+//        radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
+//        radioSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                handleRadioChange();
+//            }
+//        });
 
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -94,106 +94,48 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
-        Display.blackSquareColor = BoardColors.redSquareColor;
-        Display.lightSquareColor = BoardColors.whiteSquareColor;
-        Game.style = "2";
 
-        RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
-        RadioGroupModeTablette.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioChange();
-            }
-        });
 
-        RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
-        RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
-            }
-        });
+//        RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
+//        RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
+//        RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
 
-        RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
-        RadioGroupSelectStylePiece.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
-            }
-        });
-
-        Callbacks.activityCreateGame = this;
     }
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Utilities.currentActivity = null;
         System.gc();
     }
-   public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
 
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        // find the radiobutton by returned id
-        view = (RadioButton) findViewById(selectedId);
-        switch(selectedId) {
-            case R.id.radioButtonStyle1:
-                Game.style = "1";
-                break;
-
-            case R.id.radioButtonStyle2:
-                Game.style = "2";
-                break;
-        }
-    }
 
     public void handleRadioChange() {
         //editTextPassword.setEnabled(radioButton2.isChecked());
-        editTextPlayer2Name.setEnabled(radioButton1.isChecked());
+        //editTextPlayer2Name.setEnabled(radioButton1.isChecked());
 
     }
 
-   private void handleRadioButtonBoardColorChange(RadioGroup radioGroup, View view) {
-
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        // find the radiobutton by returned id
-        radioButtonColor = (RadioButton) findViewById(selectedId);
-        switch(selectedId) {
-            case R.id.radioButtonRed:
-                Display.blackSquareColor = BoardColors.redSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-
-            case R.id.radioButtonBlue:
-                Display.blackSquareColor = BoardColors.blueSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-
-            case R.id.radioButtonGreen:
-                Display.blackSquareColor = BoardColors.greenSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-        }
-    }
 
     private void handleButtonClick() {
         try {
-            CreateGameInfo.oneTablet = radioButton2.isChecked();
-            CreateGameInfo.enPassantOption = enPassant.isChecked();
-            CreateGameInfo.location = editTextLocation.getText().toString();
-            CreateGameInfo.playerName1 = editTextPlayer1Name.getText().toString();
-            CreateGameInfo.playerName2 = editTextPlayer2Name.getText().toString();
-            CreateGameInfo.password = editTextPassword.getText().toString();
-            CreateGameInfo.normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
-            CreateGameInfo.timePerPlay = numberPickerTimePerPlay.getValue();
-            CreateGameInfo.overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
-            CreateGameInfo.overTimeIncr = numberPickerTimePerPlay.getValue();
-            CreateGameInfo.allowedTurns = numberPickerTurnsBeforedraw.getValue();
-            CreateGameInfo.round = editTextRound.getText().toString();
+            GameConfig.oneTablet = true;//radioButton2.isChecked();
+            GameConfig.enPassantOption = enPassant.isChecked();
+            GameConfig.location = editTextLocation.getText().toString();
+            GameConfig.playerName1 = editTextPlayer1Name.getText().toString();
+            GameConfig.playerName2 = editTextPlayer2Name.getText().toString();
+            GameConfig.password = editTextPassword.getText().toString();
+            GameConfig.normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
+            GameConfig.timePerPlay = numberPickerTimePerPlay.getValue();
+            GameConfig.overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
+            GameConfig.overTimeIncr = numberPickerTimePerPlay.getValue();
+            GameConfig.allowedTurns = numberPickerTurnsBeforedraw.getValue();
+            GameConfig.round = editTextRound.getText().toString();
 
             //handle errors in entries
-            if (radioButton2.isChecked()) {
-                throw new Exception("The two tablet functionality is not implemented yet!");
-            }
-            HttpRunner.runPostNewGame(Callbacks.getPostNewGameCallback(),GetUIOnFailNewGameCallBack());
+//            if (radioButton2.isChecked()) {
+//                throw new Exception("The two tablet functionality is not implemented yet!");
+//            }
+            HttpRunner.runPostNewGame(this, null,Callbacks.getPostNewGameCallback(),GetUIOnFailNewGameCallBack());
 
         }
         catch (Exception e) {
@@ -205,11 +147,11 @@ public class ActivityCreateGame extends AppCompatActivity {
     RequestCallback GetUIOnFailNewGameCallBack(){
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        HttpRunner.runGetGameDetails(GetUIOnFailGetGameDetails());
+                        HttpRunner.runGetGameDetails(null, null, GetUIOnFailGetGameDetails());
                     }
                 });
             }
@@ -220,7 +162,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     RequestCallback GetUIOnFailGetGameDetails() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -233,7 +175,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     }
 
     public void openGame() {
-        Intent intent = new Intent(buttonCreateGame.getContext(), ActivityGame.class);
+        Intent intent = new Intent(Utilities.currentActivity, ActivityGame.class);
         startActivity(intent);
     }
 }

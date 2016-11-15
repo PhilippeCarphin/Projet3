@@ -24,18 +24,18 @@ public class REST {
         JSONObject outerObject = new JSONObject();
         JSONObject innerObject = new JSONObject();
 
-        innerObject.put("time",CreateGameInfo.normalTime);
-        innerObject.put("increment",CreateGameInfo.timePerPlay);
-        innerObject.put("limit",CreateGameInfo.allowedTurns);
-        innerObject.put("overtime",CreateGameInfo.allowedTurns);
-        innerObject.put("overtimeIncrement",CreateGameInfo.allowedTurns);
-        outerObject.put("player1",CreateGameInfo.playerName1);
-        outerObject.put("player2", CreateGameInfo.playerName2);
-        outerObject.put("round",CreateGameInfo.round);
-        outerObject.put("location", CreateGameInfo.location);
-        outerObject.put("secret_code",CreateGameInfo.password);
-        outerObject.put("twoTablet", CreateGameInfo.oneTablet);
-        outerObject.put("enPassant", CreateGameInfo.enPassantOption);
+        innerObject.put("time", GameConfig.normalTime);
+        innerObject.put("increment", GameConfig.timePerPlay);
+        innerObject.put("limit", GameConfig.allowedTurns);
+        innerObject.put("overtime", GameConfig.allowedTurns);
+        innerObject.put("overtimeIncrement", GameConfig.allowedTurns);
+        outerObject.put("player1", GameConfig.playerName1);
+        outerObject.put("player2", GameConfig.playerName2);
+        outerObject.put("round", GameConfig.round);
+        outerObject.put("location", GameConfig.location);
+        outerObject.put("secret_code", GameConfig.password);
+        outerObject.put("twoTablet", GameConfig.oneTablet);
+        outerObject.put("enPassant", GameConfig.enPassantOption);
         outerObject.put("timerFormat", innerObject);
 
         //Log.d("NewGame : ", String.valueOf(outerObject));
@@ -43,14 +43,14 @@ public class REST {
         return String.valueOf(outerObject);
     }
 
-    public static void handleMoveResponse(String response)
+    public static void handleMoveResponse(String response, ActivityGame activityGame)
             throws JSONException {
         JSONObject jsonObject = new JSONObject(response);
         String pieceEleminated = jsonObject.getString("pieceEliminated");
         String promotion = jsonObject.getString("promotion");
         String state = jsonObject.getString("state");
 
-        Game.handleMoveOk(pieceEleminated, promotion, state);
+        activityGame.game.handleMoveOk(pieceEleminated, promotion, state);
 
 
     }
@@ -69,7 +69,7 @@ public class REST {
     }
 
 
-    public static void updateGameFromStatusSummary(String Status) throws JSONException {
+    public static void updateGameFromStatusSummary(String Status, ActivityGame activityGame) throws JSONException {
 
         JSONObject jsonObject = new JSONObject(Status);
         String turn = jsonObject.getString("turn");
@@ -81,8 +81,8 @@ public class REST {
         Log.d("moveNo : ", String.valueOf(moveNo));
         Log.d("lastMove : ",lastMove);
         Log.d("state : ",state);
-
-        Display.updateGameFromStatusSummary(turn, moveNo, lastMove, state);
+        activityGame.game.isWhiteTurn = turn.equals("1");
+        activityGame.textViewMoveNumber.setText(moveNo);
 
     }
 
@@ -184,45 +184,45 @@ public class REST {
         return newConfig;
     }
 
-    public static String postStatusBoard() throws JSONException {
-
-        JSONObject innerObject = new JSONObject();
-
-        JSONArray listOfPawn1Position = new JSONArray();
-        JSONArray listOfPawn2Position = new JSONArray();
-        innerObject.put("turn"," ");
-        innerObject.put("move_no"," ");
-        int [] verticals = {0, 1, 6, 7};
-        for(int i= 0; i< 8; i++)
-        {
-            for(int j : verticals)
-            {
-                Point point = Game.pieces[i][j].p_;
-                String x =  String.valueOf((char)((char)point.x + 97));
-                String y = Integer.toString(point.y);
-
-                Log.d("x_Y : ", x+y);
-                if(Game.pieces[i][j].type_.contains("pawn1"))
-                {
-                    listOfPawn1Position.put(x+y);
-
-                } else if(Game.pieces[i][j].type_.contains("pawn2"))
-                {
-                    listOfPawn2Position.put(x+y);
-                }
-                else
-                {
-                    innerObject.put(Game.pieces[i][j].type_, x+y);
-                }
-            }
-
-            innerObject.put("pawn1", listOfPawn1Position);
-            innerObject.put("pawn2", listOfPawn2Position);
-        }
-
-        // TO DEBUG
-        //Log.d("StatusBoard : ", String.valueOf(innerObject));
-
-        return String.valueOf(innerObject);
-    }
+//    public static String postStatusBoard() throws JSONException {
+//
+////        JSONObject innerObject = new JSONObject();
+////
+////        JSONArray listOfPawn1Position = new JSONArray();
+////        JSONArray listOfPawn2Position = new JSONArray();
+////        innerObject.put("turn"," ");
+////        innerObject.put("move_no"," ");
+////        int [] verticals = {0, 1, 6, 7};
+////        for(int i= 0; i< 8; i++)
+////        {
+////            for(int j : verticals)
+////            {
+////                Point point = Game.pieces[i][j].p_;
+////                String x =  String.valueOf((char)((char)point.x + 97));
+////                String y = Integer.toString(point.y);
+////
+////                Log.d("x_Y : ", x+y);
+////                if(Game.pieces[i][j].type_.contains("pawn1"))
+////                {
+////                    listOfPawn1Position.put(x+y);
+////
+////                } else if(Game.pieces[i][j].type_.contains("pawn2"))
+////                {
+////                    listOfPawn2Position.put(x+y);
+////                }
+////                else
+////                {
+////                    innerObject.put(Game.pieces[i][j].type_, x+y);
+////                }
+////            }
+////
+////            innerObject.put("pawn1", listOfPawn1Position);
+////            innerObject.put("pawn2", listOfPawn2Position);
+////        }
+////
+////        // TO DEBUG
+////        //Log.d("StatusBoard : ", String.valueOf(innerObject));
+//
+//        return String.valueOf(innerObject);
+//    }
 }
