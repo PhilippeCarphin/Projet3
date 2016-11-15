@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2015.4 (64-bit)
+# SW Build 1412921 on Wed Nov 18 09:43:45 MST 2015
+# IP Build 1412160 on Tue Nov 17 13:47:24 MST 2015
+# Start of session at: Tue Oct 04 16:02:37 2016
+# Process ID: 13500
+# Current directory: c:/Temp/tp2Code
+# Command line: wbtcv.exe -mode batch -source c:/Temp/tp2Code/adv7511_zed.hw/webtalk/labtool_webtalk.tcl -notrace
+# Log file: c:/Temp/tp2Code/webtalk.log
+# Journal file: c:/Temp/tp2Code\webtalk.jou
+#-----------------------------------------------------------
+source c:/Temp/tp2Code/adv7511_zed.hw/webtalk/labtool_webtalk.tcl -notrace

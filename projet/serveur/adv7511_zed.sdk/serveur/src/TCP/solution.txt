@@ -1,0 +1,53 @@
+Salut Guillaume, voici mon idée pour dealer avec l'allocation shitty de
+      // J'espère que imageDataSize est un multiple de 4 octets,
+malloc().
+
+   1. Mettre un tableau static global dans cf_hdmi.c (comme ce qu'on a fait,
+   sauf que ça devrait être dans le .c et ça devrait être un tableau avec une
+   taille donnée pour que la mémoire soit allouée à la compilation).
+
+   2. Modifier readBitmap pour que le f_read aille foutre les données dans ce
+   tableau et setter imageLenght.
+
+
+dans cf_hdmi.c // Pour que ça ne soit pas visible de l'extérieur.  On pourrait
+               // le mettre dans un .h qui ne serait inclu que par ce .c, mais
+               // ça reviendrait au même.
+
+   #define MAX_IMAGE_SIZE 1000000 // Autant de chiffres que la imageSize au
+                                  // moins donc si la size est 3000000, vu que
+                                  // c'est en octets, et qu'on a un tableau de
+                                  // u32, mettre 1000000 va donner 4000000
+                                  // octets et on va être correct.
+
+   static u32 currentImage[MAX_IMAGE_SIZE];
+   static u32 imageLength;
+
+   u32* getImagePointer(void)
+   {
+      return currentImage;
+   }
+
+   void setImageLength(u32 length)
+   {
+      imageLength = length;
+   }
+
+
+dans bitmap.c
+
+   readBitmap(BMP *bmp, FIL *fil)
+   {
+      unsigned int bytesRead;
+      u32* imageBucket = getImagePointer();
+      f_read(fil, imageBucket, bmp->imageDataSize, &bytesRead);
+      setImageLength(bmp->imageDataSize/4);
+      // Parce que imageDataSize c'est la taille en octets, et imageLength,
+      // c'est la taille du tableau de u32 correspondant.
+      // J'espère que imageDataSize est un multiple de 4 octets,
+   }
+
+
+Comme ça, l'espace est alloué à la compilation.  On n'a pas de problème.
+
+
