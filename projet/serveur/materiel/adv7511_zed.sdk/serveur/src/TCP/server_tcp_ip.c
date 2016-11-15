@@ -9,6 +9,7 @@
 #include "server_http_in.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
+#include "debug.h"
 #include "xil_printf.h"
 
 // Struct used for all callbacks
@@ -137,13 +138,13 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 	char HTTP_response[1000];
 
-	xil_printf("\n===============================================================================\n");
+	DBG_PRINT("\n===============================================================================\n");
 
-	xil_printf("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
+	DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
 
 	HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
 
-	xil_printf("RESPONSE SENT:\n%s\n",HTTP_response);
+	DBG_PRINT("RESPONSE SENT:\n%s\n",HTTP_response);
 
 	int len = strlen(HTTP_response);
 

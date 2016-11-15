@@ -3,7 +3,7 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 #include "cf_hdmi.h"
 

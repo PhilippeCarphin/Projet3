@@ -1,6 +1,6 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
-#define DEBUG
+// #define DEBUG
 #include "debug.h"
 
 #include <string.h>
