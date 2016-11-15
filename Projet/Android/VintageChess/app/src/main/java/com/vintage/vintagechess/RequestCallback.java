@@ -7,5 +7,5 @@ import org.json.JSONException;
  */
 
 public interface RequestCallback {
-    public void runResponse(String response) throws JSONException;
+    public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) throws JSONException;
 }

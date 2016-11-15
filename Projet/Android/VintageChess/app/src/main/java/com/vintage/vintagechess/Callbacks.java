@@ -11,17 +11,11 @@ import org.json.JSONObject;
 
 public class Callbacks {
 
-
-    public static ActivityCreateGame activityCreateGame;
-
-
     public static RequestCallback getPostNewGameCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
-                Game.initializeVariables();
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 activityCreateGame.openGame();
-                Game.clearPieces();
             }
         };
         return ret;
@@ -30,9 +24,8 @@ public class Callbacks {
     public static RequestCallback getPostGameStartCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
-                Game.initializeVariables();
-                HttpRunner.runGetStatusBoard(null);
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
+                HttpRunner.runGetStatusBoard(activityCreateGame, activityGame, null);
             }
         };
         return ret;
@@ -41,9 +34,9 @@ public class Callbacks {
     public static RequestCallback getPostGameEndCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
 
-                Intent setIntent = new Intent(Utilities.currentActivity,ActivityMenu.class);
+                Intent setIntent = new Intent(Utilities.currentActivity,ActivityCreateGame.class);
                 Utilities.currentActivity.startActivity(setIntent);
             }
         };
@@ -53,8 +46,8 @@ public class Callbacks {
     public static RequestCallback getPostMoveCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) throws JSONException {
-                REST.handleMoveResponse(response);
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) throws JSONException {
+                REST.handleMoveResponse(response, activityGame);
             }
         };
         return ret;
@@ -63,7 +56,7 @@ public class Callbacks {
     public static RequestCallback getPostPromoteCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
 
 
             }
@@ -74,7 +67,7 @@ public class Callbacks {
     public static RequestCallback getGetTimeCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
 
             }
         };
@@ -84,9 +77,9 @@ public class Callbacks {
     public static RequestCallback getGetStatusSummaryCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) throws JSONException {
-                REST.updateGameFromStatusSummary(response);
-                Game.finishMove();
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) throws JSONException {
+                REST.updateGameFromStatusSummary(response, activityGame);
+                activityGame.game.finishMove();
             }
         };
         return ret;
@@ -95,14 +88,13 @@ public class Callbacks {
     public static RequestCallback getGetStatusBoardCallback() {
         RequestCallback ret = new RequestCallback()  {
             @Override
-            public void runResponse(String response) throws JSONException {
-                Display.newPos = null;
-                Display.lastPos = null;
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) throws JSONException {
                 JSONObject jsonObject = new JSONObject(response);
-                Game.setConfig(REST.getPiecesFromStatusBoard(jsonObject));
+                activityGame.game.setConfig(REST.getPiecesFromStatusBoard(jsonObject));
                 String white = jsonObject.getString("turn");
-                Game.activityGame.setWhoseTurn(white);
-                Game.activityGame.setMoveNumberText(jsonObject.getString("move_no"));
+                activityGame.setWhoseTurn(white);
+                activityGame.setMoveNumberText(jsonObject.getString("move_no"));
+                activityGame.game.display.drawFullBoard();
 
             }
         };
@@ -112,7 +104,7 @@ public class Callbacks {
     public static RequestCallback getGetGameDetailsCallback() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
             }
         };
         return ret;

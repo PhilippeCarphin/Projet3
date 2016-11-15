@@ -19,6 +19,6 @@ public class GameConfig {
     public static boolean enPassantOption;
     public static String ip;
     public static int darkSquareColor;
-    public static int lightSquareColor;
+    public static int lightSquareColor = BoardColors.whiteSquareColor;
     public static String style;
 }

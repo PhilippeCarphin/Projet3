@@ -16,6 +16,7 @@ import android.widget.ImageView;
 public class Display {
     private double offset;
     private Game game;
+
     public Display(Game game) {
         offset = 0.05133;
         this.game = game;
@@ -101,7 +102,7 @@ public class Display {
         for(Piece[] array : game.pieces) {
             for (Piece p : array)  {
                 if (p != null) {
-                    Bitmap imageBitmap = p.getBitmap();
+                    Bitmap imageBitmap = p.getBitmap(game.activityGame.board, offset);
                     Point position = p.p_;
                     int xPos = getPixelPosition(position.x);
                     int yPos = getPixelPosition(7 - position.y);
@@ -120,7 +121,7 @@ public class Display {
 
         if (game.currentPiece != null) {
             Canvas tempCanvas = new Canvas(imageAndroid);
-            Bitmap imageBitmap = game.currentPiece.getBitmap();
+            Bitmap imageBitmap = game.currentPiece.getBitmap(game.activityGame.board, offset);
             Point position = game.currentPiece.p_;
             int xPos =  getPixelPosition(position.x);
             int yPos =  getPixelPosition(7-position.y);

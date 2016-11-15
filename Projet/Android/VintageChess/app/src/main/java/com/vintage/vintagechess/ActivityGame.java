@@ -30,20 +30,20 @@ public class ActivityGame extends AppCompatActivity {
     public ImageView motionlessPieces;
     public ImageView movingPiece;
 
-    private TextView textViewPlayer1Name, textViewPlayer2Name;
-    private TextClock textClockPlayer1, textClockPlayer2;
-    private TextView textViewState;
-    private TextView textViewRoundNumber;
-    private TextView textViewWhoseTurn;
-    private TextView textViewMoveNumber;
-    private TextView textViewLocation;
+    public TextView textViewPlayer1Name, textViewPlayer2Name;
+    public TextClock textClockPlayer1, textClockPlayer2;
+    public TextView textViewState;
+    public TextView textViewRoundNumber;
+    public TextView textViewWhoseTurn;
+    public TextView textViewMoveNumber;
+    public TextView textViewLocation;
 
-    private RadioGroup radioGroupBoardColor;
-    private RadioGroup radioGroupPieceStyle;
+    public RadioGroup radioGroupBoardColor;
+    public RadioGroup radioGroupPieceStyle;
 
-    private Button buttonEndGame;
+    public Button buttonEndGame;
 
-    private Game game;
+    public Game game;
 
     RadioGroup selectStyle;
 
@@ -172,7 +172,7 @@ public class ActivityGame extends AppCompatActivity {
                 break;
         }
 
-        game.drawFullBoard();
+        game.display.drawFullBoard();
     }
 
     private void handleRadioButtonBoardColorChange() {
@@ -182,15 +182,15 @@ public class ActivityGame extends AppCompatActivity {
 
         switch(selectedId) {
             case R.id.radioButtonRed:
-                Display.blackSquareColor = BoardColors.redSquareColor;
+                GameConfig.darkSquareColor = BoardColors.redSquareColor;
                 break;
 
             case R.id.radioButtonBlue:
-                Display.blackSquareColor = BoardColors.blueSquareColor;
+                GameConfig.darkSquareColor = BoardColors.blueSquareColor;
                 break;
 
             case R.id.radioButtonGreen:
-                Display.blackSquareColor = BoardColors.greenSquareColor;
+                GameConfig.darkSquareColor = BoardColors.greenSquareColor;
                 break;
         }
 
@@ -204,14 +204,12 @@ public class ActivityGame extends AppCompatActivity {
             i++;
         }
 
-        Display.drawFullBoard();
+        game.display.drawFullBoard();
     }
 
     private void handleButtonEndClick() {
         try {
-            HttpRunner.runPostGameEnd(null);
-            Intent setIntent = new Intent(this,ActivityMenu.class);
-            startActivity(setIntent);
+            HttpRunner.runPostGameEnd(null, this, null);
 
 
         }
@@ -226,11 +224,11 @@ public class ActivityGame extends AppCompatActivity {
 
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
-        if (!Game.isStarted) {
-            Utilities.messageBoxStartGame();
-            Game.isStarted = true;
+        if (!game.isStarted) {
+            Utilities.messageBoxStartGame(this);
+            game.isStarted = true;
         }
-        Display.drawFullBoard();
+        game.display.drawFullBoard();
 
         //handleRadioChange();
             handleRadioButtonBoardColorChange();
@@ -247,7 +245,7 @@ public class ActivityGame extends AppCompatActivity {
         //super.onBackPressed();
 
         try {
-            HttpRunner.runPostGameEnd(null);
+            HttpRunner.runPostGameEnd(null, this, null);
         } catch (JSONException e) {
             Utilities.messageBox("Error after having pressed back", e.getMessage());
         }
@@ -259,8 +257,7 @@ public class ActivityGame extends AppCompatActivity {
     public void onDestroy()
     {
         try {
-            HttpRunner.runPostGameEnd(null);
-            Game.activityGame = null;
+            HttpRunner.runPostGameEnd(null, this, null);
             Utilities.currentActivity = null;
 
         } catch (JSONException e) {
@@ -276,21 +273,21 @@ public class ActivityGame extends AppCompatActivity {
             int action = event.getAction();
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
-                    Game.handleFingerDown((int)event.getX(), (int)event.getY());
+                    game.handleFingerDown((int)event.getX(), (int)event.getY());
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    Game.handleMove((int)event.getX(), (int)event.getY());
+                    game.handleMove((int)event.getX(), (int)event.getY());
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL :
-                    Game.handleFingerUp();
+                    game.handleFingerUp();
                     break;
             }
 
         }
         catch (Exception e) {
             //e.printStackTrace();
-            Game.recoverFromError();
+            game.recoverFromError();
             if (!e.getMessage().contains("Finger is out of bounds"))
                 Utilities.messageBox("Error with view touch event", e.getMessage());
         }
@@ -302,8 +299,8 @@ public class ActivityGame extends AppCompatActivity {
     }
 
     public void setWhoseTurn(String turn) {
-        Game.isWhiteTurn = turn.equals("1");
-        this.textViewWhoseTurn.setText(Game.isWhiteTurn ? "White" : "Black");
+        game.isWhiteTurn = turn.equals("1");
+        this.textViewWhoseTurn.setText(game.isWhiteTurn ? "White" : "Black");
     }
 
     private void setRadioButtonImage(RadioButton radioButton, int backColor, int frontColor) {

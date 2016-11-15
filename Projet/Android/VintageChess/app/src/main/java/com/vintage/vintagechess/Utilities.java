@@ -39,7 +39,7 @@ public class Utilities {
         dlgAlert.create().show();
     }
 
-    public static void messageBoxStartGame() {
+    public static void messageBoxStartGame(final ActivityGame activityGame) {
 
         final AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(currentActivity);
         dlgAlert.setMessage("The game will be started when you will have pressed OK");
@@ -49,7 +49,7 @@ public class Utilities {
                     public void onClick(DialogInterface dialog, int which) {
                         //dismiss the dialog
                         try {
-                            HttpRunner.runPostGameStart(null);
+                            HttpRunner.runPostGameStart(null, activityGame, null);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

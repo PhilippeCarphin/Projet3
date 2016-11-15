@@ -23,10 +23,10 @@ public class Game {
     private Point downPos;
     private Point lastPos;
     public Piece currentPiece;
-    private boolean isWhiteTurn = true;
+    public boolean isWhiteTurn = true;
     public boolean isStarted = false;
     public ActivityGame activityGame;
-    private Display display;
+    public Display display;
 
     public Point lastMoveOrigin, lastMoveDestination;
 
@@ -40,6 +40,7 @@ public class Game {
         currentPiece = null;
         this.activityGame = activityGame;
         clearPieces();
+        display = new Display(this);
 
     }
 
@@ -83,7 +84,7 @@ public class Game {
         //Log.d("up", lastPos.x+" "+lastPos.y);
         if (currentPiece != null && !downPos.equals(lastPos)) {
             display.blockBoard(activityGame.board);
-            HttpRunner.runPostMove(isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y,null);
+            HttpRunner.runPostMove(null, activityGame, isWhiteTurn, downPos.x, downPos.y, lastPos.x, lastPos.y,null);
 
         }
         else {
@@ -121,7 +122,7 @@ public class Game {
             lastMoveOrigin = downPos;
             lastMoveDestination = currentPiece.p_;
         }
-        HttpRunner.runGetStatusSummary(null);
+        HttpRunner.runGetStatusSummary(null, activityGame, null);
     }
 
 
@@ -142,7 +143,7 @@ public class Game {
         display.unBlockBoard(activityGame.board);
     }
 
-    public void recoverFromError(ImageView board, ImageView piecesBoard) {
+    public void recoverFromError() {
         handleMoveNotOk();
     }
 
@@ -166,9 +167,7 @@ public class Game {
             };
     }
 
-    public void drawFullBoard() {
-        display.drawFullBoard();
-    }
+
 
 
 

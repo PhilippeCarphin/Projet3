@@ -17,8 +17,8 @@ import android.widget.TimePicker;
 public class ActivityCreateGame extends AppCompatActivity {
 
 
-    private RadioGroup radioSelect;
-    private RadioButton radioButton1, radioButton2;
+    //private RadioGroup radioSelect;
+    //private RadioButton radioButton1, radioButton2;
 
     private EditText editTextLocation, editTextPassword, editTextPlayer1Name, editTextPlayer2Name, editTextRound;
 
@@ -47,15 +47,15 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         Utilities.hideKeyPad(this);
         Utilities.currentActivity = this;
-        radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
-        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
-        radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
-        radioSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioChange();
-            }
-        });
+//        radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
+//        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
+//        radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
+//        radioSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                handleRadioChange();
+//            }
+//        });
 
         editTextLocation = (EditText) findViewById(R.id.editTextLocation);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -96,14 +96,14 @@ public class ActivityCreateGame extends AppCompatActivity {
 
 
 
-        RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
-        RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
-        RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
+//        RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
+//        RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
+//        RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
 
-        Callbacks.activityCreateGame = this;
     }
     @Override
     public void onDestroy() {
+        super.onDestroy();
         Utilities.currentActivity = null;
         System.gc();
     }
@@ -111,14 +111,14 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     public void handleRadioChange() {
         //editTextPassword.setEnabled(radioButton2.isChecked());
-        editTextPlayer2Name.setEnabled(radioButton1.isChecked());
+        //editTextPlayer2Name.setEnabled(radioButton1.isChecked());
 
     }
 
 
     private void handleButtonClick() {
         try {
-            GameConfig.oneTablet = radioButton2.isChecked();
+            GameConfig.oneTablet = true;//radioButton2.isChecked();
             GameConfig.enPassantOption = enPassant.isChecked();
             GameConfig.location = editTextLocation.getText().toString();
             GameConfig.playerName1 = editTextPlayer1Name.getText().toString();
@@ -132,10 +132,10 @@ public class ActivityCreateGame extends AppCompatActivity {
             GameConfig.round = editTextRound.getText().toString();
 
             //handle errors in entries
-            if (radioButton2.isChecked()) {
-                throw new Exception("The two tablet functionality is not implemented yet!");
-            }
-            HttpRunner.runPostNewGame(Callbacks.getPostNewGameCallback(),GetUIOnFailNewGameCallBack());
+//            if (radioButton2.isChecked()) {
+//                throw new Exception("The two tablet functionality is not implemented yet!");
+//            }
+            HttpRunner.runPostNewGame(this, null,Callbacks.getPostNewGameCallback(),GetUIOnFailNewGameCallBack());
 
         }
         catch (Exception e) {
@@ -147,11 +147,11 @@ public class ActivityCreateGame extends AppCompatActivity {
     RequestCallback GetUIOnFailNewGameCallBack(){
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        HttpRunner.runGetGameDetails(GetUIOnFailGetGameDetails());
+                        HttpRunner.runGetGameDetails(null, null, GetUIOnFailGetGameDetails());
                     }
                 });
             }
@@ -162,7 +162,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     RequestCallback GetUIOnFailGetGameDetails() {
         RequestCallback ret = new RequestCallback() {
             @Override
-            public void runResponse(String response) {
+            public void runResponse(String response, ActivityGame activityGame, ActivityCreateGame activityCreateGame) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -175,7 +175,7 @@ public class ActivityCreateGame extends AppCompatActivity {
     }
 
     public void openGame() {
-        Intent intent = new Intent(buttonCreateGame.getContext(), ActivityGame.class);
+        Intent intent = new Intent(Utilities.currentActivity, ActivityGame.class);
         startActivity(intent);
     }
 }
