@@ -94,33 +94,11 @@ public class ActivityCreateGame extends AppCompatActivity {
             }
         });
 
-        Display.blackSquareColor = BoardColors.redSquareColor;
-        Display.lightSquareColor = BoardColors.whiteSquareColor;
-        Game.style = "2";
+
 
         RadioGroupModeTablette = (RadioGroup) findViewById(R.id.radioGroupMode);
-        RadioGroupModeTablette.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioChange();
-            }
-        });
-
         RadioGroupSelectColorBoard = (RadioGroup) findViewById(R.id.RadioGroupBoardColor);
-        RadioGroupSelectColorBoard.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioButtonBoardColorChange(RadioGroupSelectColorBoard, radioButtonColor);
-            }
-        });
-
         RadioGroupSelectStylePiece = (RadioGroup) findViewById(R.id.RadioGroupForTypePiece);
-        RadioGroupSelectStylePiece.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                handleRadioButtonStyleChange(RadioGroupSelectStylePiece, radioButtonStyle);
-            }
-        });
 
         Callbacks.activityCreateGame = this;
     }
@@ -129,21 +107,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         Utilities.currentActivity = null;
         System.gc();
     }
-   public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
 
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        // find the radiobutton by returned id
-        view = (RadioButton) findViewById(selectedId);
-        switch(selectedId) {
-            case R.id.radioButtonStyle1:
-                Game.style = "1";
-                break;
-
-            case R.id.radioButtonStyle2:
-                Game.style = "2";
-                break;
-        }
-    }
 
     public void handleRadioChange() {
         //editTextPassword.setEnabled(radioButton2.isChecked());
@@ -151,43 +115,21 @@ public class ActivityCreateGame extends AppCompatActivity {
 
     }
 
-   private void handleRadioButtonBoardColorChange(RadioGroup radioGroup, View view) {
-
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        // find the radiobutton by returned id
-        radioButtonColor = (RadioButton) findViewById(selectedId);
-        switch(selectedId) {
-            case R.id.radioButtonRed:
-                Display.blackSquareColor = BoardColors.redSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-
-            case R.id.radioButtonBlue:
-                Display.blackSquareColor = BoardColors.blueSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-
-            case R.id.radioButtonGreen:
-                Display.blackSquareColor = BoardColors.greenSquareColor;
-                Display.lightSquareColor = BoardColors.whiteSquareColor;
-                break;
-        }
-    }
 
     private void handleButtonClick() {
         try {
-            CreateGameInfo.oneTablet = radioButton2.isChecked();
-            CreateGameInfo.enPassantOption = enPassant.isChecked();
-            CreateGameInfo.location = editTextLocation.getText().toString();
-            CreateGameInfo.playerName1 = editTextPlayer1Name.getText().toString();
-            CreateGameInfo.playerName2 = editTextPlayer2Name.getText().toString();
-            CreateGameInfo.password = editTextPassword.getText().toString();
-            CreateGameInfo.normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
-            CreateGameInfo.timePerPlay = numberPickerTimePerPlay.getValue();
-            CreateGameInfo.overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
-            CreateGameInfo.overTimeIncr = numberPickerTimePerPlay.getValue();
-            CreateGameInfo.allowedTurns = numberPickerTurnsBeforedraw.getValue();
-            CreateGameInfo.round = editTextRound.getText().toString();
+            GameConfig.oneTablet = radioButton2.isChecked();
+            GameConfig.enPassantOption = enPassant.isChecked();
+            GameConfig.location = editTextLocation.getText().toString();
+            GameConfig.playerName1 = editTextPlayer1Name.getText().toString();
+            GameConfig.playerName2 = editTextPlayer2Name.getText().toString();
+            GameConfig.password = editTextPassword.getText().toString();
+            GameConfig.normalTime = timePickerMain.getCurrentMinute() + timePickerMain.getCurrentHour() * 60;
+            GameConfig.timePerPlay = numberPickerTimePerPlay.getValue();
+            GameConfig.overTime = timePickerOverTime.getCurrentMinute() + timePickerOverTime.getCurrentHour() * 60;
+            GameConfig.overTimeIncr = numberPickerTimePerPlay.getValue();
+            GameConfig.allowedTurns = numberPickerTurnsBeforedraw.getValue();
+            GameConfig.round = editTextRound.getText().toString();
 
             //handle errors in entries
             if (radioButton2.isChecked()) {

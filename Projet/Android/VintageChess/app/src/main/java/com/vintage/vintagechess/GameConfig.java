@@ -4,7 +4,7 @@ package com.vintage.vintagechess;
  * Created by Glytz on 2016-11-14.
  */
 
-public class CreateGameInfo {
+public class GameConfig {
     public static String location;
     public static boolean oneTablet;
     public static String password;
@@ -17,4 +17,8 @@ public class CreateGameInfo {
     public static int timePerPlay;
     public static int overTimeIncr;
     public static boolean enPassantOption;
+    public static String ip;
+    public static int darkSquareColor;
+    public static int lightSquareColor;
+    public static String style;
 }

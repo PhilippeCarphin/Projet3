@@ -1,14 +1,10 @@
 package com.vintage.vintagechess;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -112,14 +108,14 @@ class RequestTask extends AsyncTask<String, String, String> {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(CreateGameInfo.password + "\r\n\r\n");
+            wr.write(GameConfig.password + "\r\n\r\n");
 
             wr.write(body);
             wr.flush();
         }
         else if (method.equals("POST")) {
                 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write(CreateGameInfo.password  + "\r\n\r\n");
+                wr.write(GameConfig.password  + "\r\n\r\n");
                 wr.flush();
         }
 

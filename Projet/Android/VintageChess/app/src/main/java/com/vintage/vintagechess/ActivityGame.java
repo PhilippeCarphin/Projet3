@@ -26,9 +26,9 @@ public class ActivityGame extends AppCompatActivity {
 
 
     //chessboard views
-    private ImageView board;
-    private ImageView motionlessPieces;
-    private ImageView movingPiece;
+    public ImageView board;
+    public ImageView motionlessPieces;
+    public ImageView movingPiece;
 
     private TextView textViewPlayer1Name, textViewPlayer2Name;
     private TextClock textClockPlayer1, textClockPlayer2;
@@ -56,25 +56,15 @@ public class ActivityGame extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
-            Game.activityGame = this;
+            game = new Game(this);
             Utilities.currentActivity = this;
-            Game.gameStarted = false;
+
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_game);
 
             setAllViews();
 
-
-            Game.activityGame = this;
             Utilities.currentActivity = this;
-
-
-
-
-            Display.board = board;
-            Display.motionlessPieces = motionlessPieces;
-            Display.movingPiece = movingPiece;
-
 
 
         }
@@ -119,9 +109,9 @@ public class ActivityGame extends AppCompatActivity {
         textViewWhoseTurn = (TextView) findViewById(R.id.CurrentPlayer);
         textViewMoveNumber = (TextView) findViewById(R.id.MoveNumber);
 
-        textViewPlayer1Name.setText(CreateGameInfo.playerName1);
-        textViewPlayer2Name.setText(CreateGameInfo.playerName2);
-        textViewLocation.setText(CreateGameInfo.location);
+        textViewPlayer1Name.setText(GameConfig.playerName1);
+        textViewPlayer2Name.setText(GameConfig.playerName2);
+        textViewLocation.setText(GameConfig.location);
         textViewRoundNumber.setText("Round : 0" );
     }
 
@@ -174,15 +164,15 @@ public class ActivityGame extends AppCompatActivity {
 
         switch(selectedId) {
             case R.id.radioButtonStyle1:
-                Game.style = "1";
+                GameConfig.style = "1";
                 break;
 
             case R.id.radioButtonStyle2:
-                Game.style = "2";
+                GameConfig.style = "2";
                 break;
         }
 
-        Display.drawFullBoard();
+        game.drawFullBoard();
     }
 
     private void handleRadioButtonBoardColorChange() {
@@ -236,9 +226,9 @@ public class ActivityGame extends AppCompatActivity {
 
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
-        if (!Game.gameStarted) {
+        if (!Game.isStarted) {
             Utilities.messageBoxStartGame();
-            Game.gameStarted = true;
+            Game.isStarted = true;
         }
         Display.drawFullBoard();
 

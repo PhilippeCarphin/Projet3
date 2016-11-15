@@ -24,18 +24,18 @@ public class REST {
         JSONObject outerObject = new JSONObject();
         JSONObject innerObject = new JSONObject();
 
-        innerObject.put("time",CreateGameInfo.normalTime);
-        innerObject.put("increment",CreateGameInfo.timePerPlay);
-        innerObject.put("limit",CreateGameInfo.allowedTurns);
-        innerObject.put("overtime",CreateGameInfo.allowedTurns);
-        innerObject.put("overtimeIncrement",CreateGameInfo.allowedTurns);
-        outerObject.put("player1",CreateGameInfo.playerName1);
-        outerObject.put("player2", CreateGameInfo.playerName2);
-        outerObject.put("round",CreateGameInfo.round);
-        outerObject.put("location", CreateGameInfo.location);
-        outerObject.put("secret_code",CreateGameInfo.password);
-        outerObject.put("twoTablet", CreateGameInfo.oneTablet);
-        outerObject.put("enPassant", CreateGameInfo.enPassantOption);
+        innerObject.put("time", GameConfig.normalTime);
+        innerObject.put("increment", GameConfig.timePerPlay);
+        innerObject.put("limit", GameConfig.allowedTurns);
+        innerObject.put("overtime", GameConfig.allowedTurns);
+        innerObject.put("overtimeIncrement", GameConfig.allowedTurns);
+        outerObject.put("player1", GameConfig.playerName1);
+        outerObject.put("player2", GameConfig.playerName2);
+        outerObject.put("round", GameConfig.round);
+        outerObject.put("location", GameConfig.location);
+        outerObject.put("secret_code", GameConfig.password);
+        outerObject.put("twoTablet", GameConfig.oneTablet);
+        outerObject.put("enPassant", GameConfig.enPassantOption);
         outerObject.put("timerFormat", innerObject);
 
         //Log.d("NewGame : ", String.valueOf(outerObject));
