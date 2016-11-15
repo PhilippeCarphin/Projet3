@@ -211,13 +211,43 @@ public class ActivityCreateGame extends AppCompatActivity {
             if (radioButton2.isChecked()) {
                 throw new Exception("The two tablet functionality is not implemented yet!");
             }
-            HttpRunner.runPostNewGame(Callbacks.getPostNewGameCallback(),null);
+            HttpRunner.runPostNewGame(Callbacks.getPostNewGameCallback(),GetUIOnFailNewGameCallBack());
 
         }
         catch (Exception e) {
             //e.printStackTrace();
             Utilities.messageBox("Error after pressing button", e.getMessage());
         }
+    }
+
+    RequestCallback GetUIOnFailNewGameCallBack(){
+        RequestCallback ret = new RequestCallback() {
+            @Override
+            public void runResponse(String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpRunner.runGetGameDetails(GetUIOnFailGetGameDetails());
+                    }
+                });
+            }
+        };
+        return ret;
+    }
+
+    RequestCallback GetUIOnFailGetGameDetails() {
+        RequestCallback ret = new RequestCallback() {
+            @Override
+            public void runResponse(String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utilities.messageBox("Game In Progress", "A game is in progress and you have the wrong password");
+                    }
+                });
+            }
+        };
+        return ret;
     }
 
     public void openGame() {
