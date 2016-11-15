@@ -56,6 +56,7 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 	{
 		currentGameInfo = *gameInfo;
 		ChessGameInitialisation();
+		xil_printf("\n======== Game Started ========\n");
 		BoardDisplay_new_board(&currentGameInfo);
 		return OK;
 	}
@@ -103,6 +104,7 @@ enum ChessboardRestStatus end_game()
 	}
 	gameStarted = false;
 	currentGameInfo.secret_code[0] = '\0';
+	xil_printf("\n===== Game Ended ========\n");
 	BoardDisplay_welcome_screen();
 	return OK;
 }

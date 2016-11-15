@@ -628,7 +628,7 @@ static int draw_move_number(u32 top, u32 left, int number)
  	sprintf(buff, "%c%c",f,r);
  	strcat(console_out, buff);
 
- 	xil_printf("Move made (FIDE notation) %s\n", console_out);
+ 	xil_printf("Move made : %s\n", console_out);
 
  	FEND;
  	return 0;
