@@ -2,6 +2,7 @@ package com.vintage.vintagechess;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Build;
@@ -19,6 +20,7 @@ import org.json.JSONException;
  */
 
 public class Utilities {
+    public static ProgressDialog dialog;
     public static AppCompatActivity currentActivity;
     private static boolean debug = true;
 

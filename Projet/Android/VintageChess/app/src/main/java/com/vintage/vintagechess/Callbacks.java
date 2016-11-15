@@ -86,6 +86,7 @@ public class Callbacks {
             @Override
             public void runResponse(String response) throws JSONException {
                 REST.updateGameFromStatusSummary(response);
+                Game.finishMove();
             }
         };
         return ret;

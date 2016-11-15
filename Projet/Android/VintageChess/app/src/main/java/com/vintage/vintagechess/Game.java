@@ -119,7 +119,6 @@ public class Game {
             Display.lastPos = downPos;
             Display.newPos = currentPiece.p_;
         }
-        finishMove();
         HttpRunner.runGetStatusSummary(null);
     }
 
@@ -132,7 +131,7 @@ public class Game {
         finishMove();
     }
 
-    private static void finishMove() {
+    public static void finishMove() {
         downPos = null;
         lastPos = null;
         currentPiece = null;

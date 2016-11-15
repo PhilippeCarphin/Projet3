@@ -209,6 +209,7 @@ public class Display {
         //activityGame.state.setText(stateReceived);
 
 
+
     }
 
     public static void initializeVariables() {
