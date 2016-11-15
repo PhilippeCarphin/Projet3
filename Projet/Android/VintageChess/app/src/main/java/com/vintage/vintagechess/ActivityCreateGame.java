@@ -16,6 +16,7 @@ import android.widget.TimePicker;
 
 public class ActivityCreateGame extends AppCompatActivity {
 
+
     private RadioGroup radioSelect;
     private RadioButton radioButton1, radioButton2;
 
@@ -33,15 +34,10 @@ public class ActivityCreateGame extends AppCompatActivity {
     RadioGroup RadioGroupModeTablette;
     RadioGroup RadioGroupSelectColorBoard;
     RadioGroup RadioGroupSelectStylePiece;
-
-    public static REST rest;
-
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected  void onResume() {
         super.onResume();
-        Utilities.currentActivity = this;
     }
 
     @Override
@@ -50,7 +46,7 @@ public class ActivityCreateGame extends AppCompatActivity {
         setContentView(R.layout.activity_create_game);
 
         Utilities.hideKeyPad(this);
-
+        Utilities.currentActivity = this;
         radioButton1 = (RadioButton) findViewById(R.id.radioButton1);
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
         radioSelect = (RadioGroup) findViewById(R.id.radioGroupMode);
@@ -128,7 +124,11 @@ public class ActivityCreateGame extends AppCompatActivity {
 
         Callbacks.activityCreateGame = this;
     }
-
+    @Override
+    public void onDestroy() {
+        Utilities.currentActivity = null;
+        System.gc();
+    }
    public void handleRadioButtonStyleChange(RadioGroup radioGroup, View view) {
 
         int selectedId = radioGroup.getCheckedRadioButtonId();

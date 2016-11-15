@@ -28,7 +28,6 @@ class RequestTask extends AsyncTask<String, String, String> {
     private RequestCallback onSucess;
     private RequestCallback onFail;
     private boolean receiveJSON;
-    private static ActivityCreateGame activityCreateGame;
     private String suffix;
     private String method;
     private String body;

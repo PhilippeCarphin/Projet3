@@ -19,16 +19,19 @@ public class ActivityMenu extends AppCompatActivity {
     @Override
     protected  void onResume() {
         super.onResume();
-        Utilities.currentActivity = this;
     }
-
+    @Override
+    public void onDestroy(){
+        Utilities.currentActivity = this;
+        System.gc();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
         Utilities.hideKeyPad(this);
-
+        Utilities.currentActivity = this;
         buttonPlay = (Button) findViewById(R.id.buttonPlay);
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -40,7 +40,7 @@ public class ActivityGame extends AppCompatActivity {
     View radioButtonColor;
     private RadioGroup radioGroupBoardColor;
     private RadioGroup radioGroupPieceStyle;
-    private static boolean gameStarted = false;
+
 
     RadioGroup selectStyle;
 
@@ -56,7 +56,7 @@ public class ActivityGame extends AppCompatActivity {
 
             Game.activityGame = this;
             Utilities.currentActivity = this;
-            gameStarted = false;
+            Game.gameStarted = false;
 
 
 
@@ -261,9 +261,9 @@ public class ActivityGame extends AppCompatActivity {
 
         super.onWindowFocusChanged(hasFocus);
         board.requestLayout();
-        if (!gameStarted) {
+        if (!Game.gameStarted) {
             Utilities.messageBoxStartGame();
-            gameStarted = true;
+            Game.gameStarted = true;
         }
         Display.drawFullBoard();
 
@@ -296,11 +296,13 @@ public class ActivityGame extends AppCompatActivity {
         try {
             HttpRunner.runPostGameEnd(null);
             Game.activityGame = null;
+            Utilities.currentActivity = null;
 
         } catch (JSONException e) {
             e.printStackTrace();
             Utilities.messageBox("Error after destroying view", e.getMessage());
         }
+        System.gc();
         super.onDestroy();
     }
 
