@@ -312,6 +312,12 @@
                                 android:id="@+id/radioButtonGreen"
                                 android:button="@null"
                                 android:checked="true"/>
+                            <RadioButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:button="@null"
+                                android:checked="false"
+                                android:id="@+id/radioButtonBlue"/>
 
                             <RadioButton
                                 android:layout_width="wrap_content"
@@ -319,12 +325,6 @@
                                 android:id="@+id/radioButtonRed"
                                 android:button="@null"
                                 android:checked="false"/>
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:button="@null"
-                                android:checked="false"
-                                android:id="@+id/radioButtonBlue"/>
                         </RadioGroup>
             </LinearLayout>
 
