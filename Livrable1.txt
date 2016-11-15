@@ -1,0 +1,62 @@
+Pour le livrable 1 veuillez trouver les items demandés dans les dossiers suivants
+
+/projet
+
+	Le dossier contenant tous les éléments du projet, contient les sous-dossiers
+		- serveur (pour le zedboard)
+		- android (pour la tablette)
+	
+/projet/android
+
+	Le dossier du projet Android studio pour l'application client qui roule sur la tablette.
+	
+/projet/serveur
+
+	Le dossier contenant les éléments du serveur:
+		- Le projet vivado
+		- Le dossier du projet logiciel XilinxSDK
+		
+/projet/serveur/adv7511_zed.sdk
+
+	Le dossier racine du projet XilinxSDK.
+	
+	Pour compiler le projet:
+	
+		- Lancer XilinxSDK avec ce dossier comme workspace
+		- Faire File->Import, choisir General->Existing project into workspace
+			- Cliquer browse, et choisir le dossier /projet/serveur/adv7511_zed.sdk
+			  (il devrait être choisi par défaut), cliquer OK
+			- Importer les deux projets trouvés (le projet logiciel (nommé serveur)
+			  et le hardware (nommé system_top_hw_platform_0)
+		- Faire File->New->Board Support Package
+			- Laisser le nom "standalone_bsp_0" (c'est important)
+			- Faire OK.
+		- Right-click le projet serveur et cliquer "Build Project"
+			
+/projet/serveur/adv7511_zed.sdk/serveur
+	
+	Le dossier du projet logiciel du serveur.  Sous-dossiers:
+	
+		- CHESS
+			
+			Implemente les regles du jeu d'echec et tient compte 
+		
+		- HDMI
+			
+			Implemente l'affigage
+			
+				Gere un tampon qui représente l'écran
+				Gere l'interface HDMI
+				Fournit une interface qui sert le module CHESS
+				
+		- HTTP
+			
+			Traite les requêtes et les traduit en appel de fonctions du module CHESS.
+			
+		- TCP
+		
+			Gere l'interface réseau avec lwIP.
+
+			
+		
+		
