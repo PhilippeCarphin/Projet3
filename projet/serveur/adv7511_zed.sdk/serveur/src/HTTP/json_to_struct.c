@@ -141,11 +141,13 @@ int parse_game_info(const char *data, GameInfo *gameinfo)
 	jsmntok_t tokens[MAX_TOKENS];	/* tokens, split correctly by jsmn */
 
 	/* non-pawn pieces names */
+#if 0 // Unused variable compiler warning
 	static const char pieces_names[][20] =
 	{
 		"king1", "queen1", "bishop1A", "bishop1B", "rook1A", "rook1B", "knight1A", "knight1B",
 		"king2", "queen2", "bishop2A", "bishop2B", "rook2A", "rook2B", "knight2A", "knight2B"
 	};
+#endif
 	
 	jsmn_init(&parser);
 	number_of_tokens = jsmn_parse(&parser, data, strlen(data), tokens, sizeof(tokens)/sizeof(tokens[0]));
