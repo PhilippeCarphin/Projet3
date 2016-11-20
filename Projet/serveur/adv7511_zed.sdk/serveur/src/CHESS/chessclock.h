@@ -3,8 +3,8 @@
 #include "chessboard_rest_protocol.h"
 
 struct PlayerTimes {
-	int white;
-	int black;
+	int whiteTime;
+	int blackTime;
 };
 
 /*******************************************************************************

@@ -18,8 +18,10 @@
  */
 #define PB1 50
 #define LD9 7
-int restartGame;
-int GameStarted = 1;
+
+/* TODO CHANGER LES VARIABLES*/
+static int restartGame;
+static int GameStarted = 1;
 
 
 #define TIMER_LOAD_VALUE  0x28000000
@@ -115,10 +117,12 @@ void run_ZedBoard()
 	restartGame = XGpioPs_ReadPin( &GpioMIO, PB1 );
 	if(restartGame == 1)
 	{
+		// TODO
 		WHERE DBG_PRINT("Restart\n");
 		//xil_printf("Restart\n");
 	}
 	else{
+		// TODO
 		//DO nothing
 		WHERE DBG_PRINT("Do nothing\n");
 		//xil_printf("Do nothing\n");
