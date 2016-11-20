@@ -116,10 +116,12 @@ void run_ZedBoard()
 	if(restartGame == 1)
 	{
 		WHERE DBG_PRINT("Restart\n");
+		//xil_printf("Restart\n");
 	}
 	else{
 		//DO nothing
 		WHERE DBG_PRINT("Do nothing\n");
+		//xil_printf("Do nothing\n");
 	}
 
 

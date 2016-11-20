@@ -9,7 +9,8 @@
 #include "HDMI/hdmi.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
-
+#include "BoardDisplay.h"
+#include "ZedBoard/ZedBoardConfig.h"
 #include "test_http.h"
 
 int main(){
@@ -23,17 +24,18 @@ int main(){
 	// give their addresses to the modules that will use them
 	set_screen_buffer(screen_buf);
 	BoardDisplay_set_image_buffers(chars_data, pieces_data);
-
 	init_HDMI();
 #endif
-
 	init_TCP();
-
+	init_ZedBoard();
 	while(1){
 		run_HDMI();
 		run_TCP();
+		run_ZedBoard();
 	}
+
 	close_HDMI();
 	close_TCP();
+	close_ZedBoard();
 	return 0;
 }
