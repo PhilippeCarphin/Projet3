@@ -28,28 +28,44 @@ int end_request(const char *data, char *REST_response);
 /******************************************************************************
  * Uses a big switch-case block to send data to the right handling function.
  *****************************************************************************/
-int REST_handle_request(enum request_type type, const char *data, const char *pswd, char *REST_response)
+int REST_handle_request(enum request_type type, const char *data,
+							  const char *pswd, char *REST_response)
 {
 	FBEGIN
 	char pswd_b64[MAX_lEN];
 	pswd_b64[0] = '\0';
 	ascii_to_base64(pswd, strlen(pswd), pswd_b64);
 
+	/*
+	 * Validate password for certain types of requests
+	 */
+	switch(type)
+	{
+		case MOVE:
+		case PROMOTE:
+		case POST_BOARD:
+		case START:
+		case END:
+		case JOIN:
+			if (validate_password(pswd_b64) == unathorized)
+			{
+				return unathorized;
+			}
+			break;
+		default:
+			break;
+	}
+	
+	/*
+	 * Switch to correct request handler based on request type
+	 */
 	switch (type)
 	{
 	case NEW_GAME:
 		return newGame_request(data, REST_response);
 	case MOVE:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return move_request(data, REST_response);
 	case PROMOTE:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return promote_request(data, REST_response);
 	case GET_TIME:
 		return getTime_request(data, REST_response);
@@ -58,30 +74,14 @@ int REST_handle_request(enum request_type type, const char *data, const char *ps
 	case GET_BOARD:
 		return getBoard_request(REST_response);
 	case POST_BOARD:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return postBoard_request(data, REST_response);
 	case GET_DETAILS:
 		return getDetails_request(REST_response);
 	case START:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return start_request(REST_response);
 	case END:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return end_request(data, REST_response);
 	case JOIN:
-		if (validate_password(pswd_b64) == unathorized)
-		{
-			return unathorized;
-		}
 		return join_request(REST_response);
 	case ERROR:
 	default:
