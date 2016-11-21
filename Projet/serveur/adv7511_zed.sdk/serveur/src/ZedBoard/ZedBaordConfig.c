@@ -5,7 +5,7 @@
 #include "Xscutimer.h"
 #include "xscugic.h"
 #include "Xil_exception.h"
-//#define DEBUG
+#define DEBUG
 #include "debug.h"
 #include "xparameters.h"
 
@@ -40,15 +40,16 @@ XScuTimer Timer;
 XScuGic InterruptController;
 XScuGic_Config *GicConfigPtr;
 
-/******************************************************************************/
-/*Fonction du TP1
+/*******************************************************************************
+ *Fonction du TP1
  * Configuration du GPIO a double-port en plus de celui du Zynq sur MIO
- */
-/******************************************************************************/
+ *
+*******************************************************************************/
 int configGPIOs () {
   /* en premier, celui accessible par le MIO pour les PB1 et PB2 */
   GPIO_MIOConfigPtr = XGpioPs_LookupConfig( XPAR_PS7_GPIO_0_DEVICE_ID );
   Status = XGpioPs_CfgInitialize(&GpioMIO, GPIO_MIOConfigPtr,GPIO_MIOConfigPtr->BaseAddr );
+
 
   if (Status != XST_SUCCESS)
       return XST_FAILURE;
@@ -62,11 +63,11 @@ int configGPIOs () {
   return XST_SUCCESS;
 }
 
-/******************************************************************************/
-/*Fonction du TP1
-* Ajustement de la minuterie "proche" du premier ARM
-* et du gestionnaire d'interruption
-/******************************************************************************/
+/******************************************************************************
+ *Fonction du TP1
+ * Ajustement de la minuterie "proche" du premier ARM
+ * et du gestionnaire d'interruption
+******************************************************************************/
 void setTimerAndIntr() {
   /* la base avec le timer */
   TMRConfigPtr = XScuTimer_LookupConfig( XPAR_PS7_SCUTIMER_0_DEVICE_ID );
@@ -98,17 +99,17 @@ void setTimerAndIntr() {
   XScuTimer_Start(&Timer);
 }
 
-/******************************************************************************/
-/*Initialisation du ZedBoard pour le bouton PB1 et LED9
-/******************************************************************************/
+/*******************************************************************************
+ *Initialisation du ZedBoard pour le bouton PB1 et LED9
+*******************************************************************************/
 void init_ZedBoard(){
 	 init_platform_();
 	 configGPIOs();
 }
 
-/******************************************************************************/
-/* Fonction de run appelée dans le main
-/******************************************************************************/
+/*******************************************************************************
+ * Fonction de run appelée dans le main
+*******************************************************************************/
 void run_ZedBoard()
 {
     setTimerAndIntr();
@@ -128,7 +129,6 @@ void run_ZedBoard()
 		//xil_printf("Do nothing\n");
 	}
 
-
 	/* Chercher la valeur de gameStart pour afficher ou pas la LED9  */
    if (GameStarted == 1){
 	   XGpioPs_WritePin( &GpioMIO, LD9, 1 );
@@ -141,9 +141,9 @@ void run_ZedBoard()
 
 }
 
-/******************************************************************************/
-/* A la fin on clean
-/******************************************************************************/
+/*******************************************************************************
+ * A la fin on clean
+*******************************************************************************/
 void close_ZedBoard()
 {
 	cleanup_platform();
