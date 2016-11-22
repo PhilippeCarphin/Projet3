@@ -26,8 +26,10 @@ int main(){
 	BoardDisplay_set_image_buffers(chars_data, pieces_data);
 	init_HDMI();
 #endif
-	init_TCP();
+
+
 	init_ZedBoard();
+	init_TCP();
 	while(1){
 		run_HDMI();
 		run_TCP();
