@@ -1,36 +1,30 @@
 #include "chessclock.h"
 #include "chessboard.h"
+#include "BoardDisplay.h"
 
 
 
 
 
 static struct PlayerTimes pt;
+extern TurnInfo currentTurnInfo;
+static int overtime_reached = 0;
+
 /*******************************************************************************
  *
 *******************************************************************************/
 int chessclock_1sec_callback()
 {
-	// reduce the correct player's time by 1 sec
-#if 0
-	//update display
-		// Need to create
-		BoardDisplay_update_times(...)
-		{
-			draw_square(...) // erase the time
+	// Figure out whose time we will modify.
+	int player = currentTurnInfo.turn;
+	int *tm = (player == player1 ? &(pt.whiteTime) : &(pt.blackTime));
 
-			// time is in seconds, so we need to figure out
-			char time_string[9]; // hh:mm:ss (8 chars + '\0' at the end)
+	// Reduce the time
+	*tm -= 1;
 
-			// after this call time_string contains the time in string format ready for display
-			int_to_time_string(time, time_string);
+	// Update the display
+	BoardDisplay_update_times(player, *tm);
 
-			draw_string(vertical_position, horizontal_position, time_string);
-
-			cf_hdmi_send_buffer();// Send the screen buffer to the screen.
-		}
-		and call it.
-#endif
 	return 0;
 }
 
@@ -57,6 +51,7 @@ int chessclock_init(GameInfo *gi)
 *******************************************************************************/
 int chessclock_overtime_reached(GameInfo *gi)
 {
+	overtime_reached = 1;
 	pt.whiteTime += gi->timer_format.overtime;
 	pt.blackTime += gi->timer_format.overtime;
 	return 0;
@@ -66,16 +61,20 @@ int chessclock_overtime_reached(GameInfo *gi)
  * Sera appelé à chaque tour pour ajouter l'increment approprié (increment ou
  * overtime_increment) qu'on est en temps normal ou en overtime.
 *******************************************************************************/
-int chesscloak_add_increment(GameInfo *gi, int player /* WHITE or BLACK */)
+int chessclock_add_increment(GameInfo *gi, PlayerID player)
 {
-	if(player == 1)
+	int *tm = (player == player1 ? &(pt.whiteTime) : &(pt.blackTime));
+
+	if(!overtime_reached)
 	{
-		pt.whiteTime += gi->timer_format.increment;
+		*tm += gi->timer_format.increment;
 	}
 	else
 	{
-		pt.blackTime += gi->timer_format.increment;
+		*tm += gi->timer_format.overtime_increment;
 	}
+
+	BoardDisplay_draw_player_time(player, *tm);
+
 	return 0;
 }
-

@@ -1,5 +1,6 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
+#include "chessclock.h"
 // #define DEBUG
 #include "debug.h"
 
@@ -10,14 +11,13 @@
  * Structures and global variables
  ******************************************************************************/
 static GameInfo currentGameInfo;
-static TurnInfo currentTurnInfo;
+TurnInfo currentTurnInfo;
 
 static Piece* boardGame[8][8];
 static Piece player1Pieces[16];
 static Piece player2Pieces[16];
 
 static bool gameStarted = false;
-static bool player1Turn = true;
 
 enum moveResult{
 	VALID,
@@ -34,6 +34,10 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 static void setBoard(Piece* playerPieces);
 static void clearBoard();
 
+static bool can_promote(Piece *piece);
+static PieceType get_type(const char *type_name);
+static void toggle_next_turn();
+
 static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
 static enum moveResult move_king(int xs, int xd, int ys, int yd);
 static enum moveResult move_rook(int xs, int xd, int ys, int yd);
@@ -42,8 +46,6 @@ static enum moveResult move_knight(int xs, int xd, int ys, int yd);
 static enum moveResult move_queen(int xs, int xd, int ys, int yd);
 static enum moveResult move_pawn(int xs, int xd, int ys, int yd);
 
-static bool can_promote(Piece *piece);
-static PieceType get_type(const char *type_name);
 
 /******************************************************************************
  * Copy the received game informations into internal structure and
@@ -269,8 +271,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	if (moveInfo->promotion == false)
 	{
 		// turn not done yet; piece must be promoted first
-		currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
-		currentTurnInfo.move_no++;
+		toggle_next_turn();
 	}
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
@@ -288,6 +289,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.d_rank = yd;
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
+
 	BoardDisplay_move_piece(&mv);
 
 	FEND;
@@ -318,8 +320,7 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 		piece->pieceType = type;
 
 		/* we did not toggle the turn in the last movePiece; now we do */
-		currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
-		currentTurnInfo.move_no++;
+		toggle_next_turn();
 
 		/* call HDMI to change type on screen */
 		if (BoardDisplay_change_piece_type(type) != 0)
@@ -467,12 +468,13 @@ static void ChessGameInitialisation()
 	setBoard(player2Pieces);
 
 	// initialize currentTurnInfo
-	player1Turn = true;
 	currentTurnInfo.game_status = NORMAL;
 	currentTurnInfo.last_move[0] = 'x';
 	currentTurnInfo.last_move[1] = 'x';
 	currentTurnInfo.move_no = 1;
 	currentTurnInfo.turn = player1;
+
+	chessclock_init(&currentGameInfo);
 }
 
 /******************************************************************************
@@ -769,4 +771,16 @@ static PieceType get_type(const char *type_name)
 		return PAWN;
 	else
 		return -1;
+}
+
+/******************************************************************************
+ * When a turn ends, we have to add an increment to the clock, set the turn
+ * to the next player, and increment the move number.
+ ******************************************************************************/
+static void toggle_next_turn()
+{
+	// At the end of a turn, have the clock add an increment
+	chessclock_add_increment(&currentGameInfo,currentTurnInfo.turn); // Increment current player's time before changing whose turn it is.
+	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
+	currentTurnInfo.move_no++;
 }
