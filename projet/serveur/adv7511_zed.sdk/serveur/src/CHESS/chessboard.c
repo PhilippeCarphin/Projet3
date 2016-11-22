@@ -42,7 +42,8 @@ static enum moveResult move_knight(int xs, int xd, int ys, int yd);
 static enum moveResult move_queen(int xs, int xd, int ys, int yd);
 static enum moveResult move_pawn(int xs, int xd, int ys, int yd);
 
-bool can_promote(Piece *piece);
+static bool can_promote(Piece *piece);
+static PieceType get_type(const char *type_name);
 
 /******************************************************************************
  * Copy the received game informations into internal structure and
@@ -81,15 +82,11 @@ enum ChessboardRestStatus start_game()
 }
 
 /******************************************************************************
- *
+ * Called when a 2nd player wants to join game. Since password is already checked
+ * earlier, we can just accept at this point.
  ******************************************************************************/
 enum ChessboardRestStatus join_game()
 {
-	if (!gameStarted)
-	{
-		return unathorized;
-	}
-
 	return OK;
 }
 
@@ -269,8 +266,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	boardGame[xd][yd]->y = yd;
 
 	// increment turn, change player turn, time stuff
-	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
-	currentTurnInfo.move_no++;
+	if (moveInfo->promotion == false)
+	{
+		// turn not done yet; piece must be promoted first
+		currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
+		currentTurnInfo.move_no++;
+	}
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
 
@@ -299,8 +300,35 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
  ******************************************************************************/
 enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 {
-	// TODO
-	return NOT_IMPLEMENTED;
+	/* check if it's the player turn */
+	if (player != currentTurnInfo.turn)
+	{
+		return notYourTurn;
+	}
+
+	/* retreive piece */
+	int x = currentTurnInfo.last_move[0] - 'a';
+	int y = currentTurnInfo.last_move[1] - '1';
+	Piece *piece = boardGame[x][y];
+
+	/* set new piece type */
+	PieceType type = get_type(new_type);
+	if (can_promote(piece) == true && type >= 0 && type != PAWN)
+	{
+		piece->pieceType = type;
+
+		/* we did not toggle the turn in the last movePiece; now we do */
+		currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
+		currentTurnInfo.move_no++;
+
+		/* TODO: call HDMI to change type on screen */
+
+		return OK;
+	}
+	else
+	{
+		return unathorized;
+	}
 }
 
 /******************************************************************************
@@ -715,4 +743,26 @@ bool can_promote(Piece *piece)
 	{
 		return false;
 	}
+}
+
+/******************************************************************************
+ * Find a piece type from its name. Can be king|queen|rook|bishop|knight|pawn.
+ * Return -1 if type is invalid.
+ ******************************************************************************/
+static PieceType get_type(const char *type_name)
+{
+	if (strcmp(type_name, "king"))
+		return KING;
+	else if (strcmp(type_name, "queen"))
+		return QUEEN;
+	else if (strcmp(type_name, "rook"))
+		return ROOK;
+	else if (strcmp(type_name, "bishop"))
+		return BISHOP;
+	else if (strcmp(type_name, "knight"))
+		return KNIGHT;
+	else if (strcmp(type_name, "pawn"))
+		return PAWN;
+	else
+		return -1;
 }
