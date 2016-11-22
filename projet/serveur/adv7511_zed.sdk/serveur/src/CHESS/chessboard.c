@@ -321,7 +321,11 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 		currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 		currentTurnInfo.move_no++;
 
-		/* TODO: call HDMI to change type on screen */
+		/* call HDMI to change type on screen */
+		if (BoardDisplay_change_piece_type(type) != 0)
+		{
+			return INTERNAL_ERROR;
+		}
 
 		return OK;
 	}

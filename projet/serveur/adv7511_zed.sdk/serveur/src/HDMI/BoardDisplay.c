@@ -164,6 +164,11 @@ int BoardDisplay_start_game()
 	return 0;
 }
 
+/*
+ * The module must remember the last move for un-yellowing.
+ * Since both move_piece and change_piece_type use it, we must declare it here.
+ */
+static struct Move last;
 /******************************************************************************
  * This function executes a move and writes to the notation rectangle.
 ******************************************************************************/
@@ -181,7 +186,7 @@ int BoardDisplay_move_piece(struct Move *move)
 	 * by restoring this to normal by clearing both squares and redrawing
 	 * the moved piece on the cleared square
 	 */
-	static struct Move last;
+
 	if( ! first_move )
 	{
 		if((err = un_yellow(&last)) != 0) return err;
@@ -204,6 +209,29 @@ int BoardDisplay_move_piece(struct Move *move)
 	draw_turn((move->c == WHITE ? BLACK : WHITE));
 	cf_hdmi_send_buffer();
 	FEND;
+	return 0;
+}
+
+/******************************************************************************
+ * Remove the last moved piece and replaces it by another piece on a yellow
+ * square. Used when a pawn is promoted.
+******************************************************************************/
+int BoardDisplay_change_piece_type(PieceType new_type)
+{
+	int err;
+
+	/* remove the last moved piece, since it is the one being changed */
+	if ((err = clear_square(last.d_file, last.d_rank)) != 0) return err;
+
+	/* redraw the yellow square, since no move was made */
+	if ((err = color_square(last.d_file, last.d_rank, YELLOW)) != 0) return err;
+
+	/* draw the new piece where it belongs */
+	if ((err = draw_piece(new_type, last.c, last.d_file, last.d_rank)) != 0) return err;
+
+	/* if nothing fails, remember new type */
+	last.t = new_type;
+
 	return 0;
 }
 

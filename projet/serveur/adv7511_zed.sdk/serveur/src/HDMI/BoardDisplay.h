@@ -52,6 +52,11 @@ int BoardDisplay_move_piece(struct Move *move);
 ******************************************************************************/
 int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
 
+/******************************************************************************
+ * Remove the last moved piece and replaces it by another piece on a yellow
+ * square. Used when a pawn is promoted.
+******************************************************************************/
+int BoardDisplay_change_piece_type(PieceType new_type);
 
 #endif //_BOARD_DISPLAY_H_
 
