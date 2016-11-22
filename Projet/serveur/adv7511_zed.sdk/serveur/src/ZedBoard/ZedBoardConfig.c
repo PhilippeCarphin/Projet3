@@ -7,6 +7,7 @@
 #include "Xil_exception.h"
 #include "test_hdmi.h"
 #define DEBUG
+#define TESTING
 #include "debug.h"
 #include "xparameters.h"
 
@@ -89,7 +90,12 @@ void run_ZedBoard()
 		oldButtonValue = currentButtonValue;
 		// TODO RESTART
 		WHERE DBG_PRINT("Restart\n");
+
+#ifdef TESTING
 		test_hdmi();
+#else
+
+#endif
 		flag = 0;
 	}
 	else if(!currentButtonValue && flag){
