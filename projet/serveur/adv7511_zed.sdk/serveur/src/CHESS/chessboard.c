@@ -42,6 +42,8 @@ static enum moveResult move_knight(int xs, int xd, int ys, int yd);
 static enum moveResult move_queen(int xs, int xd, int ys, int yd);
 static enum moveResult move_pawn(int xs, int xd, int ys, int yd);
 
+bool can_promote(Piece *piece);
+
 /******************************************************************************
  * Copy the received game informations into internal structure and
  * initialize the game. Display the chessboard in its standard state.
@@ -255,7 +257,9 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		moveInfo->piece_eliminated[1] = 'x';
 	}
 
-	// TODO: check for promotion
+	// check for promotion
+	moveInfo->promotion = can_promote(piece);
+
 	// TODO: check for check, checkmate, stalemate
 
 	// ACTUALLY move the piece
@@ -270,10 +274,9 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
 
-	// TODO: change these values according to promotion and state
+	// TODO: change these values according to state
 	currentTurnInfo.game_status = NORMAL;
 	moveInfo->game_status = NORMAL;
-	moveInfo->promotion = false;
 
 	//call HDMI draw functions
 	mv.t = boardGame[xd][yd]->pieceType;
@@ -673,6 +676,43 @@ static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 				return ILLEGAL; // not capturing
 		}
 	}
-	//promote stuff if promote
+
 	return VALID;
+}
+
+/******************************************************************************
+ * Check if a piece is up for promotion.
+ * Depends on
+ *     1. piece type (must be a pawn)
+ *     2. player ID (sorry Michael, it DOES matter if you're black or white)
+ *     3. piece position (obviously)
+ ******************************************************************************/
+bool can_promote(Piece *piece)
+{
+	/* 1. piece type (must be a pawn) */
+	if (piece->pieceType != PAWN)
+	{
+		return false;
+	}
+
+	/* 2. player ID (sorry Michael, it DOES matter if you're black or white) */
+	int promotion_row;
+	if (piece->playerID == player1)
+	{
+		promotion_row = 7;
+	}
+	else
+	{
+		promotion_row = 0;
+	}
+
+	/* 3. piece position (obviously) */
+	if (piece->y == promotion_row)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
