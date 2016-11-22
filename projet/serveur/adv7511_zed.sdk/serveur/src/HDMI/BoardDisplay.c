@@ -3,7 +3,7 @@
 #include "xil_io.h"
 #include "DrawHDMI.h"
 #include "BoardDisplay.h"
-// #define DEBUG
+#define DEBUG
 #include "debug.h"
 #include "cf_hdmi.h"
 
@@ -28,6 +28,10 @@ struct BoardData{
 	u32 notation_width;
 	u32 notation_height;
 	u32 margin;
+	u32 time_header_left;
+	u32 time_left;
+	u32 black_time_top;
+	u32 white_time_top;
 };
 static struct BoardData bd;
 
@@ -37,6 +41,15 @@ enum Colors { 	BACKGROUND = 0xFF666666,
 				LIGHT_SQUARE_COLOR = 0xFF769656,
 				YELLOW = 0xFFFFFF00,
 				MARGIN_COLOR = 0xFF955C3E
+};
+
+enum Locations {
+	WHITE_TIME_TOP = 500,
+	WHITE_TIME_LEFT = 500,
+	BLACK_TIME_TOP = 600,
+	BLACK_TIME_LEFT = 600,
+	TIME_WIDTH = 50,
+	TIME_HEIGHT = 30,
 };
 
 static char readme[] =
@@ -96,6 +109,7 @@ static int load_bitmap_files();
 static int draw_char(u32 screen_top, u32 screen_left, char c);
 static int draw_string(u32 screen_top, u32 screen_left, char *str);
 static u32 getPieceOffset(PieceType p);
+static int time_int_to_string(int total_seconds, char *time_str);
 // static int test_move_piece();
 
 
@@ -278,6 +292,47 @@ static int draw_information(GameInfo *gi)
 	draw_square(cursor_top, cursor_left, width, line_skip, 0);
 	draw_string(cursor_top, cursor_left, ip_buff_2);
 
+	//Draw time stuff
+	cursor_top = bd.notation_top + bd.notation_height + 10;
+	cursor_left -= 150;
+	size_t head = strlen("white time left : ") * char_width;
+	size_t time = strlen("hh:mm:ss") * char_width;
+	draw_square(cursor_top, cursor_left, head + time, line_skip, 0x00000000);
+	draw_string(cursor_top, cursor_left, "White time left : ");
+	draw_time(cursor_top, cursor_left + head,gi->timer_format.time);
+
+	bd.white_time_top = cursor_top;
+	bd.time_left = cursor_left + head;
+
+	cursor_top += line_skip + 10;
+	bd.black_time_top = cursor_top;
+	draw_square(cursor_top, cursor_left, head + time, line_skip, 0x00000000);
+	draw_string(cursor_top, cursor_left, "Black time left : ");
+	draw_time(cursor_top, cursor_left + head,gi->timer_format.time);
+	return 0;
+}
+
+int draw_time(u32 top, u32 left, int time)
+{
+	char time_str[9];
+	time_int_to_string(time, time_str);
+	WHERE DBG_PRINT("time_str : %s\n", time_str);
+	draw_square(top, left, 8*char_width, line_skip, 0xFF000000); // erase the time
+	draw_string(top, left, time_str);
+	return 0;
+}
+
+int draw_player_time(bool player1Turn, int time)
+{
+	int time_top = (player1Turn == true ? bd.white_time_top : bd.black_time_top);
+	draw_time(time_top, bd.time_left, time);
+	return 0;
+}
+
+int BoardDisplay_update_times(bool player1Turn, int time)
+{
+	draw_player_time(player1Turn,time);
+	cf_hdmi_send_buffer();// Send the screen buffer to the screen.
 	return 0;
 }
 
@@ -858,6 +913,39 @@ static u32 getPieceOffset(PieceType p)
 	default:
 		return 0;
 	}
+}
+
+/********************************************************************************
+ * Converts an integer number of seconds into a string in the format hh:mm:ss.
+ * A char buffur of 9 mytes must be allocated to hold the 8 chars of the string
+ * and the terminating NUL byte.
+ * Time must be less than or equal to 99:59:59.
+********************************************************************************/
+static int time_int_to_string(int total_seconds, char *time_str)
+{
+
+   // Calculate the three fields of the time string
+   int hours = total_seconds / 3600;
+   int minutes = (total_seconds / 60) % 60;
+   int seconds = total_seconds % 60;
+
+   WHERE DBG_PRINT("time integers : hours:%d, minutes:%d, seconds:%d\n",hours, minutes,seconds);
+   // Change them to characters.
+   char *p = time_str;
+   *p++ = '0' + hours/10;
+   *p++ = '0' + hours%10;
+   *p++ = ':';
+
+   *p++ = '0' + minutes/10;
+   *p++ = '0' + minutes%10;
+   *p++ = ':';
+
+   *p++ = '0' + seconds/10;
+   *p++ = '0' + seconds%10;
+
+   *p = 0;
+
+   return 0;
 }
 
 #if 0

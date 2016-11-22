@@ -6,31 +6,22 @@
 
 
 static struct PlayerTimes pt;
+extern bool player1Turn;
+
 /*******************************************************************************
  *
 *******************************************************************************/
 int chessclock_1sec_callback()
 {
-	// reduce the correct player's time by 1 sec
-#if 0
-	//update display
-		// Need to create
-		BoardDisplay_update_times(...)
-		{
-			draw_square(...) // erase the time
+	// Figure out whose time we will modify.
+	int *tm = (player1Turn == true ? &(pt.whiteTime) : &(pt.blackTime));
 
-			// time is in seconds, so we need to figure out
-			char time_string[9]; // hh:mm:ss (8 chars + '\0' at the end)
+	// Reduce the time
+	*tm -= 1;
 
-			// after this call time_string contains the time in string format ready for display
-			int_to_time_string(time, time_string);
+	// Update the display
+	BoardDisplay_update_times(player1Turn, *tm);
 
-			draw_string(vertical_position, horizontal_position, time_string);
-
-			cf_hdmi_send_buffer();// Send the screen buffer to the screen.
-		}
-		and call it.
-#endif
 	return 0;
 }
 
@@ -66,16 +57,13 @@ int chessclock_overtime_reached(GameInfo *gi)
  * Sera appelé à chaque tour pour ajouter l'increment approprié (increment ou
  * overtime_increment) qu'on est en temps normal ou en overtime.
 *******************************************************************************/
-int chesscloak_add_increment(GameInfo *gi, int player /* WHITE or BLACK */)
+int chessclock_add_increment(GameInfo *gi, int player /* WHITE or BLACK */)
 {
-	if(player == 1)
-	{
-		pt.whiteTime += gi->timer_format.increment;
-	}
-	else
-	{
-		pt.blackTime += gi->timer_format.increment;
-	}
+	int *tm = (player1Turn == true ? &(pt.whiteTime) : &(pt.blackTime));
+
+	*tm += gi->timer_format.increment;
+
+	draw_player_time(player1Turn, *tm);
+
 	return 0;
 }
-

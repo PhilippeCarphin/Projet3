@@ -1,7 +1,9 @@
 #include "chessboard_rest_protocol.h"
 #include "chessboard.h"
+#include "chessclock.h"
 #include "BoardDisplay.h"
 #include "string.h"
+#include "PieceEnum.h"
 
 int new_game_test()
 {
@@ -32,6 +34,7 @@ int test_hdmi()
 {
 	static int sequence = 1;
 
+	MoveInfo mv;
 	switch(sequence){
 	case 1:
 		new_game_test();
@@ -39,9 +42,24 @@ int test_hdmi()
 	case 2:
 		start_game();
 		break;
+#if 0
 	case 3:
+		chessclock_1sec_callback();
+		break;
+	case 4:
+		chessclock_1sec_callback();
+		break;
+	case 5:
+		chessclock_1sec_callback();
+		break;
+	case 6:
+		movePiece(WHITE,"e2","e4",&mv);
+		break;
+#endif
 	default :
 		chessclock_1sec_callback();
+		break;
+
 	}
 
 	sequence++;

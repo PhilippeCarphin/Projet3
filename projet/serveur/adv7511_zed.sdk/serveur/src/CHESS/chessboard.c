@@ -17,7 +17,7 @@ static Piece player1Pieces[16];
 static Piece player2Pieces[16];
 
 static bool gameStarted = false;
-static bool player1Turn = true;
+bool player1Turn = true;
 
 enum moveResult{
 	VALID,
@@ -284,6 +284,9 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.d_rank = yd;
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
+
+	// At the end of a turn, have the clock add an increment
+	chessclock_add_increment(&currentGameInfo,player1Turn);
 	BoardDisplay_move_piece(&mv);
 
 	FEND;
@@ -438,6 +441,8 @@ static void ChessGameInitialisation()
 	currentTurnInfo.last_move[1] = 'x';
 	currentTurnInfo.move_no = 1;
 	currentTurnInfo.turn = player1;
+
+	chessclock_init(&currentGameInfo);
 }
 
 /******************************************************************************
