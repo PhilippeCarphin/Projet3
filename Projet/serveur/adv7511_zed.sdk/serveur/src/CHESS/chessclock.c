@@ -3,7 +3,7 @@
 
 
 
-#if 0
+
 
 static struct PlayerTimes pt;
 /*******************************************************************************
@@ -12,7 +12,7 @@ static struct PlayerTimes pt;
 int chessclock_1sec_callback()
 {
 	// reduce the correct player's time by 1 sec
-
+#if 0
 	//update display
 		// Need to create
 		BoardDisplay_update_times(...)
@@ -30,8 +30,8 @@ int chessclock_1sec_callback()
 			cf_hdmi_send_buffer();// Send the screen buffer to the screen.
 		}
 		and call it.
-
-	return;
+#endif
+	return 0;
 }
 
 /*******************************************************************************
@@ -49,6 +49,7 @@ int chessclock_init(GameInfo *gi)
 {
 	pt.whiteTime = gi->timer_format.time;
 	pt.blackTime = gi->timer_format.time;
+	return 0;
 }
 
 /*******************************************************************************
@@ -58,6 +59,7 @@ int chessclock_overtime_reached(GameInfo *gi)
 {
 	pt.whiteTime += gi->timer_format.overtime;
 	pt.blackTime += gi->timer_format.overtime;
+	return 0;
 }
 
 /*******************************************************************************
@@ -74,6 +76,6 @@ int chesscloak_add_increment(GameInfo *gi, int player /* WHITE or BLACK */)
 	{
 		pt.blackTime += gi->timer_format.increment;
 	}
-
+	return 0;
 }
-#endif
+
