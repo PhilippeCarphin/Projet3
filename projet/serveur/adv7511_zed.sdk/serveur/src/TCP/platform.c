@@ -35,10 +35,14 @@ void tcp_slowtmr(void);
 //static XScuTimer TimerInstance;
 static XTmrCtr TimerInstance;
 
+XScuGic InterruptController;
+XScuGic_Config *GicConfigPtr;
+
 static int ResetRxCntr = 0;
 
 volatile int TcpFastTmrFlag = 0;
 volatile int TcpSlowTmrFlag = 0;
+volatile int UpdateDisplayFlag = 0;
 
 
 /*
@@ -64,6 +68,7 @@ void timer_callback(XTmrCtr * TimerInstance,struct netif *server_netif)
 
 	odd = !odd;
 	ResetRxCntr++;
+	UpdateDisplayFlag++;
 	if (odd)
 	{
 		TcpSlowTmrFlag = 1;
@@ -93,6 +98,10 @@ void timer_callback(XTmrCtr * TimerInstance,struct netif *server_netif)
 void platform_setup_interrupts()
 {
 	XScuGic_DeviceInitialize(INTC_DEVICE_ID);
+	GicConfigPtr = XScuGic_LookupConfig( XPAR_SCUGIC_SINGLE_DEVICE_ID );
+	XScuGic_CfgInitialize(&InterruptController, GicConfigPtr,
+						GicConfigPtr->CpuBaseAddress);
+	XScuGic_SelfTest( &InterruptController);
 
 	/*
 	 * Connect the interrupt controller interrupt handler to the hardware
@@ -101,21 +110,25 @@ void platform_setup_interrupts()
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_IRQ_INT,
 			(Xil_ExceptionHandler)XScuGic_DeviceInterruptHandler,
 			(void *)INTC_DEVICE_ID);
+	Xil_ExceptionEnable();
 	/*
 	 * Connect the device driver handler that will be called when an
 	 * interrupt for the device occurs, the handler defined above performs
 	 * the specific interrupt processing for the device.
 	 */
 	XScuGic_RegisterHandler(INTC_BASE_ADDR, TIMER_IRPT_INTR,
-					(Xil_ExceptionHandler)timer_callback,
+					(Xil_ExceptionHandler)XTmrCtr_InterruptHandler,
 					(void *)&TimerInstance);
-	void XTmrCtr_SetHandler(XTmrCtr * InstancePtr, XTmrCtr_Handler FuncPtr,
-				void *CallBackRef);
+	XTmrCtr_SetHandler( &TimerInstance,
+					(XTmrCtr_Handler)timer_callback,
+					(void *)&TimerInstance);
 	/*
 	 * Enable the interrupt for scu timer.
 	 */
 	XScuGic_EnableIntr(INTC_DIST_BASE_ADDR, TIMER_IRPT_INTR);
 	return;
+
+	//XScuGic_RegisterHandler(&ScuGic, 0, (Xil_ExceptionHandler)XTmrCtr_InterruptHandler, (void *)&TimerInstance);
 }
 
 //Function to setup the timer and initialise it, and also initialise it's timeout value
