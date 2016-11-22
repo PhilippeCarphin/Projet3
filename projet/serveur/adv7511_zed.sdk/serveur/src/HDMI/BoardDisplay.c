@@ -89,6 +89,7 @@ static int first_move = 1;
  * Declarations of functions
 ******************************************************************************/
 static int draw_information(GameInfo *gi);
+static int draw_time(u32 top, u32 left, int time);
 static int draw_turn(PieceColor c);
 // static int update_times(struct PlayerTimes *pt);
 static int draw_piece(PieceType type, PieceColor color, File file, Rank rank);
@@ -312,7 +313,10 @@ static int draw_information(GameInfo *gi)
 	return 0;
 }
 
-int draw_time(u32 top, u32 left, int time)
+/******************************************************************************
+ * Draws the a time at the specified location
+******************************************************************************/
+static int draw_time(u32 top, u32 left, int time)
 {
 	char time_str[9];
 	time_int_to_string(time, time_str);
@@ -322,16 +326,22 @@ int draw_time(u32 top, u32 left, int time)
 	return 0;
 }
 
-int draw_player_time(int player, int time)
+/******************************************************************************
+ * Draws a time at a location calculated based on the current player
+******************************************************************************/
+int BoardDisplay_draw_player_time(PlayerID player, int time)
 {
 	int time_top = (player == player1 ? bd.white_time_top : bd.black_time_top);
 	draw_time(time_top, bd.time_left, time);
 	return 0;
 }
 
-int BoardDisplay_update_times(int player, int time)
+/******************************************************************************
+ * Calls the function draw_player_time with included cf_hdmi_send_buffer() call
+******************************************************************************/
+int BoardDisplay_update_times(PlayerID player, int time)
 {
-	draw_player_time(player,time);
+	BoardDisplay_draw_player_time(player,time);
 	cf_hdmi_send_buffer();// Send the screen buffer to the screen.
 	return 0;
 }

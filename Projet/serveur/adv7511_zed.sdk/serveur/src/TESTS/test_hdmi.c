@@ -55,6 +55,18 @@ int test_hdmi()
 	case 6:
 		movePiece(1,"e2","e4",&mv);
 		break;
+	case 7:
+		chessclock_1sec_callback();
+		break;
+	case 8:
+		chessclock_1sec_callback();
+		break;
+	case 9:
+		chessclock_1sec_callback();
+		break;
+	case 10:
+		movePiece(2,"e7","e5",&mv);
+		break;
 #endif
 	default :
 		chessclock_1sec_callback();

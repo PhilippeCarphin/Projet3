@@ -1,5 +1,6 @@
 #include "chessclock.h"
 #include "chessboard.h"
+#include "BoardDisplay.h"
 
 
 
@@ -7,6 +8,7 @@
 
 static struct PlayerTimes pt;
 extern TurnInfo currentTurnInfo;
+static int overtime_reached = 0;
 
 /*******************************************************************************
  *
@@ -49,6 +51,7 @@ int chessclock_init(GameInfo *gi)
 *******************************************************************************/
 int chessclock_overtime_reached(GameInfo *gi)
 {
+	overtime_reached = 1;
 	pt.whiteTime += gi->timer_format.overtime;
 	pt.blackTime += gi->timer_format.overtime;
 	return 0;
@@ -58,14 +61,20 @@ int chessclock_overtime_reached(GameInfo *gi)
  * Sera appelé à chaque tour pour ajouter l'increment approprié (increment ou
  * overtime_increment) qu'on est en temps normal ou en overtime.
 *******************************************************************************/
-int chessclock_add_increment(GameInfo *gi)
+int chessclock_add_increment(GameInfo *gi, PlayerID player)
 {
-	PlayerID player = currentTurnInfo.turn;
 	int *tm = (player == player1 ? &(pt.whiteTime) : &(pt.blackTime));
 
-	*tm += gi->timer_format.increment;
+	if(!overtime_reached)
+	{
+		*tm += gi->timer_format.increment;
+	}
+	else
+	{
+		*tm += gi->timer_format.overtime_increment;
+	}
 
-	draw_player_time(player, *tm);
+	BoardDisplay_draw_player_time(player, *tm);
 
 	return 0;
 }

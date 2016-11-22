@@ -52,7 +52,9 @@ int BoardDisplay_move_piece(struct Move *move);
 ******************************************************************************/
 int BoardDisplay_draw_pieces_custom(Piece* player1, Piece* player2);
 
+int BoardDisplay_update_times(PlayerID player, int tm);
 
+int BoardDisplay_draw_player_time(PlayerID player, int tm);
 #endif //_BOARD_DISPLAY_H_
 
 

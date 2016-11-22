@@ -1,5 +1,6 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
+#include "chessclock.h"
 // #define DEBUG
 #include "debug.h"
 
