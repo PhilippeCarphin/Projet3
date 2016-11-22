@@ -11,7 +11,8 @@
 #include "BoardDisplay.h"
 #include "BoardDisplay.h"
 #include "ZedBoard/ZedBoardConfig.h"
-#include "test_http.h"
+#include "test_check.h"
+
 
 int main(){
 
@@ -31,9 +32,11 @@ int main(){
 	init_ZedBoard();
 	init_TCP();
 	while(1){
+
 		run_HDMI();
 		run_TCP();
 		run_ZedBoard();
+		test_check();
 	}
 
 	close_HDMI();

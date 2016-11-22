@@ -10,5 +10,6 @@
 #include "chessboard.h"
 
 enum State check_king_state(Piece king);
+enum State check_king_move(Piece king);
 
 #endif /* CHECKSTATE_H_ */

@@ -77,6 +77,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition);
  ******************************************************************************/
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo);
 enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
+enum moveResult move_king(int xs, int xd, int ys, int yd);
 
 /******************************************************************************
  * Change a pawn piece's type. The usual checks are made

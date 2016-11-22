@@ -1,8 +1,10 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
 #include "ZedBoardConfig.h"
-// #define DEBUG
+#define DEBUG
 #include "debug.h"
+#include "checkstate.h"
+#include <stdlib.h>
 
 #include <string.h>
 #include "xil_io.h"
@@ -29,7 +31,7 @@ static void setBoard(Piece* playerPieces);
 static void clearBoard();
 
 enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
-static enum moveResult move_king(int xs, int xd, int ys, int yd);
+enum moveResult move_king(int xs, int xd, int ys, int yd);
 static enum moveResult move_rook(int xs, int xd, int ys, int yd);
 static enum moveResult move_bishop(int xs, int xd, int ys, int yd);
 static enum moveResult move_knight(int xs, int xd, int ys, int yd);
@@ -234,6 +236,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	// Now, look for piece-specific illegal moves.
 	// Find out if there is a castling or en passant situation, while you're at it.
 	Piece *piece = boardGame[xs][ys];
+
 	switch(execute_move(piece, xs, xd, ys, yd))
 	{
 	case ILLEGAL:
@@ -278,6 +281,41 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 
 	// TODO: check for promotion
 	// TODO: check for check, checkmate, stalemate
+
+	Piece firstKing;
+	Piece secondKing;
+
+	if(player == 1)
+	{
+		firstKing = player1Pieces[0];
+		secondKing = player2Pieces[0];
+	}else
+	{
+		firstKing = player2Pieces[0];
+		secondKing = player1Pieces[0];
+	}
+
+	enum State firstKingState = check_king_state(firstKing);
+	enum State secondKingState = check_king_state(secondKing);
+
+	char etat1[10] = "normale";
+	char etat2[10] = "normale";
+
+	if(firstKingState == CHECK )
+	{
+		strcpy(etat1, "check");
+	}
+
+	if(secondKingState == CHECK )
+	{
+		strcpy(etat2, "check");
+	}
+
+	DBG_PRINT("******************************** \n");
+	WHERE DBG_PRINT("firstKingState: %s\n", etat1);
+	WHERE DBG_PRINT("secondKingState: %s\n", etat2);
+	DBG_PRINT("******************************** \n");
+
 
 	// ACTUALLY move the piece
 	boardGame[xd][yd] = piece; // move the piece
@@ -549,7 +587,7 @@ enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
  * Check if a king's move is valid.
  * NOTE: Does not yet check for castling and check situations.
  ******************************************************************************/
-static enum moveResult move_king(int xs, int xd, int ys, int yd)
+enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
