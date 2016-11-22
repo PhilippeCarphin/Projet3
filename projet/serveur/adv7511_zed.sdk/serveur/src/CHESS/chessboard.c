@@ -1,5 +1,6 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
+#include "ZedBoardConfig.h"
 // #define DEBUG
 #include "debug.h"
 
@@ -64,6 +65,20 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 }
 
 /******************************************************************************
+ * Put the chessboard in the state it would be just after a /new_game, without
+ * reseting the game_info struct.
+ ******************************************************************************/
+void reset_game()
+{
+	ChessGameInitialisation();
+	currentTurnInfo.game_status = RESTARTED;	// Important for client
+	xil_printf("\n======== Game Restarted ========\n");
+	BoardDisplay_new_board(&currentGameInfo);
+	gameStarted = false;
+	end_game_led();
+}
+
+/******************************************************************************
  * Set gameStarted to true and inform the HDMI module.
  ******************************************************************************/
 enum ChessboardRestStatus start_game()
@@ -74,7 +89,10 @@ enum ChessboardRestStatus start_game()
 	}
 
 	gameStarted = true;
+	currentTurnInfo.game_status = NORMAL;	// In case it was just restarted
+
 	BoardDisplay_start_game();
+	start_game_led();
 	return OK;
 }
 
@@ -102,11 +120,21 @@ enum ChessboardRestStatus end_game()
 	{
 		return unathorized;
 	}
+	force_end_game();
+	return OK;
+}
+
+/******************************************************************************
+ * Return to initial state; Does not check wether game is started, and returns
+ * nothing. Should not fail.
+******************************************************************************/
+void force_end_game()
+{
 	gameStarted = false;
 	currentGameInfo.secret_code[0] = '\0';
 	xil_printf("\n===== Game Ended ========\n");
 	BoardDisplay_welcome_screen();
-	return OK;
+	end_game_led();
 }
 
 /******************************************************************************

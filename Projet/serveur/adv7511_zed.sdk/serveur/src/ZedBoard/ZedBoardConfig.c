@@ -8,6 +8,7 @@
 #define DEBUG
 #include "debug.h"
 #include "xparameters.h"
+#include "chessboard.h"
 
 //Code inspiré du code de TP1
 
@@ -114,7 +115,7 @@ void init_ZedBoard(){
 *******************************************************************************/
 void run_ZedBoard()
 {
-    setTimerAndIntr();
+    //setTimerAndIntr();
 
     // Valeur du bouton PB1
     currentButtonValue = XGpioPs_ReadPin( &GpioMIO, PB1 );
@@ -126,18 +127,13 @@ void run_ZedBoard()
 
 	if(currentButtonValue && flag)
 	{
-		oldButtonValue = currentButtonValue;
-		// TODO RESTART
+		// TODO RESTART TABLETTE
+		reset_game();
 		WHERE DBG_PRINT("Restart\n");
-		flag = 0;
-	}
-	else if(!currentButtonValue && flag){
-		oldButtonValue = currentButtonValue;
-		//DO nothing
-		WHERE DBG_PRINT("Do nothing\n");
-		flag = 0;
 	}
 
+	oldButtonValue = currentButtonValue;
+	flag = 0;
 }
 
 /*******************************************************************************

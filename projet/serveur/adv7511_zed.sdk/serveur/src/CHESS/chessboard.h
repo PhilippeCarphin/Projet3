@@ -36,6 +36,7 @@ typedef struct Piece
  * initialize the game. Display the chessboard in its standard state.
  ******************************************************************************/
 enum ChessboardRestStatus new_game(GameInfo *gameInfo);
+void reset_game();
 
 /******************************************************************************
  * Set gameStarted to true and inform the HDMI module.
@@ -48,6 +49,7 @@ enum ChessboardRestStatus join_game();
  * welcome screen.
 ******************************************************************************/
 enum ChessboardRestStatus end_game();
+void force_end_game();
 
 /******************************************************************************
  * Set the chessboard to a custom piece configuration.

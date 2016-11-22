@@ -271,7 +271,7 @@ void test_movePlayer2(char* coord)
 void test_move()
 {
 
-	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
+	char request[] = "POST /move/1/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");

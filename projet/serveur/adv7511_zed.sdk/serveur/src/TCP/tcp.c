@@ -53,7 +53,7 @@ int initialiseServer(struct ip_addr *ipaddr,struct ip_addr *netmask,struct ip_ad
 }
 
 // ONLY CHANGE HERE FOR IP ADDRESS LAST BYTE
-u32 ip_last_byte = 22;
+u32 ip_last_byte = 27;
 
 int init_TCP()
 {

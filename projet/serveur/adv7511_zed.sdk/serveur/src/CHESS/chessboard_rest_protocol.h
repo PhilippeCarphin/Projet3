@@ -6,7 +6,7 @@
 #define MAX_STR_LENGTH 1024
 typedef enum {player1 = 1, player2 = 2} PlayerID;
 enum ChessboardRestStatus {OK = 200, unathorized = 401, gameInProgress = 403, notYourTurn = 403, deplacementIllegal = 406, tempsEcoule = 408, NOT_IMPLEMENTED = -1 };
-enum State {NORMAL, CHECKMATE, CHECK, STALEMATE};
+enum State {NORMAL, CHECKMATE, CHECK, STALEMATE, RESTARTED};
 typedef struct GameInfo {
 	char player_1[MAX_STR_LENGTH];
 	char player_2[MAX_STR_LENGTH];
@@ -40,7 +40,7 @@ typedef struct TurnInfo {
 	PlayerID turn; 			/* player 1 or 2 */
 	int move_no;
 	char last_move[2];	/* position of last move, or X if first turn */
-	enum State game_status;	/* NORMAL|CHECKMATE|CHECK|STALEMATE */
+	enum State game_status;	/* NORMAL|CHECKMATE|CHECK|STALEMATE|RESTARTED */
 }TurnInfo;
 
 typedef struct BoardPosition {
