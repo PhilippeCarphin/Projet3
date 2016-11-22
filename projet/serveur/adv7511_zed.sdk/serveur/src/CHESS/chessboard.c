@@ -14,18 +14,11 @@ static GameInfo currentGameInfo;
 static TurnInfo currentTurnInfo;
 
 static Piece* boardGame[8][8];
-static Piece player1Pieces[16];
-static Piece player2Pieces[16];
 
 static bool gameStarted = false;
 static bool player1Turn = true;
 
-enum moveResult{
-	VALID,
-	ILLEGAL,
-	ENPASSANT,
-	CASTLING
-};
+
 
 /******************************************************************************
  * Declarations of internal functions
@@ -35,7 +28,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 static void setBoard(Piece* playerPieces);
 static void clearBoard();
 
-static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
 static enum moveResult move_king(int xs, int xd, int ys, int yd);
 static enum moveResult move_rook(int xs, int xd, int ys, int yd);
 static enum moveResult move_bishop(int xs, int xd, int ys, int yd);
@@ -517,7 +510,7 @@ static void clearBoard()
 /******************************************************************************
  * Check if a piece's move is valid, depending on its type.
  ******************************************************************************/
-static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
 {
 	enum moveResult result = ILLEGAL;
 	switch (piece->pieceType)
