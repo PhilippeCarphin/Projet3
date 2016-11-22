@@ -6,7 +6,7 @@
 
 
 static struct PlayerTimes pt;
-extern bool player1Turn;
+extern TurnInfo currentTurnInfo;
 
 /*******************************************************************************
  *
@@ -14,13 +14,14 @@ extern bool player1Turn;
 int chessclock_1sec_callback()
 {
 	// Figure out whose time we will modify.
-	int *tm = (player1Turn == true ? &(pt.whiteTime) : &(pt.blackTime));
+	int player = currentTurnInfo.turn;
+	int *tm = (player == player1 ? &(pt.whiteTime) : &(pt.blackTime));
 
 	// Reduce the time
 	*tm -= 1;
 
 	// Update the display
-	BoardDisplay_update_times(player1Turn, *tm);
+	BoardDisplay_update_times(player, *tm);
 
 	return 0;
 }
@@ -57,13 +58,14 @@ int chessclock_overtime_reached(GameInfo *gi)
  * Sera appelé à chaque tour pour ajouter l'increment approprié (increment ou
  * overtime_increment) qu'on est en temps normal ou en overtime.
 *******************************************************************************/
-int chessclock_add_increment(GameInfo *gi, int player /* WHITE or BLACK */)
+int chessclock_add_increment(GameInfo *gi)
 {
-	int *tm = (player1Turn == true ? &(pt.whiteTime) : &(pt.blackTime));
+	PlayerID player = currentTurnInfo.turn;
+	int *tm = (player == player1 ? &(pt.whiteTime) : &(pt.blackTime));
 
 	*tm += gi->timer_format.increment;
 
-	draw_player_time(player1Turn, *tm);
+	draw_player_time(player, *tm);
 
 	return 0;
 }

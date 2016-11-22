@@ -28,6 +28,6 @@ int chessclock_overtime_reached(GameInfo *gi);
  * Sera appelé à chaque tour pour ajouter l'increment approprié (increment ou
  * overtime_increment) qu'on est en temps normal ou en overtime.
 *******************************************************************************/
-int chessclock_add_increment(GameInfo *gi, int player /* WHITE or BLACK */);
+int chessclock_add_increment(GameInfo *gi);
 
 #endif

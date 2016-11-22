@@ -42,7 +42,7 @@ int test_hdmi()
 	case 2:
 		start_game();
 		break;
-#if 0
+#if 1
 	case 3:
 		chessclock_1sec_callback();
 		break;
@@ -53,7 +53,7 @@ int test_hdmi()
 		chessclock_1sec_callback();
 		break;
 	case 6:
-		movePiece(WHITE,"e2","e4",&mv);
+		movePiece(1,"e2","e4",&mv);
 		break;
 #endif
 	default :

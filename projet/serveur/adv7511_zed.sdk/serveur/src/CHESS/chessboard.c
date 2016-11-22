@@ -10,14 +10,13 @@
  * Structures and global variables
  ******************************************************************************/
 static GameInfo currentGameInfo;
-static TurnInfo currentTurnInfo;
+TurnInfo currentTurnInfo;
 
 static Piece* boardGame[8][8];
 static Piece player1Pieces[16];
 static Piece player2Pieces[16];
 
 static bool gameStarted = false;
-bool player1Turn = true;
 
 enum moveResult{
 	VALID,
@@ -265,6 +264,9 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	boardGame[xd][yd]->y = yd;
 
 	// increment turn, change player turn, time stuff
+
+	// At the end of a turn, have the clock add an increment
+	chessclock_add_increment(&currentGameInfo,currentTurnInfo.turn); // Increment current player's time before changing whose turn it is.
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
 	currentTurnInfo.last_move[0] = xd + 'a';
@@ -285,8 +287,6 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	mv.turn_number = currentTurnInfo.move_no - 1;
 	mv.capture = (moveInfo->piece_eliminated[0] == 'x') ? 0 : 1;
 
-	// At the end of a turn, have the clock add an increment
-	chessclock_add_increment(&currentGameInfo,player1Turn);
 	BoardDisplay_move_piece(&mv);
 
 	FEND;
@@ -435,7 +435,6 @@ static void ChessGameInitialisation()
 	setBoard(player2Pieces);
 
 	// initialize currentTurnInfo
-	player1Turn = true;
 	currentTurnInfo.game_status = NORMAL;
 	currentTurnInfo.last_move[0] = 'x';
 	currentTurnInfo.last_move[1] = 'x';

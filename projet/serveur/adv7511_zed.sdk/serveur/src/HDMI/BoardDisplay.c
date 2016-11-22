@@ -322,16 +322,16 @@ int draw_time(u32 top, u32 left, int time)
 	return 0;
 }
 
-int draw_player_time(bool player1Turn, int time)
+int draw_player_time(int player, int time)
 {
-	int time_top = (player1Turn == true ? bd.white_time_top : bd.black_time_top);
+	int time_top = (player == player1 ? bd.white_time_top : bd.black_time_top);
 	draw_time(time_top, bd.time_left, time);
 	return 0;
 }
 
-int BoardDisplay_update_times(bool player1Turn, int time)
+int BoardDisplay_update_times(int player, int time)
 {
-	draw_player_time(player1Turn,time);
+	draw_player_time(player,time);
 	cf_hdmi_send_buffer();// Send the screen buffer to the screen.
 	return 0;
 }
