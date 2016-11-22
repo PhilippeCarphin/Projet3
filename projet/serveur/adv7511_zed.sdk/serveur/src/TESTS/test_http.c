@@ -17,9 +17,9 @@
 static void assert_test(const char *test_name, const char *actual, const char *expected)
 {
 	if (strcmp(expected, actual) == 0)
-		xil_printf("\n%s test : %s\n\n", test_name, "PASSED");
+		xil_printf("\n%s test: %s\n\n", test_name, "PASSED");
 	else
-		xil_printf("\n%s test : %s\n\n", test_name, "FAILED");
+		xil_printf("\n%s test: %s\n\n", test_name, "FAILED");
 }
 
 /******************************************************************************
@@ -41,6 +41,7 @@ void test_http(const char *test_name, const char *request, const char *expected,
 	if (show_details)
 	{
 		xil_printf("HTTP Response: \n%s", response);
+		xil_printf("EXPECTED: \n%s", expected);
 		xil_printf("****************************************************\n");
 	}
 }
@@ -71,14 +72,14 @@ void test_http_all()
 /******************************************************************************
  * Request: [EMPTY REQUEST]
  * Expected: HTTP/1.1 400 Bad Request
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *****************************************************************************/
 void test_empty(int details)
 {
 	char test_name[] = "Empty request";
 	char request[] = "";
-	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
+	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
 	test_http(test_name, request, expected, details);
 }
@@ -91,14 +92,14 @@ void test_empty(int details)
  *			Content-Length: 0
  *			
  * Expected: HTTP/1.1 505 HTTP Version Not Supported
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *****************************************************************************/
 void test_invalid_version(int details)
 {
 	char test_name[] = "Invalid version";
 	char request[] = "GET /status/board\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.0\r\nContent-Length: 0\r\n\r\n";
-	char expected[] = "HTTP/1.1 505 HTTP Version Not Supported\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
+	char expected[] = "HTTP/1.1 505 HTTP Version Not Supported\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
 	test_http(test_name, request, expected, details);
 }
@@ -111,14 +112,14 @@ void test_invalid_version(int details)
  *			Content-Length: 0 
  *
  * Expected: HTTP/1.1 400 Bad Request
- *			 Content-Type : text/plain
- *			 Content-Length : 0 
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *****************************************************************************/
 void test_bad_request(int details)
 {
 	char test_name[] = "Bad request";
 	char request[] = "GET /fdsddsa";
-	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
+	char expected[] = "HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
 	test_http(test_name, request, expected, details);
 }
@@ -149,15 +150,15 @@ void test_bad_request(int details)
  *			}
  *	
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *****************************************************************************/
 void test_new_game(int details)
 {
 	char test_name[] = "New game";
 	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 265\r\n\r\nmotdepasse\r\n\r\n{\"player1\": \"Francis Ouellet\",\"player2\": \"J.RandomUser\",\"round\": \"1\",\"location\": \"Polymtl\",\"secret_code\": \"motdepasse\",\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
 	//char request[] = "POST /new_game HTTP/1.1\r\nContent-Type: application/json\r\nAccept: application/json\r\nUser-Agent: Dalvik/2.1.0 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)\r\nHost: 132.207.89.21\r\nConnection: Keep-Alive\r\nAccept-Encoding: gzip\r\nContent-Length: 243\r\n\r\nhelloworld\r\n\r\n{\"player1\":\"haha\",\"player2\":\"TODO\",\"round\":\"TODO\",\"location\":\"\",\"secret_code\":\"helloworld\",\"twoTablet\":false,\"enPassant\":false,\"timerFormat\":{\"time\": 90,\"increment\": 30,\"limit\": 40,\"overtime\": 40,\"overtimeIncrement\": 40}}";
-	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
+	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
 	test_http(test_name, request, expected, details);
 }
@@ -170,8 +171,8 @@ void test_new_game(int details)
  *			Content-Length: 0
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  * 
  * NOTE: new_game should be called before this
  *****************************************************************************/
@@ -179,7 +180,7 @@ void test_start(int details)
 {
 	char test_name[] = "Start game";
 	char request[] = "POST /game_start\r\nHost: 192.168.145.114\r\nConection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
-	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type : text/plain\r\nContent-Length : 0\r\nConnection : Closed\r\n\r\n";
+	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
 	test_http(test_name, request, expected, details);
 }
@@ -189,8 +190,8 @@ void test_start(int details)
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *			 Content-Type: text/plain
+ *			 Content-Length: [SIZE OF FOLLOWING JSON]
  *
  *			 {
  *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
@@ -219,7 +220,7 @@ void test_movePlayer1(char* coord)
     strcpy(src,  coord);
 	strcpy(request, "POST /move/1/");
 	strcat(request,src);
-    strcpy(src,  "\r\nHTTP/1.1");
+    strcpy(src,  "\r\nHTTP/1.1\r\nContent-Length: 10");
     strcat(request,src);
     strcat(request, "\r\n\r\nmotdepasse");
 	char response[2048];
@@ -259,8 +260,8 @@ void test_movePlayer2(char* coord)
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *			 Content-Type: text/plain
+ *			 Content-Length: [SIZE OF FOLLOWING JSON]
  *
  *			 {
  *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
@@ -271,7 +272,7 @@ void test_movePlayer2(char* coord)
 void test_move()
 {
 
-	char request[] = "POST /move/2/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
+	char request[] = "POST /move/1/b1-a3\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST MOVE ***********************\n");
@@ -577,12 +578,67 @@ void test_king()
 }
 
 /******************************************************************************
+ *
+ *****************************************************************************/
+void test_full_promotion()
+{
+
+	static int sequence = 1;
+
+	switch (sequence)
+	{
+	case 1: test_new_game(1);
+	break;
+	case 2:test_start(1);
+	break;
+
+	case 3:test_movePlayer1("e2-e4");
+	break;
+	case 4:test_movePlayer2("d7-d5");
+	break;
+
+	case 5:test_movePlayer1("e4-d5");
+	break;
+	case 6:test_movePlayer2("d8-d7");
+	break;
+
+	case 7:test_movePlayer1("d5-d6");
+	break;
+	case 8:test_movePlayer2("d7-e6");
+	break;
+
+	case 9:test_movePlayer1("d6-d7");
+	break;
+	case 10:test_movePlayer2("e6-e5");
+	break;
+
+	case 11:test_movePlayer1("d7-d8");
+	test_promote();
+	break;
+	case 12:test_movePlayer2("e5-d5");
+	break;
+
+	case 13:test_movePlayer1("d8-d5");
+	break;
+
+	case 14:test_end();
+	sequence = 0;
+	break;
+
+	default:
+	break;
+	}
+
+	sequence++;
+}
+
+/******************************************************************************
  * Request: POST /promote/1/queen
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *
  * NOTE: game should be put into the proper state before calling this
  *****************************************************************************/
@@ -604,8 +660,8 @@ void test_promote()
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *			 Content-Type: text/plain
+ *			 Content-Length: [SIZE OF FOLLOWING JSON]
  *
  *			 {
  *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
@@ -630,8 +686,8 @@ void test_get_time()
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *			 Content-Type: text/plain
+ *			 Content-Length: [SIZE OF FOLLOWING JSON]
  *
  *			 {
  *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
@@ -656,8 +712,8 @@ void test_get_summary()
  *			HTTP/1.1
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : [SIZE OF FOLLOWING JSON]
+ *			 Content-Type: text/plain
+ *			 Content-Length: [SIZE OF FOLLOWING JSON]
  *
  *			 {
  *				[SHOUlD BE COHERENT WITH CURRENT STATUS OF GAME]
@@ -667,7 +723,7 @@ void test_get_summary()
 void test_get_details()
 {
 
-	char request[] = "GET /game_details\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nhelloworld";
+	char request[] = "GET /game_details\r\nHTTP/1.1\r\nContent-Length: 10\r\n\r\nmotdepasse";
 	char response[2048];
 
 	xil_printf("\n******************* TEST GET DETAILS ****************\n");
@@ -706,8 +762,8 @@ void test_get_details()
  *			}
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  *****************************************************************************/
 void test_post_board()
 {
@@ -730,8 +786,8 @@ void test_post_board()
  *			Content-Length: 0
  *
  * Expected: HTTP/1.1 200 OK
- *			 Content-Type : text/plain
- *			 Content-Length : 0
+ *			 Content-Type: text/plain
+ *			 Content-Length: 0
  * 
  * NOTE: a game should be already started
  *****************************************************************************/

@@ -247,6 +247,7 @@ int BoardDisplay_change_piece_type(PieceType new_type)
 	/* if nothing fails, remember new type */
 	last.t = new_type;
 
+	cf_hdmi_send_buffer();
 	return 0;
 }
 

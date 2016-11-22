@@ -4,6 +4,7 @@
 #include "chessboard_rest_protocol.h"
 #include "PieceEnum.h"
 
+
 /* simple c boolean implementation */
 typedef enum { false = 0 , true = 1 } bool;
 
@@ -31,11 +32,22 @@ typedef struct Piece
 	PlayerID playerID;
 }Piece;
 
+Piece player1Pieces[16];
+Piece player2Pieces[16];
+
+enum moveResult{
+	VALID,
+	ILLEGAL,
+	ENPASSANT,
+	CASTLING
+};
+
 /******************************************************************************
  * Copy the received game informations into internal structure and
  * initialize the game. Display the chessboard in its standard state.
  ******************************************************************************/
 enum ChessboardRestStatus new_game(GameInfo *gameInfo);
+void reset_game();
 
 /******************************************************************************
  * Set gameStarted to true and inform the HDMI module.
@@ -48,6 +60,7 @@ enum ChessboardRestStatus join_game();
  * welcome screen.
 ******************************************************************************/
 enum ChessboardRestStatus end_game();
+void force_end_game();
 
 /******************************************************************************
  * Set the chessboard to a custom piece configuration.
@@ -63,6 +76,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition);
  * are made.
  ******************************************************************************/
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo);
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
 
 /******************************************************************************
  * Change a pawn piece's type. The usual checks are made

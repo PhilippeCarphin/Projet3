@@ -1,6 +1,7 @@
 #include "chessboard.h"
 #include "BoardDisplay.h"
 #include "chessclock.h"
+#include "ZedBoardConfig.h"
 // #define DEBUG
 #include "debug.h"
 
@@ -14,17 +15,8 @@ static GameInfo currentGameInfo;
 TurnInfo currentTurnInfo;
 
 static Piece* boardGame[8][8];
-static Piece player1Pieces[16];
-static Piece player2Pieces[16];
 
 static bool gameStarted = false;
-
-enum moveResult{
-	VALID,
-	ILLEGAL,
-	ENPASSANT,
-	CASTLING
-};
 
 /******************************************************************************
  * Declarations of internal functions
@@ -38,7 +30,7 @@ static bool can_promote(Piece *piece);
 static PieceType get_type(const char *type_name);
 static void toggle_next_turn();
 
-static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
 static enum moveResult move_king(int xs, int xd, int ys, int yd);
 static enum moveResult move_rook(int xs, int xd, int ys, int yd);
 static enum moveResult move_bishop(int xs, int xd, int ys, int yd);
@@ -69,6 +61,20 @@ enum ChessboardRestStatus new_game(GameInfo *gameInfo)
 }
 
 /******************************************************************************
+ * Put the chessboard in the state it would be just after a /new_game, without
+ * reseting the game_info struct.
+ ******************************************************************************/
+void reset_game()
+{
+	ChessGameInitialisation();
+	currentTurnInfo.game_status = RESTARTED;	// Important for client
+	xil_printf("\n======== Game Restarted ========\n");
+	BoardDisplay_new_board(&currentGameInfo);
+	gameStarted = false;
+	end_game_led();
+}
+
+/******************************************************************************
  * Set gameStarted to true and inform the HDMI module.
  ******************************************************************************/
 enum ChessboardRestStatus start_game()
@@ -79,7 +85,10 @@ enum ChessboardRestStatus start_game()
 	}
 
 	gameStarted = true;
+	currentTurnInfo.game_status = NORMAL;	// In case it was just restarted
+
 	BoardDisplay_start_game();
+	start_game_led();
 	return OK;
 }
 
@@ -103,11 +112,21 @@ enum ChessboardRestStatus end_game()
 	{
 		return unathorized;
 	}
+	force_end_game();
+	return OK;
+}
+
+/******************************************************************************
+ * Return to initial state; Does not check wether game is started, and returns
+ * nothing. Should not fail.
+******************************************************************************/
+void force_end_game()
+{
 	gameStarted = false;
 	currentGameInfo.secret_code[0] = '\0';
 	xil_printf("\n===== Game Ended ========\n");
 	BoardDisplay_welcome_screen();
-	return OK;
+	end_game_led();
 }
 
 /******************************************************************************
@@ -256,9 +275,6 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		moveInfo->piece_eliminated[1] = 'x';
 	}
 
-	// check for promotion
-	moveInfo->promotion = can_promote(piece);
-
 	// TODO: check for check, checkmate, stalemate
 
 	// ACTUALLY move the piece
@@ -266,6 +282,9 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	boardGame[xs][ys] = 0; // clear the source space
 	boardGame[xd][yd]->x = xd;
 	boardGame[xd][yd]->y = yd;
+
+	// check for promotion
+	moveInfo->promotion = can_promote(piece);
 
 	// increment turn, change player turn, time stuff
 	if (moveInfo->promotion == false)
@@ -526,7 +545,7 @@ static void clearBoard()
 /******************************************************************************
  * Check if a piece's move is valid, depending on its type.
  ******************************************************************************/
-static enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
+enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
 {
 	enum moveResult result = ILLEGAL;
 	switch (piece->pieceType)
@@ -757,17 +776,17 @@ bool can_promote(Piece *piece)
  ******************************************************************************/
 static PieceType get_type(const char *type_name)
 {
-	if (strcmp(type_name, "king"))
+	if (strcmp(type_name, "king") == 0)
 		return KING;
-	else if (strcmp(type_name, "queen"))
+	else if (strcmp(type_name, "queen") == 0)
 		return QUEEN;
-	else if (strcmp(type_name, "rook"))
+	else if (strcmp(type_name, "rook") == 0)
 		return ROOK;
-	else if (strcmp(type_name, "bishop"))
+	else if (strcmp(type_name, "bishop") == 0)
 		return BISHOP;
-	else if (strcmp(type_name, "knight"))
+	else if (strcmp(type_name, "knight") == 0)
 		return KNIGHT;
-	else if (strcmp(type_name, "pawn"))
+	else if (strcmp(type_name, "pawn") == 0)
 		return PAWN;
 	else
 		return -1;

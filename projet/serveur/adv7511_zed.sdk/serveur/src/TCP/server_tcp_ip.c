@@ -9,6 +9,7 @@
 #include "server_http_in.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
+#define DEBUG
 #include "debug.h"
 #include "xil_printf.h"
 
