@@ -5,6 +5,7 @@
 #include "Xscutimer.h"
 #include "xscugic.h"
 #include "Xil_exception.h"
+#include "test_hdmi.h"
 #define DEBUG
 #include "debug.h"
 #include "xparameters.h"
@@ -31,11 +32,6 @@ static int flag = 0;
 XGpioPs GpioMIO;
 int Status;
 XGpioPs_Config *GPIO_MIOConfigPtr;
-
-
-// variables globales pour le timer
-XScuTimer_Config *TMRConfigPtr;
-XScuTimer Timer;
 
 // variables pour le gestionnaire d'interruptions GIC
 XScuGic InterruptController;
@@ -65,47 +61,12 @@ int configGPIOs () {
   return XST_SUCCESS;
 }
 
-/******************************************************************************
- *Fonction du TP1
- * Ajustement de la minuterie "proche" du premier ARM
- * et du gestionnaire d'interruption
-******************************************************************************/
-void setTimerAndIntr() {
-  // la base avec le timer
-  TMRConfigPtr = XScuTimer_LookupConfig( XPAR_PS7_SCUTIMER_0_DEVICE_ID );
-  XScuTimer_CfgInitialize( &Timer,TMRConfigPtr,TMRConfigPtr->BaseAddr );
-  XScuTimer_SelfTest(&Timer);
-
-  // la base avec le gestionnaire d'interruption
-  GicConfigPtr = XScuGic_LookupConfig( XPAR_PS7_SCUGIC_0_DEVICE_ID );
-  XScuGic_CfgInitialize(&InterruptController, GicConfigPtr,
-					    GicConfigPtr->CpuBaseAddress);
-  XScuGic_SelfTest( &InterruptController );
-
-  Xil_ExceptionInit();
-  Xil_ExceptionRegisterHandler( XIL_EXCEPTION_ID_IRQ_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler,&InterruptController);
-  Xil_ExceptionEnable();
-
-  // connecter le timer au gestionnaire
-  XScuGic_Connect(&InterruptController, XPAR_SCUTIMER_INTR, (Xil_ExceptionHandler)XScuGic_InterruptHandler, &Timer);
-
-  // enable the interrupt for the Timer at GIC
-  XScuGic_Enable(&InterruptController, XPAR_SCUTIMER_INTR);
-
-  // on veut repartir le compteur automatiquement apres chaque interruption
-  XScuTimer_EnableAutoReload( &Timer );
-  XScuTimer_EnableInterrupt	( &Timer );
-
-  // Charger le timer et le partir
-  XScuTimer_LoadTimer(&Timer, TIMER_LOAD_VALUE);
-  XScuTimer_Start(&Timer);
-}
 
 /*******************************************************************************
  *Initialisation du ZedBoard pour le bouton PB1 et LED9
 *******************************************************************************/
 void init_ZedBoard(){
-	 init_platform_();
+	 // init_platform_();
 	 configGPIOs();
 }
 
@@ -114,7 +75,6 @@ void init_ZedBoard(){
 *******************************************************************************/
 void run_ZedBoard()
 {
-    setTimerAndIntr();
 
     // Valeur du bouton PB1
     currentButtonValue = XGpioPs_ReadPin( &GpioMIO, PB1 );
@@ -129,6 +89,7 @@ void run_ZedBoard()
 		oldButtonValue = currentButtonValue;
 		// TODO RESTART
 		WHERE DBG_PRINT("Restart\n");
+		test_hdmi();
 		flag = 0;
 	}
 	else if(!currentButtonValue && flag){
@@ -137,7 +98,6 @@ void run_ZedBoard()
 		WHERE DBG_PRINT("Do nothing\n");
 		flag = 0;
 	}
-
 }
 
 /*******************************************************************************
