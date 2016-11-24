@@ -82,7 +82,7 @@ void run_ZedBoard()
 	{
 #ifdef TESTING
 		//test_hdmi();
-		//test_castling2();
+		test_castling2();
 #else
 
 		// TODO RESTART TABLETTE
