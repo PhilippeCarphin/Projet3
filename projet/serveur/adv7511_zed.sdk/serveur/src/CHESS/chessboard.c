@@ -279,49 +279,58 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		moveInfo->piece_eliminated[1] = 'x';
 	}
 
-	// TODO: check for promotion
-	// TODO: check for check, checkmate, stalemate
-
-	Piece firstKing;
-	Piece secondKing;
-
-	if(player == 1)
-	{
-		firstKing = player1Pieces[0];
-		secondKing = player2Pieces[0];
-	}else
-	{
-		firstKing = player2Pieces[0];
-		secondKing = player1Pieces[0];
-	}
-
-	enum State firstKingState = check_king_state(firstKing);
-	enum State secondKingState = check_king_state(secondKing);
-
-	char etat1[10] = "normale";
-	char etat2[10] = "normale";
-
-	if(firstKingState == CHECK )
-	{
-		strcpy(etat1, "check");
-	}
-
-	if(secondKingState == CHECK )
-	{
-		strcpy(etat2, "check");
-	}
-
-	DBG_PRINT("******************************** \n");
-	WHERE DBG_PRINT("firstKingState: %s\n", etat1);
-	WHERE DBG_PRINT("secondKingState: %s\n", etat2);
-	DBG_PRINT("******************************** \n");
-
 
 	// ACTUALLY move the piece
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
-	boardGame[xd][yd]->x = xd;
-	boardGame[xd][yd]->y = yd;
+	piece->x = xd;
+	piece->y = yd;
+
+	// TODO: check for promotion
+	// TODO: check for check, checkmate, stalemate
+
+#if 1
+	Piece *king_to_check;
+
+	if(player == 1)
+	{
+		DBG_PRINT(" king_to_check is white\n");
+		king_to_check = &player1Pieces[0];
+	} else
+	{
+		king_to_check = &player2Pieces[0];
+		DBG_PRINT(" king_to_check is black at position %d,%d\n",king_to_check->x,king_to_check->y);
+	}
+
+	//enum State kingState = check_king_state(king_to_check);
+	enum State kingState = king_is_in_check(king_to_check);
+
+	char etat1[10] = "normal";
+
+	if(kingState == CHECK )
+	{
+		strcpy(etat1, "check");
+	}
+
+	DBG_PRINT("******************************** \n");
+	WHERE DBG_PRINT("kingState: %s\n", etat1);
+	DBG_PRINT("******************************** \n");
+
+	if(kingState == CHECK)
+	{
+		// move is illegal
+		DBG_PRINT("Move tried was illegal\n");
+		// undo move and return ILLEGAL or something
+		boardGame[xs][ys] = piece;
+		boardGame[xd][yd] = 0;
+		piece->x = xs;
+		piece->y = ys;
+
+		return ILLEGAL;
+	}
+
+#endif
+
 
 	// increment turn, change player turn, time stuff
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);

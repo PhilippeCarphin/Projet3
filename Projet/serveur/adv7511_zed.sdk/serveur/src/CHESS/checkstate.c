@@ -15,6 +15,45 @@ enum position
 	y
 };
 
+int piece_can_move_to(Piece *p, int xd, int yd)
+{
+	return (execute_move(p, p->x, xd, p->y, yd) != ILLEGAL ? 1 : 0);
+}
+
+int a_piece_can_move_to(Piece *playerPieces,  int xd, int yd)
+{
+	int i;
+
+	Piece *p;
+	for(i = 0; i<16; i++)
+	{
+		p = &playerPieces[i];
+		if(p->alive && piece_can_move_to(p,xd,yd))
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+enum State king_is_in_check(Piece *king)
+{
+	Piece *opponentPieces;
+	if(king->playerID == 1)
+		opponentPieces = player2Pieces;
+	else
+		opponentPieces = player1Pieces;
+
+	if(a_piece_can_move_to(opponentPieces,king->x,king->y))
+	{
+		return CHECK;
+	}
+	else
+	{
+		return NORMAL;
+	}
+}
 /*
  * Check the current state of the king
  */
@@ -41,7 +80,6 @@ enum State check_king_state(Piece king)
 			{
 				nbThreat++; // Si le nombre de menaces est superieur a 1, CHECKMATE?
 				state = CHECK;
-				playerPieces[i].pieceType;
 
 				return state;
 			}
@@ -110,3 +148,6 @@ enum moveResult check_moove_pieces_to_protect_king(Piece *playerPieces,  int xPo
 
 	return result;
 }
+
+
+
