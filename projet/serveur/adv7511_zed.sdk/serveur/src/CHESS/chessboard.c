@@ -2,8 +2,10 @@
 #include "BoardDisplay.h"
 #include "chessclock.h"
 #include "ZedBoardConfig.h"
-// #define DEBUG
+#define DEBUG
 #include "debug.h"
+#include "checkstate.h"
+#include <stdlib.h>
 
 #include <string.h>
 #include "xil_io.h"
@@ -14,10 +16,13 @@
 static GameInfo currentGameInfo;
 TurnInfo currentTurnInfo;
 
-static Piece* boardGame[8][8];
+Piece* boardGame[8][8];
 
 static bool gameStarted = false;
 static bool promoting = false;
+
+Piece player1Pieces[16];
+Piece player2Pieces[16];
 
 /******************************************************************************
  * Declarations of internal functions
@@ -34,7 +39,7 @@ static void toggle_next_turn();
 static void clear_enPassant(int player);
 
 enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
-static enum moveResult move_king(int xs, int xd, int ys, int yd);
+enum moveResult move_king(int xs, int xd, int ys, int yd);
 static enum moveResult move_rook(int xs, int xd, int ys, int yd);
 static enum moveResult move_bishop(int xs, int xd, int ys, int yd);
 static enum moveResult move_knight(int xs, int xd, int ys, int yd);
@@ -245,13 +250,34 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	// Now, look for piece-specific illegal moves.
 	// Find out if there is a castling or en passant situation, while you're at it.
 	Piece *piece = boardGame[xs][ys];
+
 	switch(execute_move(piece, xs, xd, ys, yd))
 	{
 	case ILLEGAL:
 		return deplacementIllegal;
 
 	case CASTLING:
-		return NOT_IMPLEMENTED;
+		DBG_PRINT("Castling situation detected");
+		// Figure out which is the rook
+		int rook_xs = (xd == C ? A : H);
+		int rook_xd = (xs + xd)/2;
+		Piece *rook = boardGame[rook_xs][yd];
+
+		if(can_castle(piece, rook, xd, yd))
+		{
+			// Bouger la tour
+			DBG_PRINT("Castling is legal\n");
+			boardGame[rook_xd][yd] = rook; // move the piece
+			boardGame[rook_xs][ys] = 0; // clear the source space
+			rook->x = rook_xd;
+			rook->y = yd;
+		}
+		else
+		{
+			DBG_PRINT("Castling is illegal\n");
+			return ILLEGAL;
+		}
+		break;
 
 	case ENPASSANT:
 		boardGame[xd][ys]->alive = false; // special capture using ys instead of yd +/- 1
@@ -289,8 +315,54 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	// ACTUALLY move the piece
 	boardGame[xd][yd] = piece; // move the piece
 	boardGame[xs][ys] = 0; // clear the source space
-	boardGame[xd][yd]->x = xd;
-	boardGame[xd][yd]->y = yd;
+	piece->x = xd;
+	piece->y = yd;
+
+	// TODO: check for promotion
+	// TODO: check for check, checkmate, stalemate
+
+#if 1
+	Piece *king_to_check;
+
+	if(player == 1)
+	{
+		DBG_PRINT(" king_to_check is white\n");
+		king_to_check = &player1Pieces[0];
+	} else
+	{
+		king_to_check = &player2Pieces[0];
+		DBG_PRINT(" king_to_check is black at position %d,%d\n",king_to_check->x,king_to_check->y);
+	}
+
+	//enum State kingState = check_king_state(king_to_check);
+	enum State kingState = king_is_in_check(king_to_check);
+
+	char etat1[10] = "normal";
+
+	if(kingState == CHECK )
+	{
+		strcpy(etat1, "check");
+	}
+
+	DBG_PRINT("******************************** \n");
+	WHERE DBG_PRINT("kingState: %s\n", etat1);
+	DBG_PRINT("******************************** \n");
+
+	if(kingState == CHECK)
+	{
+		// move is illegal
+		DBG_PRINT("Move tried was illegal\n");
+		// undo move and return ILLEGAL or something
+		boardGame[xs][ys] = piece;
+		boardGame[xd][yd] = 0;
+		piece->x = xs;
+		piece->y = ys;
+
+		return ILLEGAL;
+	}
+
+#endif
+
 
 	// check for promotion
 	moveInfo->promotion = can_promote(piece);
@@ -310,6 +382,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	currentTurnInfo.last_move_src[1] = ys + '1';
 	currentTurnInfo.last_move_dst[0] = xd + 'a';
 	currentTurnInfo.last_move_dst[1] = yd + '1';
+	piece->has_moved = 1;
 
 	// TODO: change these values according to state
 	currentTurnInfo.game_status = NORMAL;
@@ -536,7 +609,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 	piece.x = x;
 	piece.y = y;
 	piece.enPassant = false;
-	piece.rock = 1;
+	piece.has_moved = 0;
 	piece.playerID = playerID;
 	return piece;
 }
@@ -613,16 +686,17 @@ enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
  * Check if a king's move is valid.
  * NOTE: Does not yet check for castling and check situations.
  ******************************************************************************/
-static enum moveResult move_king(int xs, int xd, int ys, int yd)
+enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
+	// Checker hors du board
+	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
+		return deplacementIllegal; // out of the board
+
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
 	// the king.
-	if(xs == E && boardGame[xs][ys]->rock != 0 &&
-			(xd == G || xd == C)
-
-	  ){
-		return ILLEGAL;
+	if(xs == E && (xd == G || xd == C) && (ys == yd) ){
+		return CASTLING;
 	}
 	// TODO: check for Castle/Roque/special move
 	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)

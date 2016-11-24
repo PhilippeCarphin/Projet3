@@ -7,13 +7,14 @@
 #include "Xil_exception.h"
 #include "test_hdmi.h"
 #include "test_http.h"
-#define DEBUG
+//#define DEBUG
 //#define TESTING
 #include "debug.h"
 #include "xparameters.h"
 #include "chessboard.h"
+#include "test_check.h"
 
-//Code inspiré du code de TP1
+//Code inspirÃ© du code de TP1
 
 /*
  * Boutons-poussoirs 1 accessible par le MIO vers le PS
@@ -27,18 +28,10 @@ static int currentButtonValue;
 static int oldButtonValue = 0;
 static int flag = 0;
 
-
-
-#define TIMER_LOAD_VALUE  0x28000000
-
 // variables globales pour les GPIO
 XGpioPs GpioMIO;
 int Status;
 XGpioPs_Config *GPIO_MIOConfigPtr;
-
-// variables pour le gestionnaire d'interruptions GIC
-XScuGic InterruptController;
-XScuGic_Config *GicConfigPtr;
 
 /*******************************************************************************
  *Fonction du TP1
@@ -64,17 +57,17 @@ int configGPIOs () {
   return XST_SUCCESS;
 }
 
-
 /*******************************************************************************
  *Initialisation du ZedBoard pour le bouton PB1 et LED9
 *******************************************************************************/
 void init_ZedBoard(){
-	 // init_platform_();
-	 configGPIOs();
+	 //init_platform_();
+	configGPIOs();
+
 }
 
 /*******************************************************************************
- * Fonction de run appelée dans le main
+ * Fonction de run appelÃ©e dans le main
 *******************************************************************************/
 void run_ZedBoard()
 {
@@ -91,7 +84,8 @@ void run_ZedBoard()
 #ifdef TESTING
 		//test_hdmi();
 		//test_full_promotion();
-		test_en_passant();
+		//test_en_passant();
+		test_castling2();
 #else
 
 		// TODO RESTART TABLETTE
@@ -105,7 +99,7 @@ void run_ZedBoard()
 }
 
 /*******************************************************************************
- * Fonction appelée lors du debut de la game pour allumé la led LED9
+ * Fonction appelÃ©e lors du debut de la game pour allumÃ© la led LED9
 *******************************************************************************/
 void start_game_led()
 {
@@ -113,7 +107,7 @@ void start_game_led()
 }
 
 /*******************************************************************************
- * Fonction appelée lors de la fin de la game pour éteindre la led LED9
+ * Fonction appelÃ©e lors de la fin de la game pour Ã©teindre la led LED9
 *******************************************************************************/
 void end_game_led()
 {

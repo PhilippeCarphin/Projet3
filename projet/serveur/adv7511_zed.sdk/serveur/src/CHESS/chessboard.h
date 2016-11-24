@@ -25,15 +25,13 @@ typedef struct Piece
 	bool alive;
 	int x;					/* coordinates */
 	int y;					/* coordinates */
-	int rock;				/* TODO: has_moved instead of rock; used on king and rook */
+	int has_moved;				/* TODO: has_moved instead of rock; used on king and rook */
 	/* Indicates that the piece can be captured on the next turn.
 	 * Should be set after the permitted jump and unset the turn after. */
 	bool enPassant;
 	PlayerID playerID;
 }Piece;
 
-Piece player1Pieces[16];
-Piece player2Pieces[16];
 
 enum moveResult{
 	VALID,
@@ -77,6 +75,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition);
  ******************************************************************************/
 enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst, MoveInfo* moveInfo);
 enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
+enum moveResult move_king(int xs, int xd, int ys, int yd);
 
 /******************************************************************************
  * Change a pawn piece's type. The usual checks are made
