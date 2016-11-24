@@ -376,7 +376,7 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
  ******************************************************************************/
 enum ChessboardRestStatus validate_password(const char *pswd)
 {
-	xil_printf("Sent password: %s\nInternal password: %s\n", pswd, currentGameInfo.secret_code);
+	//xil_printf("Sent password: %s\nInternal password: %s\n", pswd, currentGameInfo.secret_code);
 	if (strcmp(currentGameInfo.secret_code, pswd) != 0)
 	{
 		return unathorized;
