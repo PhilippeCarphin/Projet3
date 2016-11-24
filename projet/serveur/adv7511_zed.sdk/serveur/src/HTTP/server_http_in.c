@@ -61,7 +61,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	if(err == OK)	/* REST module responded OK */
 	{
 		HTTP_build_from_REST(REST_response, HTTP_response);
-		return 0;
+		return err;
 	}
 	else if (err < 0)	/* REST's response is invalid */
 	{
@@ -71,7 +71,7 @@ int HTTP_dispatchRequest(const char *request, char *HTTP_response)
 	else	/* REST module's response is valid, but not OK */
 	{
 		HTTP_build_from_code(err, HTTP_response);
-		return 0;
+		return err;
 	}
 }
 
@@ -107,6 +107,10 @@ int validate_request(const char *header)
 	/* Empty header: bad request */
 	if (header[0] == '\0')
 		return HTTP_BAD_REQUEST;
+
+	/* End of header not found: Request failed */
+	if (strstr(header, "Accept-Encoding:") == NULL)
+		return HTTP_IM_A_TEAPOT;
 	
 	/* HTTP version must be 1.1
 	if (!strstr(header, "HTTP/1.1"))

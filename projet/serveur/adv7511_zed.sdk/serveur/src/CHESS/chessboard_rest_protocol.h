@@ -6,7 +6,16 @@
 #define MAX_STR_LENGTH 1024
 typedef enum {player1 = 1, player2 = 2} PlayerID;
 
-enum ChessboardRestStatus {OK = 200, unathorized = 401, gameInProgress = 403, notYourTurn = 403, deplacementIllegal = 406, tempsEcoule = 408, NOT_IMPLEMENTED = -1, INTERNAL_ERROR = 500 };
+enum ChessboardRestStatus {
+	OK = 200, unathorized = 401,
+	gameInProgress = 403,
+	notYourTurn = 403,
+	deplacementIllegal = 406,
+	tempsEcoule = 408,
+	IM_A_TEAPOT = 418,		/* Used when we think a request failed at TCP level */
+	NOT_IMPLEMENTED = -1,
+	INTERNAL_ERROR = 500
+};
 enum State {NORMAL, CHECKMATE, CHECK, STALEMATE, RESTARTED};
 
 typedef struct GameInfo {

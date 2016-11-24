@@ -7,6 +7,7 @@
 #include "server_tcp_ip.h"
 #include <stdio.h>
 #include "server_http_in.h"
+#include "http_codes.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 #define DEBUG
@@ -150,7 +151,7 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 		DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
 	}
 
-	HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
+	err = HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
 
 #ifdef REDUCE_SPAM
 	if (strstr(totalPayloadBuffer, "/status/board") == 0
@@ -187,8 +188,6 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 	{
 		err = tcp_write(tpcb, HTTP_response, len, TCP_WRITE_FLAG_COPY);
 	}
-
-
 
 	/* free the received pbuf */
 	pbuf_free(p);
