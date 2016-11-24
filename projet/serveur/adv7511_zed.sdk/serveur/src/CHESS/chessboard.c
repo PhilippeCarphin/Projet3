@@ -184,8 +184,7 @@ enum ChessboardRestStatus set_board(BoardPosition *boardPosition)
 	setBoard(player2Pieces);
 
 	/* initialize run informations */
-	currentTurnInfo.turn = boardPosition->turn;
-	currentTurnInfo.move_no = boardPosition->move_no;
+	currentTurnInfo = boardPosition->turn_info;
 
 	/* display newly set board on HDMI */
 	if (BoardDisplay_draw_pieces_custom(player1Pieces,player2Pieces) != 0)
@@ -295,8 +294,10 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		// turn not done yet; piece must be promoted first
 		toggle_next_turn();
 	}
-	currentTurnInfo.last_move[0] = xd + 'a';
-	currentTurnInfo.last_move[1] = yd + '1';
+	currentTurnInfo.last_move_src[0] = xs + 'a';
+	currentTurnInfo.last_move_src[1] = ys + '1';
+	currentTurnInfo.last_move_dst[0] = xd + 'a';
+	currentTurnInfo.last_move_dst[1] = yd + '1';
 
 	// TODO: change these values according to state
 	currentTurnInfo.game_status = NORMAL;
@@ -331,8 +332,8 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 	}
 
 	/* retreive piece */
-	int x = currentTurnInfo.last_move[0] - 'a';
-	int y = currentTurnInfo.last_move[1] - '1';
+	int x = currentTurnInfo.last_move_dst[0] - 'a';
+	int y = currentTurnInfo.last_move_dst[1] - '1';
 	Piece *piece = boardGame[x][y];
 	Piece *playerPieces = (player == 1 ? player1Pieces : player2Pieces);
 
@@ -408,8 +409,7 @@ enum ChessboardRestStatus get_game_info(GameInfo *gameInfo)
  ******************************************************************************/
 enum ChessboardRestStatus get_board(BoardPosition *boardPosition)
 {
-	boardPosition->turn = currentTurnInfo.turn;
-	boardPosition->move_no = currentTurnInfo.move_no;
+	boardPosition->turn_info = currentTurnInfo;
 	int i = 0;
 	for (i = 0; i < 16; i++)
 	{
@@ -502,8 +502,10 @@ static void ChessGameInitialisation()
 
 	// initialize currentTurnInfo
 	currentTurnInfo.game_status = NORMAL;
-	currentTurnInfo.last_move[0] = 'x';
-	currentTurnInfo.last_move[1] = 'x';
+	currentTurnInfo.last_move_src[0] = 'x';
+	currentTurnInfo.last_move_src[1] = 'x';
+	currentTurnInfo.last_move_dst[0] = 'x';
+	currentTurnInfo.last_move_dst[1] = 'x';
 	currentTurnInfo.move_no = 1;
 	currentTurnInfo.turn = player1;
 

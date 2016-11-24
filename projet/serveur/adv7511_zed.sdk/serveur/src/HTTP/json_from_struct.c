@@ -135,8 +135,9 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"turn\": %d, \"moveNo\": %d, \"lastMove\": %c%c, \"state\": %s}",
-			info.turn, info.move_no, info.last_move[0], info.last_move[1], state);
+			"{\"turn\": %d, \"moveNo\": %d, \"lastMoveSrc\": %c%c, \"lastMoveDst\": %c%c, \"state\": %s}",
+			info.turn, info.move_no, info.last_move_src[0], info.last_move_src[1],
+			info.last_move_dst[0], info.last_move_dst[1], state);
  }
  
 /******************************************************************************
@@ -157,8 +158,9 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"turn\": %d, \"move_no\": %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
-			board.turn, board.move_no,
+			"{\"turn\": %d, \"move_no\": %d, \"lastMoveSrc\": %c%c,, \"lastMoveDst\": %c%c %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
+			board.turn_info.turn, board.turn_info.move_no, board.turn_info.last_move_src[0], board.turn_info.last_move_src[1],
+			board.turn_info.last_move_dst[0], board.turn_info.last_move_dst[1],
 			fields[0], fields[1], fields[2], fields[3],
 			fields[4], fields[5], fields[6], fields[7],
 			fields[8], fields[9], fields[10], fields[11],

@@ -41,13 +41,15 @@ typedef struct TimeInfo {
 typedef struct TurnInfo {
 	PlayerID turn; 			/* player 1 or 2 */
 	int move_no;
-	char last_move[2];	/* position of last move, or X if first turn */
+	char last_move_src[2];	/* position of last move, or X if first turn */
+	char last_move_dst[2];	/* position of last move, or X if first turn */
 	enum State game_status;	/* NORMAL|CHECKMATE|CHECK|STALEMATE|RESTARTED */
 }TurnInfo;
 
 typedef struct BoardPosition {
-	int turn;
-	int move_no;
+	//int turn;
+	//int move_no;
+	TurnInfo turn_info;
 	char positions[32][2];	/* 32 pieces, 2 char per position */
 }BoardPosition;
 #endif /* CHESSBOARD_REST_PROTOCOL_H_ */

@@ -6,8 +6,9 @@
 #include "xscugic.h"
 #include "Xil_exception.h"
 #include "test_hdmi.h"
+#include "test_http.h"
 #define DEBUG
-#define TESTING
+//#define TESTING
 #include "debug.h"
 #include "xparameters.h"
 #include "chessboard.h"
@@ -89,7 +90,8 @@ void run_ZedBoard()
 	{
 #ifdef TESTING
 		//test_hdmi();
-		test_full_promotion();
+		//test_full_promotion();
+		test_en_passant();
 #else
 
 		// TODO RESTART TABLETTE

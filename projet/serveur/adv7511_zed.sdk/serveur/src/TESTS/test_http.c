@@ -156,7 +156,7 @@ void test_bad_request(int details)
 void test_new_game(int details)
 {
 	char test_name[] = "New game";
-	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 265\r\n\r\nmotdepasse\r\n\r\n{\"player1\": \"Francis Ouellet\",\"player2\": \"J.RandomUser\",\"round\": \"1\",\"location\": \"Polymtl\",\"secret_code\": \"motdepasse\",\"twoTablet\": no,\"enPassant\": no,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
+	char request[] = "POST /new_game\r\nHost: 192.168.145.114\r\nConnection: Keep-Alive\r\nHTTP/1.1\r\nContent-Length: 265\r\n\r\nmotdepasse\r\n\r\n{\"player1\": \"Francis Ouellet\",\"player2\": \"J.RandomUser\",\"round\": \"1\",\"location\": \"Polymtl\",\"secret_code\": \"motdepasse\",\"twoTablet\": no,\"enPassant\": yes,\"timerFormat\": {\"time\":	90,	\"increment\":30,\"limit\":	40,\"overtime\":	30,	\"overtimeIncrement\": 30}}\r\n";
 	//char request[] = "POST /new_game HTTP/1.1\r\nContent-Type: application/json\r\nAccept: application/json\r\nUser-Agent: Dalvik/2.1.0 (Linux; U; Android 5.0.2; Nexus 9 Build/LRX22L)\r\nHost: 132.207.89.21\r\nConnection: Keep-Alive\r\nAccept-Encoding: gzip\r\nContent-Length: 243\r\n\r\nhelloworld\r\n\r\n{\"player1\":\"haha\",\"player2\":\"TODO\",\"round\":\"TODO\",\"location\":\"\",\"secret_code\":\"helloworld\",\"twoTablet\":false,\"enPassant\":false,\"timerFormat\":{\"time\": 90,\"increment\": 30,\"limit\": 40,\"overtime\": 40,\"overtimeIncrement\": 40}}";
 	char expected[] = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 0\r\nConnection: Closed\r\n\r\n";
 
@@ -629,6 +629,52 @@ void test_full_promotion()
 
 	default:
 	break;
+	}
+
+	sequence++;
+}
+
+/******************************************************************************
+ *
+ *****************************************************************************/
+void test_en_passant()
+{
+
+	static int sequence = 1;
+
+	switch (sequence)
+	{
+	case 1:
+		test_new_game(1);
+		test_start(1);
+		break;
+
+	case 2:
+		test_movePlayer1("e2-e4");
+		test_movePlayer2("f7-f5");
+		test_movePlayer1("e4-e5");
+		test_movePlayer2("d7-d5");
+		break;
+	case 3:
+		test_movePlayer1("e5-d6");
+		break;
+	case 4:
+		test_movePlayer2("a7-a6");
+		test_movePlayer1("g2-g4");
+		test_movePlayer2("a6-a5");
+		test_movePlayer1("g4-g5");
+		test_movePlayer2("a5-a4");
+		break;
+	case 5:
+		test_movePlayer1("g5-f6");
+		break;
+	case 6:
+		test_end();
+		sequence = 0;
+		break;
+
+	default:
+		break;
 	}
 
 	sequence++;

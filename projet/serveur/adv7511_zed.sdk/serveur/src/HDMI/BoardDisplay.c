@@ -791,7 +791,7 @@ static int do_move(struct Move *mv)
 	}
 	else
 	{
-#if 0
+#if 1
 		if(mv->enPassant)
 		{
 			/*

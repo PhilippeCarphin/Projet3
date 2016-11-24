@@ -10,6 +10,7 @@
 #include "lwip/err.h"
 #include "lwip/tcp.h"
 #define DEBUG
+//#define REDUCE_SPAM
 #include "debug.h"
 #include "xil_printf.h"
 
@@ -139,13 +140,26 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 	char HTTP_response[1000];
 
-	DBG_PRINT("\n===============================================================================\n");
-
-	DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
+#ifdef REDUCE_SPAM
+	if (strstr(totalPayloadBuffer, "/status/board") == 0
+			|| strstr(totalPayloadBuffer, "/status/summary") == 0
+			|| strstr(totalPayloadBuffer, "/game_details") == 0)
+#endif
+	{
+		DBG_PRINT("\n===============================================================================\n");
+		DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
+	}
 
 	HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
 
-	DBG_PRINT("RESPONSE SENT:\n%s\n",HTTP_response);
+#ifdef REDUCE_SPAM
+	if (strstr(totalPayloadBuffer, "/status/board") == 0
+			|| strstr(totalPayloadBuffer, "/status/summary") == 0
+			|| strstr(totalPayloadBuffer, "/game_details") == 0)
+#endif
+	{
+		DBG_PRINT("RESPONSE SENT:\n%s\n",HTTP_response);
+	}
 
 	int len = strlen(HTTP_response);
 

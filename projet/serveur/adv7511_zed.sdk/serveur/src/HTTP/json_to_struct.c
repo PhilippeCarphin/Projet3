@@ -174,11 +174,11 @@ int parse_game_info(const char *data, GameInfo *gameinfo)
 	{
 		if (jsoneq(data, &tokens[i], "turn") == 0)
 		{
-			status = token_to_int(&board.turn, data, &tokens[i+1]);
+			status = token_to_int(&board.turn_info.turn, data, &tokens[i+1]);
 		}
 		else if (jsoneq(data, &tokens[i], "move_no") == 0)
 		{			
-			status = token_to_int(&board.move_no, data, &tokens[i+1]);
+			status = token_to_int(&board.turn_info.move_no, data, &tokens[i+1]);
 		}
 		/* same process for all pieces but the pawns */
 		else if(jsoneq(data, &tokens[i], "king1") == 0
