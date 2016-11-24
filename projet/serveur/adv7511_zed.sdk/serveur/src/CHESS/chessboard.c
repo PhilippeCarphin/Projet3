@@ -17,6 +17,7 @@ TurnInfo currentTurnInfo;
 static Piece* boardGame[8][8];
 
 static bool gameStarted = false;
+static bool promoting = false;
 
 /******************************************************************************
  * Declarations of internal functions
@@ -218,6 +219,12 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		return notYourTurn;
 	}
 
+	// can not move if a promotion is occuring
+	if (promoting)
+	{
+		return deplacementIllegal;
+	}
+
 	// extract positions and pieces
 	int xs = src[0]-'a'; // x of source position
 	int ys = src[1]-'1'; // y of source position
@@ -287,13 +294,18 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 
 	// check for promotion
 	moveInfo->promotion = can_promote(piece);
+	promoting = moveInfo->promotion;
 
 	// increment turn, change player turn, time stuff
 	if (moveInfo->promotion == false)
 	{
-		// turn not done yet; piece must be promoted first
 		toggle_next_turn();
 	}
+	else
+	{
+		// turn not done yet; piece must be promoted first
+	}
+
 	currentTurnInfo.last_move_src[0] = xs + 'a';
 	currentTurnInfo.last_move_src[1] = ys + '1';
 	currentTurnInfo.last_move_dst[0] = xd + 'a';
@@ -362,6 +374,7 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 			return INTERNAL_ERROR;
 		}
 
+		promoting = false;
 		return OK;
 	}
 	else
