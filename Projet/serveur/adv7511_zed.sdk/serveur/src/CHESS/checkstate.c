@@ -20,21 +20,21 @@ int piece_can_move_to(Piece *p, int xd, int yd)
 	return (execute_move(p, p->x, xd, p->y, yd) != ILLEGAL ? 1 : 0);
 }
 
-int a_piece_can_move_to(Piece *playerPieces,  int xd, int yd)
+int pieces_can_move_to(Piece *playerPieces,  int xd, int yd)
 {
 	int i;
-
+	int nb_pieces = 0;
 	Piece *p;
 	for(i = 0; i<16; i++)
 	{
 		p = &playerPieces[i];
 		if(p->alive && piece_can_move_to(p,xd,yd))
 		{
-			return 1;
+			nb_pieces++;
 		}
 	}
 
-	return 0;
+	return nb_pieces;
 }
 
 enum State king_is_in_check(Piece *king)
@@ -45,7 +45,7 @@ enum State king_is_in_check(Piece *king)
 	else
 		opponentPieces = player1Pieces;
 
-	if(a_piece_can_move_to(opponentPieces,king->x,king->y))
+	if(pieces_can_move_to(opponentPieces,king->x,king->y) != 0)
 	{
 		return CHECK;
 	}
@@ -147,6 +147,46 @@ enum moveResult check_moove_pieces_to_protect_king(Piece *playerPieces,  int xPo
 	}
 
 	return result;
+}
+
+int can_castle(Piece *king, Piece *rook, int xd, int yd)
+{
+	int x_int = (king->x + xd) / 2;
+	Piece *opponentPieces;
+	if(king->playerID == 1)
+		opponentPieces = player2Pieces;
+	else
+		opponentPieces = player1Pieces;
+
+	if(rook == 0)
+		return 0;
+
+	if(king->has_moved)
+	{
+		return 0;
+	}
+
+	if(rook->has_moved && rook->alive)
+	{
+		return 0;
+	}
+
+	if(king_is_in_check(king))
+	{
+		return 0;
+	}
+
+	if(pieces_can_move_to(opponentPieces,x_int,yd))
+	{
+		return 0;
+	}
+
+	if(pieces_can_move_to(opponentPieces,xd,yd))
+	{
+		return 0;
+	}
+
+	return 1;
 }
 
 

@@ -337,6 +337,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	currentTurnInfo.move_no++;
 	currentTurnInfo.last_move[0] = xd + 'a';
 	currentTurnInfo.last_move[1] = yd + '1';
+	piece->has_moved = 1;
 
 	// TODO: change these values according to promotion and state
 	currentTurnInfo.game_status = NORMAL;
@@ -519,7 +520,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 	piece.x = x;
 	piece.y = y;
 	piece.enPassant = false;
-	piece.rock = 0;
+	piece.has_moved = 0;
 	piece.playerID = playerID;
 	return piece;
 }

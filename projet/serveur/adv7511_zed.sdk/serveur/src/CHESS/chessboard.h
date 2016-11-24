@@ -25,7 +25,7 @@ typedef struct Piece
 	bool alive;
 	int x;					/* coordinates */
 	int y;					/* coordinates */
-	int rock;				/* TODO: has_moved instead of rock; used on king and rook */
+	int has_moved;				/* TODO: has_moved instead of rock; used on king and rook */
 	/* Indicates that the piece can be captured on the next turn.
 	 * Should be set after the permitted jump and unset the turn after. */
 	bool enPassant;
