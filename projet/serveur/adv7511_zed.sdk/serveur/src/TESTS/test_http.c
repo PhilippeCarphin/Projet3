@@ -610,12 +610,14 @@ void test_full_promotion()
 	case 9:test_movePlayer1("d6-d7");
 	break;
 	case 10:test_movePlayer2("e6-e5");
+		test_movePlayer1("d1-h5");
+		test_movePlayer2("e5-h5");
 	break;
 
 	case 11:test_movePlayer1("d7-d8");
 	test_promote();
 	break;
-	case 12:test_movePlayer2("e5-d5");
+	case 12:test_movePlayer2("h5-d5");
 	break;
 
 	case 13:test_movePlayer1("d8-d5");

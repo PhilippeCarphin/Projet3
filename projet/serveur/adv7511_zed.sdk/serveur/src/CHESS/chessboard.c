@@ -28,7 +28,9 @@ static void clearBoard();
 
 static bool can_promote(Piece *piece);
 static PieceType get_type(const char *type_name);
+static int find_available_type(PieceType type, int player);
 static void toggle_next_turn();
+static void clear_enPassant(int player);
 
 enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd);
 static enum moveResult move_king(int xs, int xd, int ys, int yd);
@@ -206,6 +208,10 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	FBEGIN;
 	struct Move mv; 		// infos for BoardDisplay/HDMI
 	mv.enPassant = false;	// set to true only if a piece is captured by En Passant
+	moveInfo->piece_eliminated[0] = 'x';
+	moveInfo->piece_eliminated[1] = 'x'; // will be overwritten if a piece is eliminated.
+
+	clear_enPassant(player);
 
 	// check if it's the player turn
 	if (player != currentTurnInfo.turn)
@@ -243,7 +249,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 
 	case ENPASSANT:
 		boardGame[xd][ys]->alive = false; // special capture using ys instead of yd +/- 1
-		boardGame[xd][ys] = 0; // special cleaning
+		boardGame[xd][ys] = NULL; // special cleaning
 
 		// specify which piece is eliminated
 		moveInfo->piece_eliminated[0] = xd + 'a';
@@ -261,18 +267,15 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	}
 
 	// If we made it this far, the move is valid (for now).
-	if (boardGame[xd][yd] != 0)	// a piece is captured
+	if (boardGame[xd][yd] != NULL)	// a piece is captured
 	{
 		if (boardGame[xd][yd]->playerID == player)
+		{
 			return deplacementIllegal; // capturing allied piece
+		}
 		boardGame[xd][yd]->alive = false; // capture enemy piece
 		moveInfo->piece_eliminated[0] = xd + 'a';
 		moveInfo->piece_eliminated[1] = yd + '1';
-	}
-	else // no piece is captured
-	{
-		moveInfo->piece_eliminated[0] = 'x';
-		moveInfo->piece_eliminated[1] = 'x';
 	}
 
 	// TODO: check for check, checkmate, stalemate
@@ -331,12 +334,23 @@ enum ChessboardRestStatus promote_piece(int player, const char *new_type)
 	int x = currentTurnInfo.last_move[0] - 'a';
 	int y = currentTurnInfo.last_move[1] - '1';
 	Piece *piece = boardGame[x][y];
+	Piece *playerPieces = (player == 1 ? player1Pieces : player2Pieces);
 
 	/* set new piece type */
 	PieceType type = get_type(new_type);
 	if (can_promote(piece) == true && type >= 0 && type != PAWN)
 	{
-		piece->pieceType = type;
+		/* check if there is space for asked type */
+		int index = find_available_type(type, player);
+		if (index < 0)
+			return unathorized;
+
+		/* kill the pawn, revive the other piece and places it at its new space */
+		piece->alive = false;
+		playerPieces[index].alive = true;
+		playerPieces[index].x = x;
+		playerPieces[index].y = y;
+		boardGame[x][y] = &playerPieces[index];
 
 		/* we did not toggle the turn in the last movePiece; now we do */
 		toggle_next_turn();
@@ -507,7 +521,7 @@ static Piece PieceInitialisation(int x, int y,PieceType type, PlayerID playerID)
 	piece.x = x;
 	piece.y = y;
 	piece.enPassant = false;
-	piece.rock = 0;
+	piece.rock = 1;
 	piece.playerID = playerID;
 	return piece;
 }
@@ -589,7 +603,10 @@ static enum moveResult move_king(int xs, int xd, int ys, int yd)
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
 	// the king.
-	if(xs == E && (xd == G || xd == C)){
+	if(xs == E && boardGame[xs][ys]->rock != 0 &&
+			(xd == G || xd == C)
+
+	  ){
 		return ILLEGAL;
 	}
 	// TODO: check for Castle/Roque/special move
@@ -700,10 +717,10 @@ static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 {
 	Piece *piece = boardGame[xs][ys];
 	if(	piece->playerID == player1 ?
-		ys == 1 && yd == 3 && xs == xd && boardGame[xs][2] == 0 :
-		ys == 6 && yd == 4 && xs == xd && boardGame[xs][5] == 0
-		) // if first time jump
-		piece->enPassant = true; // TODO: clean this flag on the next turn
+		ys == 1 && yd == 3 && xs == xd && boardGame[xs][2] == 0 && boardGame[xs][3] == 0 :
+		ys == 6 && yd == 4 && xs == xd && boardGame[xs][5] == 0 && boardGame[xs][4] == 0
+		) // if first time jump and no one in the two front squares
+		piece->enPassant = true;
 	else if(yd - ys != (piece->playerID == player1 ? 1 : -1 )) // does not advance exactly 1 square
 	{
 		return ILLEGAL;
@@ -712,20 +729,20 @@ static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 	{
 		if ((xs > xd ? xs - xd : xd - xs) > 1) // abs(diff X) > 1
 			return ILLEGAL; // moving too much in X
-		if (xs == xd && boardGame[xd][yd] != 0)
+		if (xs == xd && boardGame[xd][yd] != NULL)
 			return ILLEGAL; // capturing in front
 
 		if((xs > xd ? xs - xd : xd - xs) == 1) // moving diagonnally / capturing
 		{
 			Piece *enPassant = boardGame[xd][ys]; // using ys instead of yd +/- 1
-			if (currentGameInfo.en_passant != 0 && // En Passant is enabled
-				enPassant != 0 && // capturing En Passant
+			if (currentGameInfo.en_passant == true && // En Passant is enabled
+				enPassant != NULL && // capturing En Passant
 				enPassant->enPassant == true && // can be captured En Passant
-				(enPassant->playerID == player1 ? yd ==  5: yd == 2)) // is not your own piece
+				(enPassant->playerID != piece->playerID)) // is not your own piece
 			{
 				return ENPASSANT;
 			}
-			else if (boardGame[xd][yd] == 0) // not capturing on arrival
+			else if (boardGame[xd][yd] == NULL) // not capturing on arrival
 				return ILLEGAL; // not capturing
 		}
 	}
@@ -793,6 +810,23 @@ static PieceType get_type(const char *type_name)
 }
 
 /******************************************************************************
+ * Searches for a captured piece to bring back in game and returns its index.
+ * Return -1 if none is found.
+ ******************************************************************************/
+static int find_available_type(PieceType type, int player)
+{
+	Piece *playerPieces = (player == 1 ? player1Pieces : player2Pieces);
+	int i;
+
+	/* find the first captured piece fitting the type */
+	for (i = 0; i < 16; i++)
+		if (playerPieces[i].pieceType == type && !playerPieces[i].alive)
+			return i;
+
+	return -1;	/* None found */
+}
+
+/******************************************************************************
  * When a turn ends, we have to add an increment to the clock, set the turn
  * to the next player, and increment the move number.
  ******************************************************************************/
@@ -802,4 +836,23 @@ static void toggle_next_turn()
 	chessclock_add_increment(&currentGameInfo,currentTurnInfo.turn); // Increment current player's time before changing whose turn it is.
 	currentTurnInfo.turn = (currentTurnInfo.move_no%2 + 1);
 	currentTurnInfo.move_no++;
+}
+
+/******************************************************************************
+ *
+ ******************************************************************************/
+static void clear_enPassant(int player)
+{
+	Piece *playerPieces;
+	if (player == 1)
+	{
+		playerPieces = player1Pieces;
+	}
+	else
+	{
+		playerPieces = player2Pieces;
+	}
+	int i = 0;
+	for (i = 0; i < 8; i++)
+		playerPieces[i+8].enPassant = false;
 }
