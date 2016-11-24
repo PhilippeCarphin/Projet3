@@ -620,13 +620,14 @@ enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
  ******************************************************************************/
 enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
-	// CHecker hors du board
-
+	// Checker hors du board
+	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
+		return deplacementIllegal; // out of the board
 
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
 	// the king.
-	if(xs == E && (xd == G || xd == C)){
+	if(xs == E && (xd == G || xd == C) && (ys == yd) ){
 		return CASTLING;
 	}
 	// TODO: check for Castle/Roque/special move

@@ -97,10 +97,17 @@ enum State check_king_state(Piece king)
  * 					  |---xxx----|
  * 					  |---xrx----|
  */
-enum State check_king_move(Piece king)
+int king_can_move(Piece *king)
 {
-	enum State state = NORMAL;
 	enum moveResult result = ILLEGAL;
+
+	Piece *opponentPieces;
+
+	if(king->playerID == 1)
+		opponentPieces = player2Pieces;
+	else
+		opponentPieces = player1Pieces;
+
 	int i = -1;
 	int j = -1;
 
@@ -111,14 +118,11 @@ enum State check_king_move(Piece king)
 			int xd = king->x +i;
 			int yd = king->y +j;
 
-
-			result = move_king(king.x, king.x+i, king.y, king.y+j);
+			result = move_king(king->x, xd, king->y, yd);
 			if(result == VALID)
 			{
-				// vérifier s'il est en echec dans la nouvelle position
-				//king.x = king.x+i;
-				//king.y = king.y+j;
-				// int n = pieces_can_move_to(opponentPieces, king->x + i, king->y +j)
+				// Verify if he can be in check
+				int n = pieces_can_move_to(opponentPieces, xd, yd);
 				if(n == 0)
 					return 1;
 
@@ -126,8 +130,7 @@ enum State check_king_move(Piece king)
 		}
 	}
 
-	state = CHECKMATE;
-	return state;
+	return 0;
 }
 
 enum position position_to_protect_the_king(Piece threatedPiece, Piece king)
@@ -153,6 +156,10 @@ enum moveResult check_moove_pieces_to_protect_king(Piece *playerPieces,  int xPo
 	return result;
 }
 
+/*
+ *
+ *
+ */
 int can_castle(Piece *king, Piece *rook, int xd, int yd)
 {
 	int x_int = (king->x + xd) / 2;
