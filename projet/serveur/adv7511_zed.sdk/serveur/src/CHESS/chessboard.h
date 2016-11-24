@@ -32,8 +32,6 @@ typedef struct Piece
 	PlayerID playerID;
 }Piece;
 
-Piece player1Pieces[16];
-Piece player2Pieces[16];
 
 enum moveResult{
 	VALID,

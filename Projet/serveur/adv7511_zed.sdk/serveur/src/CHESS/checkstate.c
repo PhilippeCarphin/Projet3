@@ -8,6 +8,7 @@
 #include "checkstate.h"
 
 extern Piece player2Pieces[16], player1Pieces[16];
+extern Piece* boardGame[8][8];
 
 enum position
 {
@@ -107,17 +108,20 @@ enum State check_king_move(Piece king)
 	{
 		for(; j<2; j++)
 		{
+			int xd = king->x +i;
+			int yd = king->y +j;
+
+
 			result = move_king(king.x, king.x+i, king.y, king.y+j);
 			if(result == VALID)
 			{
 				// vérifier s'il est en echec dans la nouvelle position
-				king.x = king.x+i;
-				king.y = king.y+j;
-				state = check_king_state(king);
-				if(state == NORMAL)
-				{
-					return state;
-				}
+				//king.x = king.x+i;
+				//king.y = king.y+j;
+				// int n = pieces_can_move_to(opponentPieces, king->x + i, king->y +j)
+				if(n == 0)
+					return 1;
+
 			}
 		}
 	}
@@ -166,7 +170,17 @@ int can_castle(Piece *king, Piece *rook, int xd, int yd)
 		return 0;
 	}
 
-	if(rook->has_moved && rook->alive)
+	if(rook->has_moved)
+	{
+		return 0;
+	}
+
+	if(!rook->alive)
+	{
+		return 0;
+	}
+
+	if(boardGame[x_int][yd] != 0 || boardGame[xd][yd] != 0)
 	{
 		return 0;
 	}

@@ -15,12 +15,13 @@
 static GameInfo currentGameInfo;
 static TurnInfo currentTurnInfo;
 
-static Piece* boardGame[8][8];
+Piece* boardGame[8][8];
 
 static bool gameStarted = false;
 static bool player1Turn = true;
 
-
+Piece player1Pieces[16];
+Piece player2Pieces[16];
 
 /******************************************************************************
  * Declarations of internal functions
@@ -243,7 +244,27 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		return deplacementIllegal;
 
 	case CASTLING:
-		return NOT_IMPLEMENTED;
+		DBG_PRINT("Castling situation detected");
+		// Figure out which is the rook
+		int rook_xs = (xd == C ? A : H);
+		int rook_xd = (xs + xd)/2;
+		Piece *rook = boardGame[rook_xs][yd];
+
+		if(can_castle(piece, rook, xd, yd))
+		{
+			// Bouger la tour
+			DBG_PRINT("Castling is legal\n");
+			boardGame[rook_xd][yd] = rook; // move the piece
+			boardGame[rook_xs][ys] = 0; // clear the source space
+			rook->x = rook_xd;
+			rook->y = yd;
+		}
+		else
+		{
+			DBG_PRINT("Castling is illegal\n");
+			return ILLEGAL;
+		}
+		break;
 
 	case ENPASSANT:
 		boardGame[xd][ys]->alive = false; // special capture using ys instead of yd +/- 1
@@ -599,11 +620,14 @@ enum moveResult execute_move(Piece *piece, int xs, int xd, int ys, int yd)
  ******************************************************************************/
 enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
+	// CHecker hors du board
+
+
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
 	// the king.
 	if(xs == E && (xd == G || xd == C)){
-		return ILLEGAL;
+		return CASTLING;
 	}
 	// TODO: check for Castle/Roque/special move
 	if (xs-xd<-1 || xs-xd>1 || ys-yd<-1 || ys-yd>1)
