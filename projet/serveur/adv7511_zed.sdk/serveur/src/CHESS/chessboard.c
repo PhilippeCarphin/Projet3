@@ -13,8 +13,8 @@
  * Structures and global variables
  ******************************************************************************/
 static GameInfo currentGameInfo;
-static TurnInfo currentTurnInfo;
 
+TurnInfo currentTurnInfo;
 Piece* boardGame[8][8];
 
 static bool gameStarted = false;
@@ -258,6 +258,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 			boardGame[rook_xs][ys] = 0; // clear the source space
 			rook->x = rook_xd;
 			rook->y = yd;
+			//place_the_piece_in_board(rook_xs, rook_xd, ys, yd, rook);
 		}
 		else
 		{
@@ -306,6 +307,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 	boardGame[xs][ys] = 0; // clear the source space
 	piece->x = xd;
 	piece->y = yd;
+	//place_the_piece_in_board(xs, xd, ys, yd, piece);
 
 	// TODO: check for promotion
 	// TODO: check for check, checkmate, stalemate
@@ -346,6 +348,7 @@ enum ChessboardRestStatus movePiece(int player, const char *src, const char *dst
 		boardGame[xd][yd] = 0;
 		piece->x = xs;
 		piece->y = ys;
+		//place_the_piece_in_board(xs, xd, ys, yd, piece);
 
 		return ILLEGAL;
 	}
@@ -622,7 +625,7 @@ enum moveResult move_king(int xs, int xd, int ys, int yd)
 {
 	// Checker hors du board
 	if (xs<0 || xs>7 || ys<0 || ys>7 || xd<0 || xd>7 || yd<0 || yd>7)
-		return deplacementIllegal; // out of the board
+		return ILLEGAL; // out of the board
 
 	// Partially accepting castling
 	// Castling will be specified by having the tablet request to move
@@ -769,4 +772,37 @@ static enum moveResult move_pawn(int xs, int xd, int ys, int yd)
 	}
 	//promote stuff if promote
 	return VALID;
+}
+
+/******************************************************************************
+ * Return type of the last piece
+ ******************************************************************************/
+PieceType get_last_pieceType_moved()
+{
+	int x = currentTurnInfo.last_move[0];;
+	int y = currentTurnInfo.last_move[1];
+	return boardGame[x][y]->pieceType;
+}
+
+/******************************************************************************
+ * Sert a rien pour linstant
+ ******************************************************************************/
+Position get_last_position_moved()
+{
+	struct Position pos;
+	pos.x = currentTurnInfo.last_move[0];
+	pos.y = currentTurnInfo.last_move[1];
+
+	return pos;
+}
+
+/******************************************************************************
+ * ????? place_the_piece_in_board fonctionne pas comme il faut
+ ******************************************************************************/
+void place_the_piece_in_board(int xs, int xd, int ys, int yd, Piece *piece)
+{
+	boardGame[xs][ys] = piece;
+	boardGame[xd][yd] = 0;
+	piece->x = xs;
+	piece->y = ys;
 }

@@ -32,6 +32,11 @@ typedef struct Piece
 	PlayerID playerID;
 }Piece;
 
+typedef struct Position
+{
+	char x;
+	char y;
+}Position;
 
 enum moveResult{
 	VALID,
@@ -65,6 +70,7 @@ void force_end_game();
  * Immediately display on screen.
  ******************************************************************************/
 enum ChessboardRestStatus set_board(BoardPosition *boardPosition);
+void place_the_piece_in_board(int xs, int xd, int ys, int yd, Piece *piece);
 
 /******************************************************************************
  * Valid a player's move and, if successful, updates the chessboard accordingly.
@@ -110,5 +116,10 @@ enum ChessboardRestStatus get_board(BoardPosition *boardPosition);
  * Give a player its time informations (time remaining, overtime).
  ******************************************************************************/
 enum ChessboardRestStatus get_time(int player,TimeInfo *timeInfo);
+
+/******************************************************************************
+ * Give the type of the last moved piece
+ ******************************************************************************/
+PieceType get_last_pieceType_moved();
 
 #endif /* CHESSBOARD_H_ */

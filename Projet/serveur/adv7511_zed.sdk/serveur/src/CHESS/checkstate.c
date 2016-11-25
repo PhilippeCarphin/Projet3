@@ -9,42 +9,25 @@
 
 extern Piece player2Pieces[16], player1Pieces[16];
 extern Piece* boardGame[8][8];
+extern TurnInfo currentTurnInfo;
 
-enum position
-{
-	x,
-	y
-};
+/******************************************************************************
+ * Declarations of internal functions
+ ******************************************************************************/
+static void protect_king_from_vertical_attack(Piece *king , Piece *threatPiece);
+static void protect_king_from_diagonal_attack(Piece *king , Piece *threatPiece);
+static Piece *get_own_pieces(Piece *p);
+static Piece *get_opponent_pieces(Piece *p);
+static int piece_can_move_to(Piece *p, int xd, int yd);
+static int pieces_can_move_to(Piece *playerPieces,  int xd, int yd);
+static Piece* piece_can_move(Piece *playerPieces,  int xd, int yd);
 
-int piece_can_move_to(Piece *p, int xd, int yd)
-{
-	return (execute_move(p, p->x, xd, p->y, yd) != ILLEGAL ? 1 : 0);
-}
-
-int pieces_can_move_to(Piece *playerPieces,  int xd, int yd)
-{
-	int i;
-	int nb_pieces = 0;
-	Piece *p;
-	for(i = 0; i<16; i++)
-	{
-		p = &playerPieces[i];
-		if(p->alive && piece_can_move_to(p,xd,yd))
-		{
-			nb_pieces++;
-		}
-	}
-
-	return nb_pieces;
-}
-
+/******************************************************************************
+ * Check if the king is in check
+ ******************************************************************************/
 enum State king_is_in_check(Piece *king)
 {
-	Piece *opponentPieces;
-	if(king->playerID == 1)
-		opponentPieces = player2Pieces;
-	else
-		opponentPieces = player1Pieces;
+	Piece *opponentPieces = get_opponent_pieces(king);;
 
 	if(pieces_can_move_to(opponentPieces,king->x,king->y) != 0)
 	{
@@ -55,65 +38,21 @@ enum State king_is_in_check(Piece *king)
 		return NORMAL;
 	}
 }
-/*
- * Check the current state of the king
- */
-enum State check_king_state(Piece king)
-{
-	enum moveResult result;
-	enum State state = NORMAL;
-	int nbThreat = 0;
 
-	Piece *playerPieces;
-
-	if(king.playerID == 1)
-		playerPieces = player2Pieces;
-	else
-		playerPieces = player1Pieces;
-
-	int i = 0;
-	for(;  i<16; i++)
-	{
-		if(playerPieces[i].alive)
-		{
-			result = execute_move(&playerPieces[i], playerPieces[i].x, king.x, playerPieces[i].y, king.y);
-			if(result == VALID)
-			{
-				nbThreat++; // Si le nombre de menaces est superieur a 1, CHECKMATE?
-				state = CHECK;
-
-				return state;
-			}
-		}
-	}
-
-	return state;
-}
-
-/*
- * Check the state of the king moove
- * 					  |----------|
- * 					  |----------|
- * 					  |---xxx----|
- * 					  |---xrx----|
- */
+/******************************************************************************
+ * Check if the king can move to a position without threat
+ ******************************************************************************/
 int king_can_move(Piece *king)
 {
 	enum moveResult result = ILLEGAL;
+	Piece *opponentPieces = get_opponent_pieces(king);
 
-	Piece *opponentPieces;
+	int i;
+	int j;
 
-	if(king->playerID == 1)
-		opponentPieces = player2Pieces;
-	else
-		opponentPieces = player1Pieces;
-
-	int i = -1;
-	int j = -1;
-
-	for(; i<2; i++)
+	for(i= -1 ; i<2; i++)
 	{
-		for(; j<2; j++)
+		for(j= -1; j<2; j++)
 		{
 			int xd = king->x +i;
 			int yd = king->y +j;
@@ -133,41 +72,13 @@ int king_can_move(Piece *king)
 	return 0;
 }
 
-enum position position_to_protect_the_king(Piece threatedPiece, Piece king)
-{
-	static enum position pos;
-	//execute_move(threatedPiece, threatedPiece.x, xPositionToProtect, playerPieces[i].y, yPositionToProtect);
-
-	return pos;
-}
-
-/*
- * Check if pieces of the player can save the king
- */
-enum moveResult check_moove_pieces_to_protect_king(Piece *playerPieces,  int xPositionToProtect, int yPositionToProtect)
-{
-	static enum moveResult result = ILLEGAL;
-	int i = 0;
-	for(; i<16; i++)
-	{
-		result = execute_move(&playerPieces[i], playerPieces[i].x, xPositionToProtect, playerPieces[i].y, yPositionToProtect);
-	}
-
-	return result;
-}
-
-/*
- *
- *
- */
+/******************************************************************************
+ * Check if the king can castle
+ ******************************************************************************/
 int can_castle(Piece *king, Piece *rook, int xd, int yd)
 {
 	int x_int = (king->x + xd) / 2;
-	Piece *opponentPieces;
-	if(king->playerID == 1)
-		opponentPieces = player2Pieces;
-	else
-		opponentPieces = player1Pieces;
+	Piece *opponentPieces = get_opponent_pieces(king);
 
 	if(rook == 0)
 		return 0;
@@ -208,6 +119,174 @@ int can_castle(Piece *king, Piece *rook, int xd, int yd)
 	}
 
 	return 1;
+}
+
+/******************************************************************************
+ * Check if we can have a piece that protect the king
+ ******************************************************************************/
+void protect_king(Piece *king)
+{
+	int xLastPos = currentTurnInfo.last_move[0] - 'A';
+	int yLasPos = currentTurnInfo.last_move[1] - 'A';
+	Piece *threatPiece = boardGame[xLastPos][yLasPos];
+
+	PieceType pieceType = get_last_pieceType_moved();
+
+	switch (pieceType)
+	{
+		case KING:
+				// TODO
+			break;
+
+		case ROOK:
+			protect_king_from_vertical_attack(king , threatPiece);
+			break;
+
+		case BISHOP:
+			protect_king_from_diagonal_attack(king , threatPiece);
+			break;
+
+		case KNIGHT:
+			break;
+
+		case QUEEN:
+			protect_king_from_vertical_attack(king , threatPiece);
+			protect_king_from_diagonal_attack(king , threatPiece);
+			break;
+
+		case PAWN:
+
+			break;
+
+		default:
+			; //
+		}
+}
+
+/******************************************************************************
+ * Check if we can protect the king from diagonal attack
+ ******************************************************************************/
+static void protect_king_from_diagonal_attack(Piece *king , Piece *threatPiece)
+{
+	Piece *kingsPieces = get_own_pieces(king);
+
+	int xIncrement = king->x > threatPiece->x ? 1 : -1 ;
+	int yIncrement =  king->y > threatPiece->y ? 1 : -1 ;
+
+	int i;
+	int j;
+	for(i = (threatPiece->x) ; (i =! king->x); (i += xIncrement) )
+	{
+		for(j = (threatPiece->y) ; (j =! king->y); (j += yIncrement) )
+		{
+			Piece *p = piece_can_move(kingsPieces,  i, j);
+			if( p != 0)
+			{
+				place_the_piece_in_board(p->x, i, p->y, j, p);
+				return;
+			}
+		}
+	}
+
+	return; // AUCUNE PIECE NE PEUX PROTEGER
+}
+
+/******************************************************************************
+ * Check if we can protect the king from vertical attack
+ ******************************************************************************/
+static void protect_king_from_vertical_attack(Piece *king , Piece *threatPiece)
+{
+	Piece *kingsPieces = get_own_pieces(king);
+
+	int increment = king->x > threatPiece->x ? 1 : -1 ;
+	int i;
+
+	for(i = (threatPiece->x) ; (i =! king->x); (i += increment))
+	{
+		Piece *p = piece_can_move(kingsPieces,  i, king->y);
+		if( p != 0)
+		{
+			place_the_piece_in_board(p->x, i, p->y, king->y, p);
+			return;
+		}
+	}
+
+	return; // AUCUNE PIECE NE PEUX PROTEGER
+}
+
+/******************************************************************************
+ * Check if a piece can move to a position
+ ******************************************************************************/
+static int piece_can_move_to(Piece *p, int xd, int yd)
+{
+	return (execute_move(p, p->x, xd, p->y, yd) != ILLEGAL ? 1 : 0);
+}
+
+/******************************************************************************
+ * Return numbre of pieces that can move to a position
+ ******************************************************************************/
+static int pieces_can_move_to(Piece *playerPieces,  int xd, int yd)
+{
+	int i;
+	int nb_pieces = 0;
+	Piece *p;
+	for(i = 0; i<16; i++)
+	{
+		p = &playerPieces[i];
+		if(p->alive && piece_can_move_to(p,xd,yd))
+		{
+			nb_pieces++;
+		}
+	}
+
+	return nb_pieces;
+}
+
+/******************************************************************************
+ * Return a piece that can move to a position
+ ******************************************************************************/
+static Piece* piece_can_move(Piece *playerPieces,  int xd, int yd)
+{
+	int i;
+	Piece *p = 0;
+	for(i = 0; i<16; i++)
+	{
+		p = &playerPieces[i];
+		if(p->alive && piece_can_move_to(p,xd,yd))
+		{
+			return p;
+		}
+	}
+
+	return p;
+}
+
+/******************************************************************************
+ * Get own pieces of the specific piece
+ ******************************************************************************/
+static Piece *get_own_pieces(Piece *p)
+{
+	Piece *ownPieces;
+	if(p->playerID == 1)
+		ownPieces = player1Pieces;
+	else
+		ownPieces = player2Pieces;
+
+	return ownPieces;
+}
+
+/******************************************************************************
+ * Get opponent pieces of the specific piece
+ ******************************************************************************/
+static Piece *get_opponent_pieces(Piece *p)
+{
+	Piece *opponentPieces;
+	if(p->playerID == 1)
+		opponentPieces = player2Pieces;
+	else
+		opponentPieces = player1Pieces;
+
+	return opponentPieces;
 }
 
 
