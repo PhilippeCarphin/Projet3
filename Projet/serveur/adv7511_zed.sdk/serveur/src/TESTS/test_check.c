@@ -12,7 +12,7 @@ void test_check()
 	switch(sequence)
 	{
 		case 1:
-			test_new_game(0);
+			new_game_test();
 			start_game();
 			movePiece(1,"e2","e4",&mv);
 			movePiece(2,"d7","d5",&mv);
@@ -46,7 +46,7 @@ void test_castling()
 	switch(sequence)
 	{
 		case 1:
-			test_new_game(0);
+			new_game_test();
 			start_game();
 			movePiece(1,"e2","e4",&mv);
 			movePiece(2,"d7","d5",&mv);
@@ -113,6 +113,7 @@ int test_castling2()
 	}
 
 	sequence++;
+	return 0;
 
 }
 
@@ -127,7 +128,7 @@ int test_castling3()
 			/*
 			 * Setup test position
 			 */
-			test_new_game(0);
+			new_game_test();
 			start_game();
 			movePiece(1,"e2","e4",&mv);
 			movePiece(2,"d7","d5",&mv);
@@ -164,6 +165,7 @@ int test_castling3()
 	}
 
 	sequence++;
+	return 0;
 
 }
 
@@ -178,7 +180,7 @@ int test_castling4()
 			/*
 			 * Setup test position
 			 */
-			test_new_game(0);
+			new_game_test();
 			start_game();
 
 			movePiece(1,"e2","e4",&mv);
@@ -216,6 +218,7 @@ int test_castling4()
 	}
 
 	sequence++;
+	return 0;
 
 }
 int test_queenside_castling()
@@ -229,7 +232,7 @@ int test_queenside_castling()
 			/*
 			 * Setup test position
 			 */
-			test_new_game(0);
+			new_game_test();
 			start_game();
 			// 1. d4 e5
 			movePiece(1,"d2","d4",&mv);
@@ -276,5 +279,6 @@ int test_queenside_castling()
 	}
 
 	sequence++;
+	return 0;
 
 }
