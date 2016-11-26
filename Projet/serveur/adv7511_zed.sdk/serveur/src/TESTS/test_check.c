@@ -1,6 +1,8 @@
 #include "test_check.h"
 #include "chessboard.h"
 #include "test_http.h"
+#define DEBUG
+#include "debug.h"
 
 void test_check()
 {
@@ -92,8 +94,10 @@ int test_castling2()
 			movePiece(2,"d7","d5",&mv);
 			movePiece(1,"f1","b5",&mv);
 			movePiece(2,"c7","c6",&mv);
+			break;
 		case 2:
 			// Esssayer le roque, devrait [etre refuse
+			WHERE DBG_PRINT("Case 2: trying caslting\n");
 			movePiece(1,"e1","g1",&mv);
 			break;
 		case 3:
