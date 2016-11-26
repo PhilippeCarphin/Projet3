@@ -1,4 +1,4 @@
-
+#include "xil_printf.h"
 
 #ifdef DEBUG
 	#define WHERE xil_printf("%s():",__FUNCTION__);

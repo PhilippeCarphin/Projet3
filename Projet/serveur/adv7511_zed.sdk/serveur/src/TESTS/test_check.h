@@ -8,4 +8,7 @@ int test_castling2();
 int test_castling3();
 int test_castling4();
 int test_queenside_castling();
+
+int test_black_castling();
+int test_mate();
 #endif

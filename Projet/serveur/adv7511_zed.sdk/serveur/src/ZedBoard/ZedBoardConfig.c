@@ -89,7 +89,8 @@ void run_ZedBoard()
 		//test_castling2();
 		//test_castling3();
 		//test_castling4();
-		test_queenside_castling();
+		// test_queenside_castling();
+		test_black_castling();
 
 #else
 

@@ -1,6 +1,7 @@
 #include "test_check.h"
 #include "chessboard.h"
 #include "test_http.h"
+#include "test_hdmi.h"
 #define DEBUG
 #include "debug.h"
 
@@ -281,4 +282,89 @@ int test_queenside_castling()
 	sequence++;
 	return 0;
 
+}
+
+
+int test_black_castling()
+{
+	static int sequence = 1;
+	MoveInfo mv;
+
+	switch(sequence)
+	{
+		case 1:
+			/*
+			 * Setup test position
+			 */
+			new_game_test();
+			start_game();
+			// 1. e4 e5
+			movePiece(1,"e2","e4",&mv);
+			movePiece(2,"e7","e5",&mv);
+
+			// 2. Nf3 Nf6
+			movePiece(1,"g1","f3",&mv);
+			movePiece(2,"g8","f6",&mv);
+
+			// 3. Bc4 Bc5
+			movePiece(1,"f1","c4",&mv);
+			movePiece(2,"f8","c5",&mv);
+
+			// 4.
+			movePiece(1,"e1","g1",&mv);
+			movePiece(2,"e8","g8",&mv);
+			break;
+	}
+
+	sequence++;
+	return 0;
+
+}
+int test_mate()
+{
+	int sequence = 1;
+	MoveInfo mv;
+	switch(sequence)
+	{
+		case 1:
+			new_game_test();
+			start_game();
+
+			// 1. e4 c5
+			movePiece(1,"e2","e4",&mv);
+			movePiece(2,"c7","c5",&mv);
+			// 2. Bc4 Nc6
+			movePiece(1,"f1","c4",&mv);
+			movePiece(2,"b8","c6",&mv);
+			// 3. Qh5 Nc6
+			movePiece(1,"d1","h5",&mv);
+			movePiece(2,"b7","b6",&mv);
+			break;
+		case 2:
+			/*
+			 * Mettre noir échec et mat"
+			 */
+			WHERE DBG_PRINT("Case 2: trying caslting\n");
+			movePiece(1,"e1","c1",&mv);
+			break;
+		case 3:
+			/*
+			 * Faire que ça ne soit pas illegal
+			 */
+			movePiece(1,"c3","b5",&mv);
+			movePiece(2,"a3","b4",&mv);
+			break;
+		case 4:
+			/*
+			 * Essayer le roque. Devrait être accepté.
+			 */
+			movePiece(1,"e1","c1",&mv);
+			break;
+		default:
+			break;
+	}
+
+	sequence++;
+	return 0;
+	// 4 Qf7 CHECKMATE
 }
