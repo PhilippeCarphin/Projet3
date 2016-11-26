@@ -7,8 +7,11 @@
 #include "server_tcp_ip.h"
 #include <stdio.h>
 #include "server_http_in.h"
+#include "http_codes.h"
 #include "lwip/err.h"
 #include "lwip/tcp.h"
+#define DEBUG
+//#define REDUCE_SPAM
 #include "debug.h"
 #include "xil_printf.h"
 
@@ -138,13 +141,26 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 	char HTTP_response[1000];
 
-	DBG_PRINT("\n===============================================================================\n");
+#ifdef REDUCE_SPAM
+	if (strstr(totalPayloadBuffer, "/status/board") == 0
+			|| strstr(totalPayloadBuffer, "/status/summary") == 0
+			|| strstr(totalPayloadBuffer, "/game_details") == 0)
+#endif
+	{
+		DBG_PRINT("\n===============================================================================\n");
+		DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
+	}
 
-	DBG_PRINT("RECEIVED REQUEST :\n%s\n", totalPayloadBuffer);
+	err = HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
 
-	HTTP_dispatchRequest(totalPayloadBuffer, HTTP_response);
-
-	DBG_PRINT("RESPONSE SENT:\n%s\n",HTTP_response);
+#ifdef REDUCE_SPAM
+	if (strstr(totalPayloadBuffer, "/status/board") == 0
+			|| strstr(totalPayloadBuffer, "/status/summary") == 0
+			|| strstr(totalPayloadBuffer, "/game_details") == 0)
+#endif
+	{
+		DBG_PRINT("RESPONSE SENT:\n%s\n",HTTP_response);
+	}
 
 	int len = strlen(HTTP_response);
 
@@ -172,8 +188,6 @@ err_t recv_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 	{
 		err = tcp_write(tpcb, HTTP_response, len, TCP_WRITE_FLAG_COPY);
 	}
-
-
 
 	/* free the received pbuf */
 	pbuf_free(p);

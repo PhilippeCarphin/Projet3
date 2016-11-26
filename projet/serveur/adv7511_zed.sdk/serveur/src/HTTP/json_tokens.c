@@ -29,10 +29,10 @@ int token_to_string(char *dst, const char *data, const jsmntok_t *token)
  *****************************************************************************/
 int token_to_bool(int *dst, const char *data, const jsmntok_t *token)
 {
-	char boolean[4];	/* json bool is yes\0 or no\0 */
+	char boolean[6];	/* json bool is yes\0 or no\0 */
 	int len = sprintf(boolean, "%.*s", token->end - token->start, data + token->start);
 	
-	if (strcmp(boolean, "yes") == 0)
+	if (strcmp(boolean, "yes") == 0 || strcmp(boolean, "true") == 0)
 		*dst = 1;
 	else
 		*dst = 0;

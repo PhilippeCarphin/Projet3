@@ -41,11 +41,20 @@ int REST_handle_request(enum request_type type, const char *data,
 	 */
 	switch(type)
 	{
+		/* Those moves should never be refused,
+		 * since they are not user-defined.
+		 * We use it to recover from unknown request cuts
+		 */
 		case MOVE:
 		case PROMOTE:
 		case POST_BOARD:
 		case START:
 		case END:
+			if (validate_password(pswd_b64) == unathorized)
+			{
+				return IM_A_TEAPOT;
+			}
+			break;
 		case JOIN:
 			if (validate_password(pswd_b64) == unathorized)
 			{
@@ -115,10 +124,15 @@ int newGame_request(const char *data, char *REST_response)
 {
 	/* read JSON and store into struct game_info */	
 	struct GameInfo info;
+	info.secret_code[0] = '\0';
 	parse_game_info(data, &info);
+
+	if (info.secret_code[0] == '\0')
+		return IM_A_TEAPOT;
 
 	/* convert password into base64 */
 	char pswd_b64[MAX_lEN];
+	pswd_b64[0] = '\0';
 	ascii_to_base64(info.secret_code, strlen(info.secret_code), pswd_b64);
 	strcpy(info.secret_code, pswd_b64);
 

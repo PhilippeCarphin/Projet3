@@ -5,9 +5,10 @@
 #include "Xscutimer.h"
 #include "xscugic.h"
 #include "Xil_exception.h"
-#include "test_hdmi.h"
 //#define DEBUG
 #define TESTING
+#include "test_hdmi.h"
+#include "test_http.h"
 #include "debug.h"
 #include "xparameters.h"
 #include "chessboard.h"
@@ -82,10 +83,14 @@ void run_ZedBoard()
 	{
 #ifdef TESTING
 		//test_hdmi();
+		//test_full_promotion();
+		//test_en_passant();
+
 		//test_castling2();
 		//test_castling3();
 		//test_castling4();
 		test_queenside_castling();
+
 #else
 
 		// TODO RESTART TABLETTE

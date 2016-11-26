@@ -135,8 +135,9 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"turn\": %d, \"moveNo\": %d, \"lastMove\": %c%c, \"state\": %s}",
-			info.turn, info.move_no, info.last_move[0], info.last_move[1], state);
+			"{\"turn\": %d, \"moveNo\": %d, \"lastMoveSrc\": %c%c, \"lastMoveDst\": %c%c, \"state\": %s}",
+			info.turn, info.move_no, info.last_move_src[0], info.last_move_src[1],
+			info.last_move_dst[0], info.last_move_dst[1], state);
  }
  
 /******************************************************************************
@@ -144,6 +145,16 @@ int move_info_to_json(MoveInfo info, char *json)
  *****************************************************************************/
  int board_position_to_json(BoardPosition board, char *json)
  {
+	 char state[10];	/* [normal|checkmate|check|stalemate] */
+	 int err;			/* return value of set_state */
+
+	 /* change enum value into string */
+	 err = set_state(board.turn_info.game_status, state);
+	 if (err < 0)
+	 {
+		 return -1;
+	 }
+
 	 /*
 	  * All pieces but pawns, for both players:
 	  * 	16 pieces, requiring 16 fields.
@@ -157,8 +168,9 @@ int move_info_to_json(MoveInfo info, char *json)
 
 	/* fill json string from values in struct */
 	return sprintf(json,
-			"{\"turn\": %d, \"move_no\": %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
-			board.turn, board.move_no,
+			"{\"turn\": %d, \"moveNo\": %d, \"lastMoveSrc\": %c%c, \"lastMoveDst\": %c%c, \"state\": %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s}",
+			board.turn_info.turn, board.turn_info.move_no, board.turn_info.last_move_src[0], board.turn_info.last_move_src[1],
+			board.turn_info.last_move_dst[0], board.turn_info.last_move_dst[1], state,
 			fields[0], fields[1], fields[2], fields[3],
 			fields[4], fields[5], fields[6], fields[7],
 			fields[8], fields[9], fields[10], fields[11],

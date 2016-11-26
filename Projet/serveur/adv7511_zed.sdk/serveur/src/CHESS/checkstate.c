@@ -165,8 +165,8 @@ int can_castle(Piece *king, Piece *rook, int xd, int yd)
 
 static Piece *get_last_piece_moved()
 {
-	int xLastPos = currentTurnInfo.last_move[0] - 'A';
-	int yLasPos = currentTurnInfo.last_move[1] - 'A';
+	int xLastPos = currentTurnInfo.last_move_dst[0] - 'A';
+	int yLasPos = currentTurnInfo.last_move_dst[1] - 'A';
 	return boardGame[xLastPos][yLasPos];
 }
 

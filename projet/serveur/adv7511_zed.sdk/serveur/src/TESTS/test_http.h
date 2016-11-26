@@ -43,5 +43,7 @@ void test_queen();
 void test_king();
 void test_movePlayer1(char* coord);
 void test_movePlayer2(char* coord);
+void test_full_promotion();
+void test_en_passant();
 
 #endif /* TEST_HTTP_H_ */

@@ -5,8 +5,19 @@
 
 #define MAX_STR_LENGTH 1024
 typedef enum {player1 = 1, player2 = 2} PlayerID;
-enum ChessboardRestStatus {OK = 200, unathorized = 401, gameInProgress = 403, notYourTurn = 403, deplacementIllegal = 406, tempsEcoule = 408, NOT_IMPLEMENTED = -1 };
+
+enum ChessboardRestStatus {
+	OK = 200, unathorized = 401,
+	gameInProgress = 403,
+	notYourTurn = 403,
+	deplacementIllegal = 406,
+	tempsEcoule = 408,
+	IM_A_TEAPOT = 418,		/* Used when we think a request failed at TCP level */
+	NOT_IMPLEMENTED = -1,
+	INTERNAL_ERROR = 500
+};
 enum State {NORMAL, CHECKMATE, CHECK, STALEMATE, RESTARTED};
+
 typedef struct GameInfo {
 	char player_1[MAX_STR_LENGTH];
 	char player_2[MAX_STR_LENGTH];
@@ -39,13 +50,15 @@ typedef struct TimeInfo {
 typedef struct TurnInfo {
 	PlayerID turn; 			/* player 1 or 2 */
 	int move_no;
-	char last_move[2];	/* position of last move, or X if first turn */
+	char last_move_src[2];	/* position of last move, or X if first turn */
+	char last_move_dst[2];	/* position of last move, or X if first turn */
 	enum State game_status;	/* NORMAL|CHECKMATE|CHECK|STALEMATE|RESTARTED */
 }TurnInfo;
 
 typedef struct BoardPosition {
-	int turn;
-	int move_no;
+	//int turn;
+	//int move_no;
+	TurnInfo turn_info;
 	char positions[32][2];	/* 32 pieces, 2 char per position */
 }BoardPosition;
 #endif /* CHESSBOARD_REST_PROTOCOL_H_ */

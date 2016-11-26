@@ -38,6 +38,7 @@ void HTTP_build_from_code(int code, char *http)
 const char *build_response(int code, char *content_type, const char *content)
 {
 	static char response[MAX_LENGTH];
+	response[0] = '\0';
 
 	const char *header = build_header(code, content_type, strlen(content));
 
@@ -88,6 +89,10 @@ void get_http_message(int code, char *msg)
 		m = "501 Not Implemented";
 	else if (code == HTTP_VERSION_NOT_SUPPORTED)
 		m = "505 HTTP Version Not Supported";
+	else if (code == HTTP_IM_A_TEAPOT)
+		m = "418 I'm A Teapot";
+	else
+		m = "500 Internal Server Error";
 	
 	sprintf(msg,"%s",m);
 }
