@@ -7,7 +7,7 @@
 #include "Xil_exception.h"
 #include "test_hdmi.h"
 //#define DEBUG
-//#define TESTING
+#define TESTING
 #include "debug.h"
 #include "xparameters.h"
 #include "chessboard.h"
@@ -82,7 +82,10 @@ void run_ZedBoard()
 	{
 #ifdef TESTING
 		//test_hdmi();
-		test_castling2();
+		//test_castling2();
+		//test_castling3();
+		//test_castling4();
+		test_queenside_castling();
 #else
 
 		// TODO RESTART TABLETTE
